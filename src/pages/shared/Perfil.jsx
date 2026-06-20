@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Bell, Mail, Smartphone, Clock, Edit3, Save, X, Lock, KeyRound } from 'lucide-react'
+import { Bell, Mail, Smartphone, Clock, Edit3, Save, X, Lock, KeyRound, Calendar, Trash2 } from 'lucide-react'
 import useStore from '../../store/useStore'
 import Navbar from '../../components/shared/Navbar'
 import Breadcrumb from '../../components/shared/Breadcrumb'
@@ -12,6 +12,9 @@ export default function Perfil() {
   const agregarNotificacion = useStore((s) => s.agregarNotificacion)
   const actualizarPerfil = useStore((s) => s.actualizarPerfil)
   const cambiarContrasena = useStore((s) => s.cambiarContrasena)
+  const notificacionesProgramadas = useStore((s) => s.notificacionesProgramadas)
+  const programarNotificacion = useStore((s) => s.programarNotificacion)
+  const cancelarNotificacionProgramada = useStore((s) => s.cancelarNotificacionProgramada)
   const [notifEmail, setNotifEmail] = useState(true)
   const [notifSms, setNotifSms] = useState(false)
   const [recordatorioHoras, setRecordatorioHoras] = useState('24')
@@ -20,6 +23,10 @@ export default function Perfil() {
   const [passwordModal, setPasswordModal] = useState(false)
   const [passwordForm, setPasswordForm] = useState({ actual: '', nueva: '', confirmar: '' })
   const [passwordError, setPasswordError] = useState('')
+  const [programarModal, setProgramarModal] = useState(false)
+  const [progMensaje, setProgMensaje] = useState('')
+  const [progFecha, setProgFecha] = useState('')
+  const [progTipo, setProgTipo] = useState('info')
 
   const openEditModal = () => {
     setFormData({
@@ -204,11 +211,40 @@ export default function Perfil() {
                 </select>
               </div>
             </div>
-            <button onClick={() => { agregarNotificacion('Preferencias guardadas exitosamente', 'success') }}
-              className="px-4 py-2 text-sm font-medium text-white bg-gray-900 hover:bg-gray-800 rounded-lg transition-colors">
-              Guardar preferencias
-            </button>
+            <div className="flex gap-2 flex-wrap">
+              <button onClick={() => { agregarNotificacion('Preferencias guardadas exitosamente', 'success') }}
+                className="px-4 py-2 text-sm font-medium text-white bg-gray-900 hover:bg-gray-800 rounded-lg transition-colors">
+                Guardar preferencias
+              </button>
+              <button onClick={() => { setProgMensaje(''); setProgFecha(''); setProgTipo('info'); setProgramarModal(true) }}
+                className="px-4 py-2 text-sm font-medium text-white bg-accent hover:opacity-90 rounded-lg transition-colors flex items-center gap-1">
+                <Calendar size={16} />Programar notificación
+              </button>
+            </div>
           </div>
+
+          {/* Notificaciones programadas */}
+          {notificacionesProgramadas.filter(n => n.activa).length > 0 && (
+            <div className="p-6 border-t border-gray-100 space-y-3">
+              <h3 className="font-semibold text-gray-900 flex items-center gap-2">
+                <Clock size={16} className="text-gray-500" />
+                Notificaciones programadas
+              </h3>
+              <div className="space-y-2">
+                {notificacionesProgramadas.filter(n => n.activa).map(n => (
+                  <div key={n.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                    <div className="text-sm">
+                      <p className="font-medium text-gray-900">{n.mensaje}</p>
+                      <p className="text-xs text-gray-500">{new Date(n.fechaProgramada).toLocaleString('es-CO')}</p>
+                    </div>
+                    <button onClick={() => cancelarNotificacionProgramada(n.id)} className="p-1.5 text-gray-400 hover:text-red-600 rounded-lg">
+                      <Trash2 size={16} />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
 
           {/* Botón editar */}
           <div className="p-6 border-t border-gray-100">
@@ -282,6 +318,41 @@ export default function Perfil() {
             <div className="flex gap-3 pt-2">
               <button onClick={() => setPasswordModal(false)} className="flex-1 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg flex items-center justify-center gap-1"><X size={16} />Cancelar</button>
               <button onClick={handleCambiarContrasena} className="flex-1 py-2 text-sm font-medium text-white bg-gray-900 hover:bg-gray-800 rounded-lg flex items-center justify-center gap-1"><KeyRound size={16} />Guardar</button>
+            </div>
+          </div>
+        </Modal>
+
+        {/* Modal programar notificación */}
+        <Modal isOpen={programarModal} onClose={() => setProgramarModal(false)} title="Programar notificación" size="md">
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Mensaje</label>
+              <textarea value={progMensaje} onChange={(e) => setProgMensaje(e.target.value)} rows={2} placeholder="Ej: Recuerda recoger tu medicamento mañana"
+                className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-accent outline-none resize-none" />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Fecha y hora</label>
+              <input type="datetime-local" value={progFecha} onChange={(e) => setProgFecha(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-accent outline-none" />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Tipo</label>
+              <select value={progTipo} onChange={(e) => setProgTipo(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-accent outline-none">
+                <option value="info">Informativa</option>
+                <option value="success">Éxito</option>
+                <option value="warning">Advertencia</option>
+                <option value="error">Error</option>
+              </select>
+            </div>
+            <div className="flex gap-3">
+              <button onClick={() => setProgramarModal(false)} className="flex-1 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg">Cancelar</button>
+              <button onClick={() => {
+                if (progMensaje && progFecha) {
+                  programarNotificacion({ mensaje: progMensaje, fechaProgramada: progFecha, tipo: progTipo })
+                  setProgramarModal(false)
+                }
+              }} disabled={!progMensaje || !progFecha} className="flex-1 py-2 text-sm font-medium text-white bg-accent hover:opacity-90 rounded-lg disabled:opacity-50 flex items-center justify-center gap-1"><Calendar size={16} />Programar</button>
             </div>
           </div>
         </Modal>

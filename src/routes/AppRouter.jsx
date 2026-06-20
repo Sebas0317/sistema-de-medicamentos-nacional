@@ -8,6 +8,7 @@ import BuscarMedicamento from '../pages/paciente/BuscarMedicamento'
 import MisReservas from '../pages/paciente/MisReservas'
 import MisCitas from '../pages/paciente/MisCitas'
 import FarmaciasCercanas from '../pages/paciente/FarmaciasCercanas'
+import HistorialMedico from '../pages/paciente/HistorialMedico'
 import LoginEPS from '../pages/eps/LoginEPS'
 import DashboardEPS from '../pages/eps/DashboardEPS'
 import SolicitudesPendientes from '../pages/eps/SolicitudesPendientes'
@@ -45,8 +46,9 @@ export default function AppRouter() {
         <Route path="buscar" element={<BuscarMedicamento />} />
         <Route path="reservas" element={<MisReservas />} />
         <Route path="citas" element={<MisCitas />} />
+         <Route path="historial-medico" element={<HistorialMedico />} />
          <Route path="farmacias" element={<FarmaciasCercanas />} />
-         <Route path="perfil" element={<Perfil />} />
+          <Route path="perfil" element={<Perfil />} />
         <Route index element={<Navigate to="dashboard" replace />} />
       </Route>
 

@@ -13,12 +13,13 @@ const roleConfig = {
 
 const roleLinks = {
    paciente: [
-     { label: 'Inicio', path: '/paciente/dashboard' },
-     { label: 'Buscar', path: '/paciente/buscar' },
-     { label: 'Reservas', path: '/paciente/reservas' },
-     { label: 'Citas', path: '/paciente/citas' },
-     { label: 'Farmacias y Hospitales', path: '/paciente/farmacias' }
-   ],
+      { label: 'Inicio', path: '/paciente/dashboard' },
+      { label: 'Buscar', path: '/paciente/buscar' },
+      { label: 'Reservas', path: '/paciente/reservas' },
+      { label: 'Citas', path: '/paciente/citas' },
+      { label: 'Historial Médico', path: '/paciente/historial-medico' },
+      { label: 'Farmacias y Hospitales', path: '/paciente/farmacias' }
+    ],
   eps: [
     { label: 'Inicio', path: '/eps/dashboard' },
     { label: 'Solicitudes', path: '/eps/solicitudes' },

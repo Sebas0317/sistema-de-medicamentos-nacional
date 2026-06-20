@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { XCircle, Eye, AlertTriangle, X } from 'lucide-react'
+import { XCircle, Eye, AlertTriangle, X, Calendar } from 'lucide-react'
 import useStore from '../../store/useStore'
 import Navbar from '../../components/shared/Navbar'
 import Breadcrumb from '../../components/shared/Breadcrumb'
@@ -24,6 +24,11 @@ const estadoLabel = {
 
 const tabs = ['Todas', 'Pendientes', 'Confirmadas', 'Entregadas', 'Canceladas']
 
+const horarios = Array.from({ length: 10 }, (_, i) => {
+  const h = i + 8
+  return `${String(h).padStart(2, '0')}:00`
+})
+
 export default function MisReservas() {
   const navigate = useNavigate()
   const usuarioActual = useStore((s) => s.usuarioActual)
@@ -32,9 +37,13 @@ export default function MisReservas() {
   const farmacias = useStore((s) => s.farmacias)
   const autorizaciones = useStore((s) => s.autorizaciones)
   const cancelarReserva = useStore((s) => s.cancelarReserva)
+  const reprogramarReserva = useStore((s) => s.reprogramarReserva)
   const [activeTab, setActiveTab] = useState('Todas')
   const [detailReserva, setDetailReserva] = useState(null)
   const [cancelModal, setCancelModal] = useState(null)
+  const [reprogramarModal, setReprogramarModal] = useState(null)
+  const [nuevaFecha, setNuevaFecha] = useState('')
+  const [nuevaHora, setNuevaHora] = useState('10:00')
 
   let reservas = reservasState.filter(r => r.pacienteId === usuarioActual?.id)
     .map(r => {
@@ -115,7 +124,10 @@ export default function MisReservas() {
                         <div className="flex gap-1">
                           <button onClick={() => setDetailReserva(r)} className="p-1.5 text-gray-400 hover:text-accent hover:bg-accent/10 rounded-lg" title="Ver detalle"><Eye size={16} /></button>
                           {(r.estado === 'pendiente' || r.estado === 'confirmada') && (
-                            <button onClick={() => handleCancelar(r.id)} className="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg" title="Cancelar"><XCircle size={16} /></button>
+                            <>
+                              <button onClick={() => { setReprogramarModal(r); setNuevaFecha(r.fechaReclamacion); setNuevaHora(r.horaReclamacion) }} className="p-1.5 text-gray-400 hover:text-amber-600 hover:bg-amber-50 rounded-lg" title="Reprogramar"><Calendar size={16} /></button>
+                              <button onClick={() => handleCancelar(r.id)} className="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg" title="Cancelar"><XCircle size={16} /></button>
+                            </>
                           )}
                         </div>
                       </td>
@@ -151,6 +163,41 @@ export default function MisReservas() {
               </div>
             )}
             <p className="text-xs text-gray-400 mt-2">Creada: {new Date(detailReserva.fechaCreacion).toLocaleString('es-CO')}</p>
+          </div>
+        )}
+      </Modal>
+
+      {/* Modal reprogramar */}
+      <Modal isOpen={!!reprogramarModal} onClose={() => setReprogramarModal(null)} title="Reprogramar cita" size="md">
+        {reprogramarModal && (
+          <div className="space-y-4">
+            <div className="p-3 bg-gray-50 rounded-lg text-sm">
+              <p><strong>Medicamento:</strong> {reprogramarModal.medicamentoNombre}</p>
+              <p><strong>Farmacia:</strong> {reprogramarModal.farmaciaNombre}</p>
+              <p className="text-xs text-gray-500 mt-1">Fecha actual: {reprogramarModal.fechaReclamacion} — {reprogramarModal.horaReclamacion}</p>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Nueva fecha</label>
+              <input type="date" value={nuevaFecha} onChange={(e) => setNuevaFecha(e.target.value)}
+                min={new Date(Date.now() + 86400000).toISOString().split('T')[0]}
+                className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-accent outline-none" />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Nueva hora</label>
+              <select value={nuevaHora} onChange={(e) => setNuevaHora(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-accent outline-none">
+                {horarios.map((h) => <option key={h} value={h}>{h}</option>)}
+              </select>
+            </div>
+            <div className="flex gap-3">
+              <button onClick={() => setReprogramarModal(null)} className="flex-1 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg">Cancelar</button>
+              <button onClick={() => {
+                if (nuevaFecha) {
+                  reprogramarReserva(reprogramarModal.id, nuevaFecha, nuevaHora)
+                  setReprogramarModal(null)
+                }
+              }} className="flex-1 py-2 text-sm font-medium text-white bg-accent hover:opacity-90 rounded-lg flex items-center justify-center gap-1"><Calendar size={16} />Reprogramar</button>
+            </div>
           </div>
         )}
       </Modal>

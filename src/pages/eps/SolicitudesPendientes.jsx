@@ -164,7 +164,7 @@ export default function SolicitudesPendientes() {
 
       {/* Modal confirmar aprobación */}
       <Modal isOpen={!!confirmModal} onClose={() => setConfirmModal(null)} title="Confirmar aprobación" size="sm">
-        <p className="text-sm text-gray-600 mb-4">¿Estás seguro de aprobar esta autorización? La reserva asociada se confirmará automáticamente.</p>
+        <p className="text-sm text-gray-600 mb-4">¿Estás seguro de aprobar esta autorización?</p>
         <div className="flex gap-3">
           <button onClick={() => setConfirmModal(null)} className="flex-1 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg">Cancelar</button>
           <button onClick={confirmAprobar} className="flex-1 py-2 text-sm font-medium text-white bg-green-600 hover:bg-green-700 rounded-lg">Confirmar</button>

@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { jsPDF } from 'jspdf'
-import { CheckCircle, Clock, MapPin } from 'lucide-react'
+import { CheckCircle, Clock, MapPin, XCircle } from 'lucide-react'
 import useStore from '../../store/useStore'
 import Navbar from '../../components/shared/Navbar'
 import Breadcrumb from '../../components/shared/Breadcrumb'
@@ -9,7 +9,7 @@ import Modal from '../../components/shared/Modal'
 import EmptyState from '../../components/shared/EmptyState'
 import useRelativeTime from '../../hooks/useRelativeTime'
 
-const tabs = ['Pendientes', 'Listas para entregar', 'Completadas']
+const tabs = ['Pendientes', 'Listas para entregar', 'Completadas', 'Fallidas']
 
 export default function ConfirmarEntregas() {
   const usuarioActual = useStore((s) => s.usuarioActual)
@@ -20,6 +20,7 @@ export default function ConfirmarEntregas() {
   const reservas = useStore((s) => s.reservas)
   const marcarEntregaLista = useStore((s) => s.marcarEntregaLista)
   const confirmarEntrega = useStore((s) => s.confirmarEntrega)
+  const registrarFalloEntrega = useStore((s) => s.registrarFalloEntrega)
 
   const [activeTab, setActiveTab] = useState('Pendientes')
   const [confirmModal, setConfirmModal] = useState(null)
@@ -28,6 +29,8 @@ export default function ConfirmarEntregas() {
   const [check1, setCheck1] = useState(false)
   const [check2, setCheck2] = useState(false)
   const [reciboModal, setReciboModal] = useState(null)
+  const [falloModal, setFalloModal] = useState(null)
+  const [motivoFallo, setMotivoFallo] = useState('')
 
   const farmaciaId = usuarioActual?.entidadId || ''
   let entregas = entregasState
@@ -49,6 +52,7 @@ export default function ConfirmarEntregas() {
   if (activeTab === 'Pendientes') entregas = entregas.filter((e) => e.estado === 'pendiente')
   else if (activeTab === 'Listas para entregar') entregas = entregas.filter((e) => e.estado === 'lista')
   else if (activeTab === 'Completadas') entregas = entregas.filter((e) => e.estado === 'entregada')
+  else if (activeTab === 'Fallidas') entregas = entregas.filter((e) => e.estado === 'fallida')
 
   const handleMarcarLista = (id) => {
     marcarEntregaLista(id)
@@ -146,9 +150,12 @@ export default function ConfirmarEntregas() {
                   {e.direccion && <p className="text-xs text-gray-400 mt-0.5">{e.direccion}</p>}
                 </div>
               </div>
-              <div className="mt-3 pt-3 border-t border-gray-100 flex gap-2">
+              <div className="mt-3 pt-3 border-t border-gray-100 flex gap-2 flex-wrap">
                 {e.estado === 'pendiente' && (
-                  <button onClick={() => handleMarcarLista(e.id)} className="flex items-center gap-1 px-4 py-2 bg-amber-100 text-amber-700 text-sm font-medium rounded-lg hover:bg-amber-200 transition-colors"><Clock size={16} />Marcar como lista</button>
+                  <>
+                    <button onClick={() => handleMarcarLista(e.id)} className="flex items-center gap-1 px-4 py-2 bg-amber-100 text-amber-700 text-sm font-medium rounded-lg hover:bg-amber-200 transition-colors"><Clock size={16} />Marcar como lista</button>
+                    <button onClick={() => { setFalloModal(e); setMotivoFallo('') }} className="flex items-center gap-1 px-4 py-2 bg-red-50 text-red-700 text-sm font-medium rounded-lg hover:bg-red-100 transition-colors"><XCircle size={16} />Registrar fallo</button>
+                  </>
                 )}
                 {e.estado === 'lista' && (
                   <button onClick={() => handleAbrirConfirmacion(e)} className="flex items-center gap-1 px-4 py-2 bg-green-600 text-white text-sm font-medium rounded-lg hover:bg-green-700 transition-colors"><CheckCircle size={16} />Confirmar entrega</button>
@@ -213,6 +220,40 @@ export default function ConfirmarEntregas() {
               <button onClick={() => window.print()} className="py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg px-3">Imprimir</button>
               <button onClick={() => handleDescargarPDF(reciboModal)} className="py-2 text-sm font-medium text-white bg-red-600 hover:bg-red-700 rounded-lg px-3">Descargar PDF</button>
               <button onClick={() => setReciboModal(null)} className="flex-1 py-2 text-sm font-medium text-white bg-amber-600 hover:bg-amber-700 rounded-lg">Cerrar</button>
+            </div>
+          </div>
+        )}
+      </Modal>
+
+      {/* Modal registrar fallo */}
+      <Modal isOpen={!!falloModal} onClose={() => setFalloModal(null)} title="Registrar fallo en entrega" size="sm">
+        {falloModal && (
+          <div className="space-y-4">
+            <div className="p-3 bg-gray-50 rounded-lg text-sm">
+              <p><strong>Paciente:</strong> {falloModal.pacienteNombre}</p>
+              <p><strong>Medicamento:</strong> {falloModal.medicamentoNombre}</p>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Motivo del fallo</label>
+              <select value={motivoFallo} onChange={(e) => setMotivoFallo(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-red-500 outline-none">
+                <option value="">Selecciona un motivo</option>
+                <option value="Paciente no se presentó">Paciente no se presentó</option>
+                <option value="Medicamento no disponible">Medicamento no disponible</option>
+                <option value="Dirección incorrecta">Dirección incorrecta</option>
+                <option value="Documentación incompleta">Documentación incompleta</option>
+                <option value="Problema logístico">Problema logístico</option>
+                <option value="Otro">Otro</option>
+              </select>
+            </div>
+            <div className="flex gap-3">
+              <button onClick={() => setFalloModal(null)} className="flex-1 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg">Cancelar</button>
+              <button onClick={() => {
+                if (motivoFallo) {
+                  registrarFalloEntrega(falloModal.id, motivoFallo)
+                  setFalloModal(null)
+                }
+              }} disabled={!motivoFallo} className="flex-1 py-2 text-sm font-medium text-white bg-red-600 hover:bg-red-700 rounded-lg disabled:opacity-50 flex items-center justify-center gap-1"><XCircle size={16} />Registrar fallo</button>
             </div>
           </div>
         )}

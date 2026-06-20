@@ -10,6 +10,8 @@ import mockSuministros from '../data/mockSuministros'
 import mockFarmacias from '../data/mockFarmacias'
 import mockEPS from '../data/mockEPS'
 import mockCentrosSalud from '../data/mockCentrosSalud'
+import mockCitasMedicas from '../data/mockCitasMedicas'
+import mockFormulasMedicas from '../data/mockFormulasMedicas'
 
 const useStore = create(persist((set, get) => ({
   // === ESTADO INICIAL ===
@@ -23,6 +25,8 @@ const useStore = create(persist((set, get) => ({
   farmacias: [...mockFarmacias],
   eps: [...mockEPS],
   centrosSalud: [...mockCentrosSalud],
+  citasMedicas: [...mockCitasMedicas],
+  formulasMedicas: [...mockFormulasMedicas],
   usuarios: [...mockUsuarios],
   notificaciones: [],
     auditoria: [],
@@ -281,36 +285,52 @@ const useStore = create(persist((set, get) => ({
     const auth = state.autorizaciones.find(a => a.id === autorizacionId)
     if (!auth) return
 
+    let nuevasFormulas = [...state.formulasMedicas]
     const nuevasEntregas = [...state.entregas]
     let nuevasReservas = [...state.reservas]
 
-    const entregaId = 'ent' + Date.now()
-    const nuevaEntrega = {
-      id: entregaId,
-      reservaId: auth.reservaId,
-      farmaciaId: '',
-      pacienteId: auth.pacienteId,
-      medicamentoId: auth.medicamentoId,
-      estado: 'pendiente',
-      fechaAsignacion: new Date().toISOString(),
-      fechaEntrega: null,
-      esADomicilio: false,
-      direccion: '',
-      firmaDigital: ''
-    }
-
-    if (auth.reservaId) {
-      const reserva = state.reservas.find(r => r.id === auth.reservaId)
-      if (reserva) {
-        nuevaEntrega.farmaciaId = reserva.farmaciaId
-        nuevaEntrega.esADomicilio = reserva.esADomicilio || false
-        nuevaEntrega.direccion = reserva.direccion || ''
-        nuevasReservas = nuevasReservas.map(r =>
-          r.id === auth.reservaId ? { ...r, estado: 'confirmada' } : r
+    // Si es extensión de fórmula, actualizar fórmula
+    if (auth.tipo === 'extension_formula' && auth.formulaId) {
+      const formula = state.formulasMedicas.find(f => f.id === auth.formulaId)
+      if (formula) {
+        const nuevaFecha = new Date()
+        nuevaFecha.setDate(nuevaFecha.getDate() + 90)
+        nuevasFormulas = nuevasFormulas.map(f =>
+          f.id === auth.formulaId
+            ? { ...f, estado: 'activa', fechaVencimiento: nuevaFecha.toISOString().split('T')[0] }
+            : f
         )
       }
+    } else {
+      // Flujo normal de autorización de reserva
+      const entregaId = 'ent' + Date.now()
+      const nuevaEntrega = {
+        id: entregaId,
+        reservaId: auth.reservaId,
+        farmaciaId: '',
+        pacienteId: auth.pacienteId,
+        medicamentoId: auth.medicamentoId,
+        estado: 'pendiente',
+        fechaAsignacion: new Date().toISOString(),
+        fechaEntrega: null,
+        esADomicilio: false,
+        direccion: '',
+        firmaDigital: ''
+      }
+
+      if (auth.reservaId) {
+        const reserva = state.reservas.find(r => r.id === auth.reservaId)
+        if (reserva) {
+          nuevaEntrega.farmaciaId = reserva.farmaciaId
+          nuevaEntrega.esADomicilio = reserva.esADomicilio || false
+          nuevaEntrega.direccion = reserva.direccion || ''
+          nuevasReservas = nuevasReservas.map(r =>
+            r.id === auth.reservaId ? { ...r, estado: 'confirmada' } : r
+          )
+        }
+      }
+      nuevasEntregas.push(nuevaEntrega)
     }
-    nuevasEntregas.push(nuevaEntrega)
 
     set({
       autorizaciones: state.autorizaciones.map(a =>
@@ -320,6 +340,7 @@ const useStore = create(persist((set, get) => ({
       ),
       reservas: nuevasReservas,
       entregas: nuevasEntregas,
+      formulasMedicas: nuevasFormulas,
       notificaciones: [{
         id: 'notif' + Date.now(),
         mensaje: `Autorización ${autorizacionId.slice(0, 6)} aprobada exitosamente`,
@@ -344,7 +365,15 @@ const useStore = create(persist((set, get) => ({
     const auth = state.autorizaciones.find(a => a.id === autorizacionId)
     if (!auth) return
 
+    let nuevasFormulas = [...state.formulasMedicas]
     let nuevasReservas = [...state.reservas]
+
+    if (auth.tipo === 'extension_formula' && auth.formulaId) {
+      nuevasFormulas = nuevasFormulas.map(f =>
+        f.id === auth.formulaId ? { ...f, estado: 'vencida' } : f
+      )
+    }
+
     if (auth.reservaId) {
       nuevasReservas = nuevasReservas.map(r =>
         r.id === auth.reservaId ? { ...r, estado: 'cancelada' } : r
@@ -357,6 +386,7 @@ const useStore = create(persist((set, get) => ({
           ? { ...a, estado: 'rechazada', motivoRechazo: motivo, fechaRespuesta: new Date().toISOString() }
           : a
       ),
+      formulasMedicas: nuevasFormulas,
       reservas: nuevasReservas,
       notificaciones: [{
         id: 'notif' + Date.now(),
@@ -707,6 +737,91 @@ const useStore = create(persist((set, get) => ({
       })
   },
 
+  // === CITAS MÉDICAS Y FÓRMULAS ===
+  getCitasMedicasPorPaciente: (pacienteId) => {
+    const state = get()
+    return state.citasMedicas
+      .filter(c => c.pacienteId === pacienteId)
+      .map(c => {
+        const cs = state.centrosSalud.find(h => h.id === c.centroSaludId)
+        const formula = c.formulaId
+          ? state.formulasMedicas.find(f => f.id === c.formulaId)
+          : null
+        return { ...c, centroSalud: cs || null, formula: formula || null }
+      })
+      .sort((a, b) => new Date(b.fecha) - new Date(a.fecha))
+  },
+
+  getFormulasPorPaciente: (pacienteId) => {
+    const state = get()
+    return state.formulasMedicas
+      .filter(f => f.pacienteId === pacienteId)
+      .map(f => {
+        const cita = state.citasMedicas.find(c => c.id === f.citaMedicaId)
+        const cs = cita ? state.centrosSalud.find(h => h.id === cita.centroSaludId) : null
+        return {
+          ...f,
+          cita: cita ? { ...cita, centroSalud: cs || null } : null,
+          requiereAutorizacion: f.medicamentos.some(m => {
+            const med = state.medicamentos.find(med => med.id === m.medicamentoId)
+            return med ? med.requiereAutorizacion : false
+          })
+        }
+      })
+      .sort((a, b) => new Date(b.fechaEmision) - new Date(a.fechaEmision))
+  },
+
+  getHistorialClinico: (pacienteId) => {
+    const state = get()
+    const citas = state.getCitasMedicasPorPaciente(pacienteId)
+    const formulas = state.getFormulasPorPaciente(pacienteId)
+    const reservas = state.getReservasPorPaciente(pacienteId)
+    const paciente = state.usuarios.find(u => u.id === pacienteId)
+    return { paciente, citas, formulas, reservas }
+  },
+
+  solicitarAutorizacionFormula: (formulaId) => {
+    const state = get()
+    const formula = state.formulasMedicas.find(f => f.id === formulaId)
+    if (!formula) return { ok: false, error: 'Fórmula no encontrada' }
+    if (formula.estado !== 'vencida') return { ok: false, error: 'Solo se puede solicitar autorización para fórmulas vencidas' }
+
+    const paciente = state.usuarios.find(u => u.id === formula.pacienteId)
+    const authId = 'auth' + Date.now()
+
+    const nuevasAutorizaciones = [...state.autorizaciones, {
+      id: authId,
+      epsId: paciente ? paciente.epsId : 'eps1',
+      pacienteId: formula.pacienteId,
+      medicamentoId: formula.medicamentos[0]?.medicamentoId || '',
+      tipo: 'extension_formula',
+      estado: 'pendiente',
+      cobertura: 'Pendiente',
+      fechaSolicitud: new Date().toISOString(),
+      fechaRespuesta: null,
+      diagnosticoCIE10: '',
+      diagnostico: formula.diagnostico,
+      observaciones: `Solicitud de extensión de fórmula médica #${formulaId} - ${formula.medico} (${formula.especialidad}). Vencimiento original: ${formula.fechaVencimiento}`,
+      reservaId: null,
+      motivoRechazo: '',
+      formulaId: formulaId,
+    }]
+
+    set({
+      autorizaciones: nuevasAutorizaciones,
+      formulasMedicas: state.formulasMedicas.map(f =>
+        f.id === formulaId ? { ...f, estado: 'autorizacion_pendiente' } : f
+      )
+    })
+
+    get().agregarNotificacion('Solicitud de autorización enviada a la EPS', 'success')
+    get().registrarEvento('SOLICITAR_AUTORIZACION_FORMULA',
+      `Solicitud de extensión para fórmula ${formulaId} del paciente ${formula.pacienteId}`,
+      formula.pacienteId)
+
+    return { ok: true, autorizacionId: authId }
+  },
+
   toggleDarkMode: () => {
     set(state => ({ darkMode: !state.darkMode }))
   },
@@ -769,6 +884,137 @@ const useStore = create(persist((set, get) => ({
     const state = get()
     const notificaciones = state.notificaciones.map(n => ({ ...n, leida: true }))
     set({ notificaciones })
+  },
+
+  // === AUTENTICACIÓN OTP ===
+  codigosOTP: {},
+
+  generarOTP: (documento) => {
+    const state = get()
+    const usuario = state.usuarios.find(u => u.documento === documento && u.rol === 'paciente' && u.activo)
+    if (!usuario) return { ok: false, error: 'Paciente no encontrado' }
+    const otp = '1234'
+    set({ codigosOTP: { ...state.codigosOTP, [documento]: { codigo: otp, expira: Date.now() + 300000 } } })
+    return { ok: true, mensaje: `Código enviado a ${usuario.email} y al teléfono ${usuario.telefono || 'registrado'}` }
+  },
+
+  loginConOTP: (documento, codigo) => {
+    const state = get()
+    const otpData = state.codigosOTP[documento]
+    if (!otpData) return { ok: false, error: 'Solicita un código primero' }
+    if (Date.now() > otpData.expira) return { ok: false, error: 'Código expirado, solicita uno nuevo' }
+    if (otpData.codigo !== codigo) return { ok: false, error: 'Código incorrecto' }
+    const usuario = state.usuarios.find(u => u.documento === documento && u.rol === 'paciente' && u.activo)
+    if (!usuario) return { ok: false, error: 'Paciente no encontrado' }
+    set({ usuarioActual: usuario, ultimoAcceso: new Date().toISOString() })
+    get().registrarEvento('INICIO_SESION_OTP', `Usuario ${usuario.nombre} (${usuario.rol}) inició sesión con código`, usuario.id)
+    return { ok: true, usuario }
+  },
+
+  // === REPROGRAMAR RESERVA ===
+  reprogramarReserva: (reservaId, nuevaFecha, nuevaHora) => {
+    const state = get()
+    const reserva = state.reservas.find(r => r.id === reservaId)
+    if (!reserva) return { ok: false, error: 'Reserva no encontrada' }
+    if (reserva.estado !== 'pendiente' && reserva.estado !== 'confirmada') return { ok: false, error: 'Solo se pueden reprogramar reservas pendientes o confirmadas' }
+    set({
+      reservas: state.reservas.map(r =>
+        r.id === reservaId ? { ...r, fechaReclamacion: nuevaFecha, horaReclamacion: nuevaHora } : r
+      )
+    })
+    get().agregarNotificacion('Reserva reprogramada exitosamente', 'success')
+    get().registrarEvento('REPROGRAMAR_RESERVA', `Reserva ${reservaId} reprogramada a ${nuevaFecha} ${nuevaHora}`, reserva.pacienteId)
+    return { ok: true }
+  },
+
+  // === VERIFICAR VENCIMIENTO DE RESERVAS ===
+  verificarVencimientoReservas: () => {
+    const state = get()
+    const hoy = new Date().toISOString().split('T')[0]
+    let vencidas = 0
+    const nuevasReservas = state.reservas.map(r => {
+      if ((r.estado === 'pendiente' || r.estado === 'confirmada') && r.fechaReclamacion < hoy) {
+        vencidas++
+        return { ...r, estado: 'cancelada' }
+      }
+      return r
+    })
+    if (vencidas > 0) {
+      set({ reservas: nuevasReservas })
+      get().agregarNotificacion(`${vencidas} reserva(s) vencida(s) cancelada(s) automáticamente`, 'warning')
+    }
+    return vencidas
+  },
+
+  // === REGISTRAR FALLO ENTREGA ===
+  registrarFalloEntrega: (entregaId, motivo) => {
+    const state = get()
+    const entrega = state.entregas.find(e => e.id === entregaId)
+    if (!entrega) return
+    set({
+      entregas: state.entregas.map(e =>
+        e.id === entregaId ? { ...e, estado: 'fallida' } : e
+      ),
+      reservas: state.reservas.map(r =>
+        r.id === entrega.reservaId ? { ...r, estado: 'pendiente' } : r
+      )
+    })
+    get().agregarNotificacion(`Entrega ${entregaId.slice(0, 6)} registrada como fallida: ${motivo}`, 'error')
+    get().registrarEvento('REGISTRAR_FALLO_ENTREGA', `Entrega ${entregaId}: ${motivo}`, state.usuarioActual?.id || '')
+  },
+
+  // === NOTIFICACIONES PROGRAMADAS ===
+  notificacionesProgramadas: [],
+
+  programarNotificacion: (datos) => {
+    const state = get()
+    const notif = {
+      id: 'prog' + Date.now(),
+      mensaje: datos.mensaje,
+      tipo: datos.tipo || 'info',
+      fechaProgramada: datos.fechaProgramada,
+      creada: new Date().toISOString(),
+      activa: true,
+      usuarioId: datos.usuarioId || state.usuarioActual?.id || ''
+    }
+    set({ notificacionesProgramadas: [...state.notificacionesProgramadas, notif].slice(0, 50) })
+    get().agregarNotificacion(`Notificación programada: ${datos.mensaje}`, 'info')
+    return { ok: true, notificacion: notif }
+  },
+
+  cancelarNotificacionProgramada: (notifId) => {
+    const state = get()
+    set({
+      notificacionesProgramadas: state.notificacionesProgramadas.map(n =>
+        n.id === notifId ? { ...n, activa: false } : n
+      )
+    })
+    get().agregarNotificacion('Notificación programada cancelada', 'info')
+  },
+
+  ejecutarNotificacionesProgramadas: () => {
+    const state = get()
+    const ahora = Date.now()
+    let pendientes = []
+    let activas = []
+    state.notificacionesProgramadas.forEach(n => {
+      if (n.activa && new Date(n.fechaProgramada).getTime() <= ahora) {
+        pendientes.push(n)
+      } else {
+        activas.push(n)
+      }
+    })
+    if (pendientes.length > 0) {
+      const nuevasNotifs = pendientes.map(n => ({
+        id: 'notif' + Date.now() + n.id,
+        mensaje: n.mensaje,
+        tipo: n.tipo,
+        timestamp: new Date().toISOString(),
+        leida: false,
+        usuarioId: n.usuarioId
+      }))
+      set({ notificacionesProgramadas: activas, notificaciones: [...nuevasNotifs, ...state.notificaciones].slice(0, 20) })
+    }
   }
 }), {
   name: 'snsdm-storage',
@@ -781,6 +1027,7 @@ const useStore = create(persist((set, get) => ({
     favoritos: state.favoritos,
     ultimoAcceso: state.ultimoAcceso,
     accentColor: state.accentColor,
+    notificacionesProgramadas: state.notificacionesProgramadas,
   })
 }))
 
