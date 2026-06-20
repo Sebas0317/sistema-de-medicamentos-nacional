@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { jsPDF } from 'jspdf'
 import { CheckCircle, Clock, MapPin } from 'lucide-react'
 import useStore from '../../store/useStore'
 import Navbar from '../../components/shared/Navbar'
@@ -68,6 +69,36 @@ export default function ConfirmarEntregas() {
       setReciboModal(result)
       setConfirmModal(null)
     }
+  }
+
+  const handleDescargarPDF = (recibo) => {
+    const doc = new jsPDF()
+    doc.setFontSize(14)
+    doc.text('SNSDM - COMPROBANTE DE ENTREGA', 14, 20)
+    doc.setFontSize(10)
+    doc.text(`ENT-${recibo.id}-${new Date().toISOString().split('T')[0]}`, 14, 28)
+
+    const campos = [
+      ['Farmacia', usuarioActual?.entidadNombre || ''],
+      ['Paciente', recibo.pacienteNombre],
+      ['Medicamento', recibo.medicamentoNombre],
+      ['Cantidad', '1'],
+      ['Fecha/Hora', new Date().toLocaleString('es-CO')],
+      ['Recibe', recibo.firmaDigital],
+    ]
+
+    doc.autoTable({
+      startY: 34,
+      head: [['Campo', 'Valor']],
+      body: campos,
+      theme: 'grid',
+    })
+
+    const finalY = doc.lastAutoTable.finalY || 80
+    doc.setFontSize(9)
+    doc.text('Este documento es válido como constancia de entrega', 14, finalY + 14)
+
+    doc.save(`comprobante-entrega-${recibo.id}.pdf`)
   }
 
   return (
@@ -179,7 +210,8 @@ export default function ConfirmarEntregas() {
               <p className="text-xs text-gray-400">Este documento es válido como constancia de entrega</p>
             </div>
             <div className="flex gap-3">
-              <button onClick={() => window.print()} className="flex-1 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg">Imprimir</button>
+              <button onClick={() => window.print()} className="py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg px-3">Imprimir</button>
+              <button onClick={() => handleDescargarPDF(reciboModal)} className="py-2 text-sm font-medium text-white bg-red-600 hover:bg-red-700 rounded-lg px-3">Descargar PDF</button>
               <button onClick={() => setReciboModal(null)} className="flex-1 py-2 text-sm font-medium text-white bg-amber-600 hover:bg-amber-700 rounded-lg">Cerrar</button>
             </div>
           </div>

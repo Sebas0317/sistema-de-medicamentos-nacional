@@ -7,6 +7,7 @@ import Navbar from '../../components/shared/Navbar'
 import Breadcrumb from '../../components/shared/Breadcrumb'
 import StatCard from '../../components/shared/StatCard'
 import Badge from '../../components/shared/Badge'
+import ChatPanel from '../../components/chat/ChatPanel'
 
 const topMedicamentosData = [
   { nombre: 'Metformina 850mg', reservas: 12 },
@@ -152,6 +153,7 @@ export default function DashboardProveedor() {
           </div>
         </div>
       </div>
+      <ChatPanel />
     </div>
   )
 }

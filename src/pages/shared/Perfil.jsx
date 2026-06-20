@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Bell, Mail, Smartphone, Clock, Edit3, Save, X } from 'lucide-react'
+import { Bell, Mail, Smartphone, Clock, Edit3, Save, X, Lock, KeyRound } from 'lucide-react'
 import useStore from '../../store/useStore'
 import Navbar from '../../components/shared/Navbar'
 import Breadcrumb from '../../components/shared/Breadcrumb'
@@ -11,11 +11,15 @@ export default function Perfil() {
   const eps = useStore((s) => s.eps)
   const agregarNotificacion = useStore((s) => s.agregarNotificacion)
   const actualizarPerfil = useStore((s) => s.actualizarPerfil)
+  const cambiarContrasena = useStore((s) => s.cambiarContrasena)
   const [notifEmail, setNotifEmail] = useState(true)
   const [notifSms, setNotifSms] = useState(false)
   const [recordatorioHoras, setRecordatorioHoras] = useState('24')
   const [editModal, setEditModal] = useState(false)
   const [formData, setFormData] = useState({ email: '', telefono: '' })
+  const [passwordModal, setPasswordModal] = useState(false)
+  const [passwordForm, setPasswordForm] = useState({ actual: '', nueva: '', confirmar: '' })
+  const [passwordError, setPasswordError] = useState('')
 
   const openEditModal = () => {
     setFormData({
@@ -43,6 +47,26 @@ export default function Perfil() {
     farmacia: 'bg-amber-100 text-amber-600',
     proveedor: 'bg-red-100 text-red-600',
     admin: 'bg-purple-100 text-purple-600'
+  }
+
+  const handleCambiarContrasena = async () => {
+    setPasswordError('')
+    if (passwordForm.nueva !== passwordForm.confirmar) {
+      setPasswordError('Las contraseñas no coinciden')
+      return
+    }
+    if (passwordForm.nueva.length < 6) {
+      setPasswordError('La contraseña debe tener al menos 6 caracteres')
+      return
+    }
+    const result = await cambiarContrasena(usuarioActual.id, passwordForm.actual, passwordForm.nueva)
+    if (result.success) {
+      setPasswordModal(false)
+      setPasswordForm({ actual: '', nueva: '', confirmar: '' })
+      agregarNotificacion('Contraseña actualizada exitosamente', 'success')
+    } else {
+      setPasswordError(result.error)
+    }
   }
 
   return (
@@ -98,6 +122,15 @@ export default function Perfil() {
               <div>
                 <span className="text-gray-500">Estado de cuenta</span>
                 <p className="mt-0.5"><Badge text={usuarioActual.activo ? 'Activa' : 'Inactiva'} variant={usuarioActual.activo ? 'success' : 'danger'} /></p>
+              </div>
+              <div className="sm:col-span-2 flex items-center">
+                <button
+                  onClick={() => { setPasswordForm({ actual: '', nueva: '', confirmar: '' }); setPasswordError(''); setPasswordModal(true) }}
+                  className="text-sm text-blue-600 hover:text-blue-700 font-medium cursor-pointer inline-flex items-center gap-1.5"
+                >
+                  <Lock size={14} />
+                  Cambiar contraseña
+                </button>
               </div>
               <div>
                 <span className="text-gray-500">Último acceso</span>
@@ -210,6 +243,45 @@ export default function Perfil() {
             <div className="flex gap-3 pt-2">
               <button onClick={() => setEditModal(false)} className="flex-1 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg flex items-center justify-center gap-1"><X size={16} />Cancelar</button>
               <button onClick={() => { actualizarPerfil({ email: formData.email, telefono: formData.telefono }); setEditModal(false) }} className="flex-1 py-2 text-sm font-medium text-white bg-gray-900 hover:bg-gray-800 rounded-lg flex items-center justify-center gap-1"><Save size={16} />Guardar</button>
+            </div>
+          </div>
+        </Modal>
+
+        <Modal isOpen={passwordModal} onClose={() => setPasswordModal(false)} title="Cambiar contraseña" size="md">
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Contraseña actual</label>
+              <input
+                type="password"
+                value={passwordForm.actual}
+                onChange={(e) => setPasswordForm({ ...passwordForm, actual: e.target.value })}
+                className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-gray-900 outline-none"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Nueva contraseña</label>
+              <input
+                type="password"
+                value={passwordForm.nueva}
+                onChange={(e) => setPasswordForm({ ...passwordForm, nueva: e.target.value })}
+                className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-gray-900 outline-none"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Confirmar nueva contraseña</label>
+              <input
+                type="password"
+                value={passwordForm.confirmar}
+                onChange={(e) => setPasswordForm({ ...passwordForm, confirmar: e.target.value })}
+                className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-gray-900 outline-none"
+              />
+            </div>
+            {passwordError && (
+              <p className="text-sm text-red-600">{passwordError}</p>
+            )}
+            <div className="flex gap-3 pt-2">
+              <button onClick={() => setPasswordModal(false)} className="flex-1 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg flex items-center justify-center gap-1"><X size={16} />Cancelar</button>
+              <button onClick={handleCambiarContrasena} className="flex-1 py-2 text-sm font-medium text-white bg-gray-900 hover:bg-gray-800 rounded-lg flex items-center justify-center gap-1"><KeyRound size={16} />Guardar</button>
             </div>
           </div>
         </Modal>

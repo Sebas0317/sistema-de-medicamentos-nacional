@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react'
-import { Plus, Minus, Search, ArrowUpDown, ChevronDown, Package, ArrowDown, ArrowUp } from 'lucide-react'
+import { Plus, Minus, Search, ArrowUpDown, ChevronDown, Package, ArrowDown, ArrowUp, TrendingUp, TrendingDown } from 'lucide-react'
 import { useLocation } from 'react-router-dom'
 import useStore from '../../store/useStore'
 import Navbar from '../../components/shared/Navbar'
@@ -60,6 +60,16 @@ export default function GestionInventario() {
     if (item.stock <= item.stockMinimo) return { text: 'Crítico', variant: 'warning' }
     if (item.stock <= item.stockMinimo * 2) return { text: 'Advertencia', variant: 'info' }
     return { text: 'OK', variant: 'success' }
+  }
+
+  const getTrendIcon = (item) => {
+    const movs = movimientosInventario.filter(
+      m => m.medicamentoId === item.medicamentoId && m.farmaciaId === item.farmaciaId
+    )
+    if (movs.length === 0) return <Minus size={16} className="text-gray-300 ml-1.5" />
+    const last = movs[movs.length - 1]
+    if (last.tipo === 'entrada') return <TrendingUp size={16} className="text-green-500 ml-1.5" />
+    return <TrendingDown size={16} className="text-red-500 ml-1.5" />
   }
 
   const handleSumar = (item) => actualizarStock(item.farmaciaId, item.medicamentoId, 1, 'sumar')
@@ -134,7 +144,12 @@ export default function GestionInventario() {
                         <p className="text-xs text-gray-400">{item.codigoATC}</p>
                       </td>
                       <td className="px-4 py-3"><Badge text={item.categoria} variant="neutral" /></td>
-                      <td className="px-4 py-3"><span className={`font-bold text-lg ${item.stock === 0 ? 'text-red-600' : item.stock <= item.stockMinimo ? 'text-amber-600' : 'text-green-600'}`}>{item.stock}</span></td>
+                      <td className="px-4 py-3">
+  <span className={`font-bold text-lg ${item.stock === 0 ? 'text-red-600' : item.stock <= item.stockMinimo ? 'text-amber-600' : 'text-green-600'}`}>
+    {item.stock}
+    {getTrendIcon(item)}
+  </span>
+</td>
                       <td className="px-4 py-3 text-gray-600">{item.stockMinimo}</td>
                       <td className="px-4 py-3"><Badge text={badge.text} variant={badge.variant} /></td>
                       <td className="px-4 py-3 text-xs text-gray-400">{formatRelativeTime(item.ultimaActualizacion)}</td>

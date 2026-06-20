@@ -1,9 +1,33 @@
 import { useState, useEffect, useRef } from 'react'
 import { useLocation } from 'react-router-dom'
 import { MapPin, Phone, Clock, Navigation, Building2, Pill, Hospital } from 'lucide-react'
+import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet'
+import L from 'leaflet'
+import 'leaflet/dist/leaflet.css'
 import useStore from '../../store/useStore'
 import Navbar from '../../components/shared/Navbar'
 import Breadcrumb from '../../components/shared/Breadcrumb'
+
+delete L.Icon.Default.prototype._getIconUrl
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon-2x.png',
+  iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon.png',
+  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png',
+})
+
+const coloredIcon = (color) => L.icon({
+  iconUrl: `https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-${color}.png`,
+  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png',
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowSize: [41, 41],
+})
+
+const blueIcon = coloredIcon('blue')
+const redIcon = coloredIcon('red')
+const orangeIcon = coloredIcon('orange')
+const goldIcon = coloredIcon('gold')
 
 function calcularDistancia(lat1, lon1, lat2, lon2) {
   const R = 6371
@@ -17,8 +41,43 @@ function calcularDistancia(lat1, lon1, lat2, lon2) {
 const tabs = [
   { id: 'todas', label: 'Todas', icon: MapPin },
   { id: 'farmacias', label: 'Farmacias', icon: Pill },
-  { id: 'centros', label: 'Centros de Salud', icon: Hospital }
+  { id: 'centros', label: 'Centros de Salud', icon: Hospital },
 ]
+
+function MapContent({ lugares, ubicacionUsuario, lugarDestino }) {
+  const map = useMap()
+
+  useEffect(() => {
+    if (lugares.length === 0) {
+      map.setView([ubicacionUsuario.lat, ubicacionUsuario.lng], 13)
+      return
+    }
+    const bounds = L.latLngBounds(lugares.map((l) => [l.lat, l.lng]))
+    bounds.extend([ubicacionUsuario.lat, ubicacionUsuario.lng])
+    map.fitBounds(bounds, { padding: [50, 50], maxZoom: 15 })
+  }, [lugares, ubicacionUsuario.lat, ubicacionUsuario.lng, map])
+
+  return (
+    <>
+      <Marker position={[ubicacionUsuario.lat, ubicacionUsuario.lng]} icon={blueIcon}>
+        <Popup>Tu ubicación</Popup>
+      </Marker>
+      {lugares.map((l) => (
+        <Marker
+          key={l.id}
+          position={[l.lat, l.lng]}
+          icon={l.id === lugarDestino ? goldIcon : l.tipo === 'Farmacia' ? orangeIcon : redIcon}
+        >
+          <Popup>
+            <strong>{l.nombre}</strong>
+            <br />
+            {l.distancia.toFixed(1)} km
+          </Popup>
+        </Marker>
+      ))}
+    </>
+  )
+}
 
 export default function FarmaciasCercanas() {
   const location = useLocation()
@@ -54,14 +113,6 @@ export default function FarmaciasCercanas() {
 
   const lugares = activeTab === 'todas' ? todos : activeTab === 'farmacias' ? farmaciasConDistancia : centrosConDistancia
 
-  const minLat = Math.min(...todos.map((l) => l.lat), ubicacionUsuario.lat) - 0.01
-  const maxLat = Math.max(...todos.map((l) => l.lat), ubicacionUsuario.lat) + 0.01
-  const minLng = Math.min(...todos.map((l) => l.lng), ubicacionUsuario.lng) - 0.01
-  const maxLng = Math.max(...todos.map((l) => l.lng), ubicacionUsuario.lng) + 0.01
-
-  const toX = (lng) => ((lng - minLng) / (maxLng - minLng)) * 100
-  const toY = (lat) => ((maxLat - lat) / (maxLat - minLat)) * 100
-
   return (
     <div className="min-h-screen bg-gray-50">
       <Navbar rol="paciente" />
@@ -85,31 +136,21 @@ export default function FarmaciasCercanas() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-6">
             <h2 className="text-lg font-semibold text-gray-900 mb-4">Vista en mapa</h2>
-            <div className="relative w-full h-80 bg-gray-100 rounded-lg overflow-hidden">
-              <div className="absolute inset-0" style={{
-                backgroundImage: 'radial-gradient(circle, #d1d5db 1px, transparent 1px)',
-                backgroundSize: '20px 20px'
-              }} />
-              {todos.filter((l) => activeTab === 'todas' || activeTab === (l.tipo === 'Farmacia' ? 'farmacias' : 'centros')).map((l) => (
-                <div key={l.id}
-                  className="absolute flex flex-col items-center"
-                  style={{ left: `${toX(l.lng)}%`, top: `${toY(l.lat)}%`, transform: 'translate(-50%, -100%)' }}
-                >
-                  {l.id === lugarDestino && <div className="absolute -inset-2 rounded-full border-2 border-blue-400 animate-ping opacity-50" />}
-                  <div className={`text-xs font-bold px-2 py-1 rounded shadow whitespace-nowrap ${l.id === lugarDestino ? 'bg-blue-600 text-white' : l.tipo === 'Farmacia' ? 'bg-amber-500 text-white' : 'bg-red-500 text-white'}`}>
-                    {l.nombre}
-                  </div>
-                  <MapPin size={24} className={l.id === lugarDestino ? 'text-blue-500' : l.tipo === 'Farmacia' ? 'text-amber-500' : 'text-red-500'} />
-                </div>
-              ))}
-              <div className="absolute flex flex-col items-center"
-                style={{ left: `${toX(ubicacionUsuario.lng)}%`, top: `${toY(ubicacionUsuario.lat)}%`, transform: 'translate(-50%, -100%)' }}
-              >
-                <div className="bg-blue-500 text-white text-xs font-bold px-2 py-1 rounded shadow whitespace-nowrap">Tu ubicación</div>
-                <MapPin size={24} className="text-blue-500 -mt-1" />
-              </div>
-              <div className="absolute bottom-2 left-2 text-xs text-gray-400 bg-white/80 px-2 py-1 rounded">Vista aproximada</div>
-            </div>
+            <MapContainer
+              center={[4.6386, -74.0868]}
+              zoom={13}
+              className="w-full h-80 rounded-lg z-0"
+            >
+              <TileLayer
+                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+              />
+              <MapContent
+                lugares={lugares}
+                ubicacionUsuario={ubicacionUsuario}
+                lugarDestino={lugarDestino}
+              />
+            </MapContainer>
           </div>
 
           <div className="space-y-4">

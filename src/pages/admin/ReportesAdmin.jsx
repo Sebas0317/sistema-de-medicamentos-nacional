@@ -1,4 +1,6 @@
 import { useState } from 'react'
+import { jsPDF } from 'jspdf'
+import 'jspdf-autotable'
 import { FileText, Download, BarChart3, PieChart, FileSpreadsheet, ArrowRight, Printer } from 'lucide-react'
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, Legend, PieChart as RPieChart, Pie, Cell } from 'recharts'
 import useStore from '../../store/useStore'
@@ -27,10 +29,60 @@ export default function ReportesAdmin() {
   const [exportando, setExportando] = useState(null)
 
   const exportar = (formato) => {
+    if (formato !== 'pdf') {
+      setExportando(formato)
+      setTimeout(() => {
+        setExportando(null)
+      }, 1500)
+      return
+    }
+
+    const doc = new jsPDF()
+    const date = new Date().toISOString().split('T')[0]
+    const title = `SNSDM - Reporte de ${tipoActual.label}`
+
+    doc.setFontSize(16)
+    doc.text(title, 14, 20)
+    doc.setFontSize(10)
+    doc.text(`Fecha: ${new Date().toLocaleDateString('es-CO')}`, 14, 28)
+
+    let headers, rows
+
+    switch (tipoReporte) {
+      case 'reservas':
+        headers = [['Estado', 'Cantidad']]
+        rows = reservasPorEstado.map((r) => [r.name, r.value])
+        break
+      case 'autorizaciones':
+        headers = [['Estado', 'Cantidad']]
+        rows = autorizacionesPorEstado.map((a) => [a.name, a.value])
+        break
+      case 'inventario':
+        headers = [['Medicamento', 'Stock', 'Mínimo']]
+        rows = inventarioCritico.map((i) => [i.name, i.stock, i.minimo])
+        break
+      case 'suministros':
+        headers = [['Semana', 'Valor']]
+        rows = suministrosPorMes.map((s) => [s.name, s.valor])
+        break
+      case 'actividad':
+        headers = [['Acción', 'Cantidad']]
+        rows = actividadPorAccion.map((a) => [a.name, a.value])
+        break
+      default:
+        headers = []
+        rows = []
+    }
+
+    doc.autoTable({
+      startY: 34,
+      head: headers,
+      body: rows,
+    })
+
+    doc.save(`reporte-${tipoReporte}-${date}.pdf`)
     setExportando(formato)
-    setTimeout(() => {
-      setExportando(null)
-    }, 1500)
+    setTimeout(() => setExportando(null), 1500)
   }
 
   const tipoActual = TIPOS_REPORTE.find((t) => t.id === tipoReporte)

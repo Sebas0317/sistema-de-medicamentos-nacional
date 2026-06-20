@@ -25,8 +25,10 @@ const useStore = create(persist((set, get) => ({
   centrosSalud: [...mockCentrosSalud],
   usuarios: [...mockUsuarios],
   notificaciones: [],
-   auditoria: [],
+    auditoria: [],
   movimientosInventario: [],
+  darkMode: false,
+  mensajesChat: [],
 
   // === ACCIÓN DE AUDITORÍA ===
   registrarEvento: (accion, detalle, usuarioId) => {
@@ -682,12 +684,53 @@ const useStore = create(persist((set, get) => ({
           medicamentoNombre: med ? med.nombre : ''
         }
       })
+  },
+
+  toggleDarkMode: () => {
+    set(state => ({ darkMode: !state.darkMode }))
+  },
+
+  cambiarContrasena: (usuarioId, contrasenaActual, nuevaContrasena) => {
+    const state = get()
+    const usuario = state.usuarios.find(u => u.id === usuarioId)
+    if (!usuario) return { success: false, error: 'Usuario no encontrado' }
+    if (usuario.password !== contrasenaActual) return { success: false, error: 'Contraseña actual incorrecta' }
+    const usuarios = state.usuarios.map(u =>
+      u.id === usuarioId ? { ...u, password: nuevaContrasena } : u
+    )
+    set({ usuarios })
+    return { success: true }
+  },
+
+  enviarMensajeChat: (mensaje) => {
+    const state = get()
+    const msg = {
+      id: 'msg' + Date.now(),
+      ...mensaje,
+      fecha: new Date().toISOString()
+    }
+    set({ mensajesChat: [...state.mensajesChat, msg] })
+  },
+
+  marcarNotificacionLeida: (notifId) => {
+    const state = get()
+    const notificaciones = state.notificaciones.map(n =>
+      n.id === notifId ? { ...n, leida: true } : n
+    )
+    set({ notificaciones })
+  },
+
+  marcarTodasNotificacionesLeidas: () => {
+    const state = get()
+    const notificaciones = state.notificaciones.map(n => ({ ...n, leida: true }))
+    set({ notificaciones })
   }
 }), {
   name: 'snsdm-storage',
   partialize: (state) => ({
     usuarioActual: state.usuarioActual,
     auditoria: state.auditoria,
+    darkMode: state.darkMode,
   })
 }))
 

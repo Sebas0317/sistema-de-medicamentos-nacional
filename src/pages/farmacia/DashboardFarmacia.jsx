@@ -8,6 +8,7 @@ import StatCard from '../../components/shared/StatCard'
 import Badge from '../../components/shared/Badge'
 import Modal from '../../components/shared/Modal'
 import useRelativeTime from '../../hooks/useRelativeTime'
+import ChatPanel from '../../components/chat/ChatPanel'
 
 export default function DashboardFarmacia() {
   const navigate = useNavigate()
@@ -207,6 +208,7 @@ export default function DashboardFarmacia() {
           Dev
         </button>
       </div>
+      <ChatPanel />
     </div>
   )
 }
