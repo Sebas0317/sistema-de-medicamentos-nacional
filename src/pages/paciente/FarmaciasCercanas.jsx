@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { useLocation } from 'react-router-dom'
-import { MapPin, Phone, Clock, Navigation, Building2, Pill, Hospital } from 'lucide-react'
+import { MapPin, Phone, Clock, Navigation, Building2, Pill, Hospital, Heart } from 'lucide-react'
+import Modal from '../../components/shared/Modal'
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
@@ -42,6 +43,7 @@ const tabs = [
   { id: 'todas', label: 'Todas', icon: MapPin },
   { id: 'farmacias', label: 'Farmacias', icon: Pill },
   { id: 'centros', label: 'Centros de Salud', icon: Hospital },
+  { id: 'favoritos', label: 'Favoritos', icon: Heart },
 ]
 
 function MapContent({ lugares, ubicacionUsuario, lugarDestino }) {
@@ -83,9 +85,12 @@ export default function FarmaciasCercanas() {
   const location = useLocation()
   const farmacias = useStore((s) => s.farmacias)
   const centrosSalud = useStore((s) => s.centrosSalud)
+  const favoritos = useStore((s) => s.favoritos)
+  const toggleFavorito = useStore((s) => s.toggleFavorito)
   const lugarDestino = location.state?.lugarId || null
   const tabInicial = location.state?.tab || (lugarDestino ? (farmacias.some(f => f.id === lugarDestino) ? 'farmacias' : 'todas') : 'todas')
   const [activeTab, setActiveTab] = useState(tabInicial)
+  const [detalleModal, setDetalleModal] = useState(null)
   const lugarRefs = useRef({})
 
   const ubicacionUsuario = { lat: 4.6386, lng: -74.0868 }
@@ -111,7 +116,7 @@ export default function FarmaciasCercanas() {
 
   const todos = [...farmaciasConDistancia, ...centrosConDistancia].sort((a, b) => a.distancia - b.distancia)
 
-  const lugares = activeTab === 'todas' ? todos : activeTab === 'farmacias' ? farmaciasConDistancia : centrosConDistancia
+  const lugares = activeTab === 'todas' ? todos : activeTab === 'farmacias' ? farmaciasConDistancia : activeTab === 'favoritos' ? todos.filter((l) => favoritos.includes(l.id)) : centrosConDistancia
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -155,7 +160,7 @@ export default function FarmaciasCercanas() {
 
           <div className="space-y-4">
             <h2 className="text-lg font-semibold text-gray-900">
-              {activeTab === 'todas' ? 'Todos los lugares' : activeTab === 'farmacias' ? 'Farmacias' : 'Centros de Salud'}
+              {activeTab === 'todas' ? 'Todos los lugares' : activeTab === 'farmacias' ? 'Farmacias' : activeTab === 'favoritos' ? 'Favoritos' : 'Centros de Salud'}
               <span className="text-sm font-normal text-gray-500 ml-2">({lugares.length})</span>
             </h2>
             <div className="space-y-3 max-h-[500px] overflow-y-auto pr-1">
@@ -167,13 +172,17 @@ export default function FarmaciasCercanas() {
                         {l.tipo === 'Farmacia' ? <Pill size={16} className="text-amber-600" /> : <Building2 size={16} className="text-red-600" />}
                       </div>
                       <div>
-                        <h3 className="font-semibold text-gray-900">{l.nombre}</h3>
+                        <button onClick={() => setDetalleModal(l)} className="font-semibold text-gray-900 hover:text-blue-600 text-left">{l.nombre}</button>
                         {l.tipo !== 'Farmacia' && <span className="text-xs text-gray-400">{l.tipo}</span>}
                       </div>
                     </div>
                     <div className="flex items-center gap-1 text-xs font-medium bg-blue-50 text-blue-700 px-2 py-0.5 rounded-full whitespace-nowrap">
                       <MapPin size={10} />{l.distancia.toFixed(1)} km
                     </div>
+                    <button onClick={(e) => { e.stopPropagation(); toggleFavorito(l.id) }}
+                      className="ml-2 p-0.5 rounded-full hover:bg-gray-100 transition-colors">
+                      {favoritos.includes(l.id) ? <Heart size={18} className="text-red-500 fill-red-500" /> : <Heart size={18} className="text-gray-300 hover:text-red-400" />}
+                    </button>
                   </div>
                   <div className="space-y-1 text-sm text-gray-600">
                     <div className="flex items-center gap-2"><MapPin size={14} className="text-gray-400 shrink-0" />{l.direccion}</div>
@@ -194,6 +203,54 @@ export default function FarmaciasCercanas() {
             </div>
           </div>
         </div>
+      <Modal isOpen={!!detalleModal} onClose={() => setDetalleModal(null)} title={detalleModal?.nombre || ''} size="md">
+        {detalleModal && (
+          <div className="space-y-4 text-sm">
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <span className="text-gray-500 text-xs">Tipo</span>
+                <p className="font-medium text-gray-900">{detalleModal.tipo || 'Farmacia'}</p>
+              </div>
+              <div>
+                <span className="text-gray-500 text-xs">Distancia</span>
+                <p className="font-medium text-gray-900">{detalleModal.distancia?.toFixed(1)} km</p>
+              </div>
+              <div className="col-span-2">
+                <span className="text-gray-500 text-xs">Dirección</span>
+                <p className="font-medium text-gray-900">{detalleModal.direccion}</p>
+              </div>
+              <div>
+                <span className="text-gray-500 text-xs">Teléfono</span>
+                <p className="font-medium text-gray-900">{detalleModal.telefono}</p>
+              </div>
+              <div>
+                <span className="text-gray-500 text-xs">Horario</span>
+                <p className="font-medium text-gray-900">{detalleModal.horario}</p>
+              </div>
+            </div>
+            {detalleModal.servicios && detalleModal.servicios.length > 0 && (
+              <div>
+                <span className="text-gray-500 text-xs">Servicios</span>
+                <div className="flex flex-wrap gap-1 mt-1">
+                  {detalleModal.servicios.map((s, i) => (
+                    <span key={i} className="px-2 py-0.5 bg-blue-50 text-blue-700 text-xs rounded-full">{s}</span>
+                  ))}
+                </div>
+              </div>
+            )}
+            <div className="flex gap-2 pt-2">
+              <a href={`https://www.google.com/maps/dir/4.6386,-74.0868/${detalleModal.lat},${detalleModal.lng}`} target="_blank" rel="noopener noreferrer"
+                className="flex-1 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg text-center">
+                Cómo llegar
+              </a>
+              <button onClick={() => setDetalleModal(null)}
+                className="flex-1 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg">
+                Cerrar
+              </button>
+            </div>
+          </div>
+        )}
+      </Modal>
       </div>
     </div>
   )

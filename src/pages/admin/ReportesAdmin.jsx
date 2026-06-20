@@ -41,10 +41,14 @@ export default function ReportesAdmin() {
     const date = new Date().toISOString().split('T')[0]
     const title = `SNSDM - Reporte de ${tipoActual.label}`
 
-    doc.setFontSize(16)
-    doc.text(title, 14, 20)
+    doc.setFontSize(14)
+    doc.text('SNSDM - Sistema Nacional de Seguimiento y Disponibilidad de Medicamentos', 14, 16)
+    doc.setFontSize(9)
+    doc.text('Universidad del Tolima · Ingeniería de Software · Prof. Edna Lucero Triana Salgado', 14, 22)
+    doc.text('CIPA: Juan Sebastian Sandoval · Andres Cipamocha · Cebastian Molina · Diego Lavacude', 14, 28)
     doc.setFontSize(10)
-    doc.text(`Fecha: ${new Date().toLocaleDateString('es-CO')}`, 14, 28)
+    doc.text(title, 14, 36)
+    doc.text(`Fecha: ${new Date().toLocaleDateString('es-CO')}`, 14, 42)
 
     let headers, rows
 
@@ -75,7 +79,7 @@ export default function ReportesAdmin() {
     }
 
     doc.autoTable({
-      startY: 34,
+      startY: 48,
       head: headers,
       body: rows,
     })

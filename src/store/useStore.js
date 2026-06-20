@@ -29,6 +29,7 @@ const useStore = create(persist((set, get) => ({
   movimientosInventario: [],
   darkMode: false,
   mensajesChat: [],
+  favoritos: [],
 
   // === ACCIÓN DE AUDITORÍA ===
   registrarEvento: (accion, detalle, usuarioId) => {
@@ -89,6 +90,16 @@ const useStore = create(persist((set, get) => ({
 
     get().agregarNotificacion('Perfil actualizado exitosamente', 'success')
     get().registrarEvento('ACTUALIZAR_PERFIL', `Usuario ${usuario.nombre} actualizó su perfil`, usuario.id)
+  },
+
+  toggleFavorito: (farmaciaId) => {
+    const state = get()
+    const favs = state.favoritos
+    if (favs.includes(farmaciaId)) {
+      set({ favoritos: favs.filter(f => f !== farmaciaId) })
+    } else {
+      set({ favoritos: [...favs, farmaciaId] })
+    }
   },
 
   // === ACCIONES DE NOTIFICACIONES ===
@@ -757,6 +768,7 @@ const useStore = create(persist((set, get) => ({
     darkMode: state.darkMode,
     notificaciones: state.notificaciones,
     mensajesChat: state.mensajesChat,
+    favoritos: state.favoritos,
   })
 }))
 

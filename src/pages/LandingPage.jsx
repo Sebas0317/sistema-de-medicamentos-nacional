@@ -80,6 +80,10 @@ export default function LandingPage() {
         <p className="text-sm text-gray-400 mt-1">
           Plataforma digital para la gestión de medicamentos en Colombia
         </p>
+        <div className="mt-4 text-xs text-gray-500 space-y-1">
+          <p className="font-medium text-gray-700">CIPA: Juan Sebastian Sandoval · Andres Cipamocha · Cebastian Molina · Diego Lavacude</p>
+          <p>Universidad del Tolima · Ingeniería de Software · Prof. Edna Lucero Triana Salgado · 2026</p>
+        </div>
       </header>
 
       {/* Si ya hay usuario logueado */}

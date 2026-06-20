@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Search, Filter, Activity, RotateCcw } from 'lucide-react'
+import { Search, Filter, Activity, RotateCcw, Download } from 'lucide-react'
 import useStore from '../../store/useStore'
 import Navbar from '../../components/shared/Navbar'
 import Breadcrumb from '../../components/shared/Breadcrumb'
@@ -20,6 +20,26 @@ export default function AuditoriaAdmin() {
 
   const limpiarFiltros = () => { setFiltroAccion(''); setFiltroRol(''); setBusqueda('') }
   const hayFiltros = filtroAccion || filtroRol || busqueda
+
+  const exportarCSV = () => {
+    const headers = ['ID', 'Acción', 'Detalle', 'Usuario', 'Rol', 'Fecha']
+    const rows = eventosFiltrados.map(e => [
+      e.id,
+      e.accion,
+      `"${(e.detalle || '').replace(/"/g, '""')}"`,
+      e.usuarioNombre,
+      e.usuarioRol,
+      e.fecha
+    ])
+    const csv = [headers.join(','), ...rows.map(r => r.join(','))].join('\n')
+    const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `auditoria-${new Date().toISOString().split('T')[0]}.csv`
+    a.click()
+    URL.revokeObjectURL(url)
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -55,11 +75,20 @@ export default function AuditoriaAdmin() {
               </select>
             </div>
           </div>
-          {hayFiltros && (
-            <button onClick={limpiarFiltros} className="mt-2 flex items-center gap-1 text-sm text-gray-500 hover:text-gray-900">
-              <RotateCcw size={14} /> Limpiar filtros
+          <div className="flex items-center gap-2 mt-2">
+            {hayFiltros && (
+              <button onClick={limpiarFiltros} className="flex items-center gap-1 text-sm text-gray-500 hover:text-gray-900">
+                <RotateCcw size={14} /> Limpiar filtros
+              </button>
+            )}
+            <button
+              onClick={exportarCSV}
+              className="flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50"
+            >
+              <Download size={14} />
+              Exportar CSV
             </button>
-          )}
+          </div>
         </div>
 
         <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">

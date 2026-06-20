@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react'
-import { Search, Pill, AlertTriangle, MapPin, Clock, Package } from 'lucide-react'
+import { Search, Pill, AlertTriangle, MapPin, Clock, Package, Share2 } from 'lucide-react'
 import useStore from '../../store/useStore'
 import Navbar from '../../components/shared/Navbar'
 import Breadcrumb from '../../components/shared/Breadcrumb'
@@ -38,6 +38,7 @@ export default function BuscarMedicamento() {
   const [direccion, setDireccion] = useState('')
   const [loading, setLoading] = useState(false)
   const [reservaError, setReservaError] = useState('')
+  const [shareModal, setShareModal] = useState(null)
 
   const filtrados = useMemo(() => {
     let result = [...medicamentos]
@@ -149,9 +150,16 @@ export default function BuscarMedicamento() {
                       <h3 className="font-semibold text-gray-900">{med.nombre}</h3>
                       <p className="text-xs text-gray-400 mt-0.5">ATC: {med.codigoATC}</p>
                     </div>
-                    <div className="flex gap-1">
+                    <div className="flex gap-1 items-center">
                       <Badge text={med.categoria} variant="neutral" />
                       {med.requiereAutorizacion && <Badge text="Requiere auth. EPS" variant="warning" />}
+                      <button
+                        onClick={(e) => { e.stopPropagation(); setShareModal(med.nombre) }}
+                        className="p-1.5 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg"
+                        title="Compartir"
+                      >
+                        <Share2 size={14} />
+                      </button>
                     </div>
                   </div>
                   <p className="text-xs text-gray-500 mt-2">{med.presentacion} · {med.laboratorio}</p>
@@ -282,6 +290,25 @@ export default function BuscarMedicamento() {
             </button>
           </div>
         </div>
+      </Modal>
+
+      {/* Modal de compartir */}
+      <Modal isOpen={!!shareModal} onClose={() => setShareModal(null)} title="Compartir medicamento" size="sm">
+        {shareModal && (
+          <div className="space-y-4 text-sm">
+            <p className="text-gray-600">Comparte la información de <strong>{shareModal}</strong></p>
+            <div className="p-3 bg-gray-50 rounded-lg">
+              <p className="text-gray-500 text-xs mb-1">Enlace simulado:</p>
+              <p className="font-mono text-xs text-blue-600 break-all">snsdm.gov.co/med/{shareModal.toLowerCase().replace(/\s+/g, '-')}</p>
+            </div>
+            <button
+              onClick={() => { navigator.clipboard.writeText(`snsdm.gov.co/med/${shareModal.toLowerCase().replace(/\s+/g, '-')}`); setShareModal(null) }}
+              className="w-full py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg"
+            >
+              Copiar enlace
+            </button>
+          </div>
+        )}
       </Modal>
     </div>
   )
