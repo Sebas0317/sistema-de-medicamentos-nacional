@@ -12,7 +12,11 @@ const tabs = ['Pendientes', 'Listas para entregar', 'Completadas']
 
 export default function ConfirmarEntregas() {
   const usuarioActual = useStore((s) => s.usuarioActual)
-  const getEntregasPorFarmacia = useStore((s) => s.getEntregasPorFarmacia)
+  const entregasState = useStore((s) => s.entregas)
+  const usuarios = useStore((s) => s.usuarios)
+  const medicamentos = useStore((s) => s.medicamentos)
+  const farmacias = useStore((s) => s.farmacias)
+  const reservas = useStore((s) => s.reservas)
   const marcarEntregaLista = useStore((s) => s.marcarEntregaLista)
   const confirmarEntrega = useStore((s) => s.confirmarEntrega)
 
@@ -25,7 +29,21 @@ export default function ConfirmarEntregas() {
   const [reciboModal, setReciboModal] = useState(null)
 
   const farmaciaId = usuarioActual?.entidadId || ''
-  let entregas = getEntregasPorFarmacia(farmaciaId)
+  let entregas = entregasState
+    .filter(e => e.farmaciaId === farmaciaId)
+    .map(e => {
+      const paciente = usuarios.find(u => u.id === e.pacienteId)
+      const medicamento = medicamentos.find(m => m.id === e.medicamentoId)
+      const reserva = e.reservaId ? reservas.find(r => r.id === e.reservaId) : null
+      return {
+        ...e,
+        pacienteNombre: paciente ? paciente.nombre : '',
+        pacienteDocumento: paciente ? paciente.documento : '',
+        medicamentoNombre: medicamento ? medicamento.nombre : '',
+        medicamento: medicamento || null,
+        reserva: reserva || null
+      }
+    })
 
   if (activeTab === 'Pendientes') entregas = entregas.filter((e) => e.estado === 'pendiente')
   else if (activeTab === 'Listas para entregar') entregas = entregas.filter((e) => e.estado === 'lista')

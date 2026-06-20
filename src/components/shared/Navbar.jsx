@@ -17,7 +17,7 @@ const roleLinks = {
      { label: 'Buscar', path: '/paciente/buscar' },
      { label: 'Reservas', path: '/paciente/reservas' },
      { label: 'Citas', path: '/paciente/citas' },
-     { label: 'Farmacias', path: '/paciente/farmacias' }
+     { label: 'Farmacias y Hospitales', path: '/paciente/farmacias' }
    ],
   eps: [
     { label: 'Inicio', path: '/eps/dashboard' },

@@ -32,7 +32,7 @@ export default function AlertasStock() {
     let data = inventario.map((i) => {
       const med = medicamentos.find((m) => m.id === i.medicamentoId)
       const farm = farmacias.find((f) => f.id === i.farmaciaId)
-      return { ...i, medicamentoNombre: med?.nombre || '', codigoATC: med?.codigoATC || '', farmaciaNombre: farm?.nombre || '', medicamento: med, farmacia }
+      return { ...i, medicamentoNombre: med?.nombre || '', codigoATC: med?.codigoATC || '', farmaciaNombre: farm?.nombre || '', medicamento: med, farmacia: farm }
     })
 
     if (busqueda) {

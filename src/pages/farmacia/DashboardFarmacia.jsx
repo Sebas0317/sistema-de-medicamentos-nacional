@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
-import { Package, AlertTriangle, Clock, CheckSquare, ArrowRight } from 'lucide-react'
+import { Package, AlertTriangle, Clock, CheckSquare, ArrowRight, GitBranch } from 'lucide-react'
 import useStore from '../../store/useStore'
 import Navbar from '../../components/shared/Navbar'
 import Breadcrumb from '../../components/shared/Breadcrumb'
@@ -16,7 +16,11 @@ export default function DashboardFarmacia() {
   const getEntregasPorFarmacia = useStore((s) => s.getEntregasPorFarmacia)
   const actualizarStock = useStore((s) => s.actualizarStock)
   const medicamentos = useStore((s) => s.medicamentos)
+  const usuarios = useStore((s) => s.usuarios)
+  const devSetUser = useStore((s) => s.devSetUser)
   const { formatRelativeTime } = useRelativeTime()
+
+  const [devOpen, setDevOpen] = useState(false)
 
   const farmaciaId = usuarioActual?.entidadId || ''
   const farmacia = useStore((s) => s.farmacias).find((f) => f.id === farmaciaId)
@@ -83,7 +87,7 @@ export default function DashboardFarmacia() {
               <div className="p-2 bg-green-100 rounded-lg"><CheckSquare size={20} className="text-green-600" /></div>
               <span className="font-medium text-gray-700">Confirmar entregas</span>
             </button>
-            <button onClick={() => navigate('/farmacia/dashboard')} className="flex items-center gap-3 p-4 bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-md hover:border-amber-200 transition-all">
+            <button onClick={() => navigate('/farmacia/inventario', { state: { filtro: 'Críticos' } })} className="flex items-center gap-3 p-4 bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-md hover:border-amber-200 transition-all">
               <div className="p-2 bg-blue-100 rounded-lg"><AlertTriangle size={20} className="text-blue-600" /></div>
               <span className="font-medium text-gray-700">Ver alertas</span>
             </button>
@@ -167,6 +171,42 @@ export default function DashboardFarmacia() {
           </div>
         )}
       </Modal>
+
+      {/* Dev: cambio rápido de usuario */}
+      <div className="fixed bottom-4 right-4 z-50">
+        {devOpen && (
+          <div className="mb-2 bg-white rounded-xl border border-gray-200 shadow-xl p-3 w-64 max-h-72 overflow-y-auto">
+            <p className="text-xs font-medium text-gray-500 mb-2 uppercase tracking-wider">Cambio rápido de usuario</p>
+            {usuarios.map(u => (
+              <button
+                key={u.id}
+                onClick={() => { devSetUser(u.id); setDevOpen(false) }}
+                className={`w-full text-left px-3 py-2 text-sm rounded-lg transition-colors ${
+                  u.id === usuarioActual?.id
+                    ? 'bg-gray-100 font-medium text-gray-900'
+                    : 'text-gray-600 hover:bg-gray-50'
+                }`}
+              >
+                <span className="font-medium">{u.nombre.split(' ')[0]}</span>
+                <span className={`ml-2 text-xs px-1.5 py-0.5 rounded ${
+                  u.rol === 'paciente' ? 'bg-blue-100 text-blue-600' :
+                  u.rol === 'eps' ? 'bg-green-100 text-green-600' :
+                  u.rol === 'farmacia' ? 'bg-amber-100 text-amber-600' :
+                  u.rol === 'proveedor' ? 'bg-red-100 text-red-600' :
+                  'bg-purple-100 text-purple-600'
+                }`}>{u.rol}</span>
+              </button>
+            ))}
+          </div>
+        )}
+        <button
+          onClick={() => setDevOpen(!devOpen)}
+          className="ml-auto flex items-center gap-2 px-3 py-2 bg-gray-900 text-white text-sm font-medium rounded-xl shadow-lg hover:bg-gray-800 transition-colors"
+        >
+          <GitBranch size={16} />
+          Dev
+        </button>
+      </div>
     </div>
   )
 }

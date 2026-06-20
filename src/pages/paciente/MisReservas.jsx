@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { XCircle, Eye } from 'lucide-react'
+import { XCircle, Eye, AlertTriangle, X } from 'lucide-react'
 import useStore from '../../store/useStore'
 import Navbar from '../../components/shared/Navbar'
 import Breadcrumb from '../../components/shared/Breadcrumb'
@@ -27,12 +27,29 @@ const tabs = ['Todas', 'Pendientes', 'Confirmadas', 'Entregadas', 'Canceladas']
 export default function MisReservas() {
   const navigate = useNavigate()
   const usuarioActual = useStore((s) => s.usuarioActual)
-  const getReservasPorPaciente = useStore((s) => s.getReservasPorPaciente)
+  const reservasState = useStore((s) => s.reservas)
+  const medicamentos = useStore((s) => s.medicamentos)
+  const farmacias = useStore((s) => s.farmacias)
+  const autorizaciones = useStore((s) => s.autorizaciones)
   const cancelarReserva = useStore((s) => s.cancelarReserva)
   const [activeTab, setActiveTab] = useState('Todas')
   const [detailReserva, setDetailReserva] = useState(null)
+  const [cancelModal, setCancelModal] = useState(null)
 
-  let reservas = getReservasPorPaciente(usuarioActual?.id || '')
+  let reservas = reservasState.filter(r => r.pacienteId === usuarioActual?.id)
+    .map(r => {
+      const med = medicamentos.find(m => m.id === r.medicamentoId)
+      const farm = farmacias.find(f => f.id === r.farmaciaId)
+      const auth = r.autorizacionId ? autorizaciones.find(a => a.id === r.autorizacionId) : null
+      return {
+        ...r,
+        medicamentoNombre: med ? med.nombre : '',
+        medicamento: med || null,
+        farmaciaNombre: farm ? farm.nombre : '',
+        farmacia: farm || null,
+        autorizacion: auth || null
+      }
+    })
 
   if (activeTab !== 'Todas') {
     const estadoKey = activeTab.toLowerCase().replace('das', 'da').replace('das', 'da').replace('das', 'da').replace('das', 'da')
@@ -42,9 +59,7 @@ export default function MisReservas() {
   }
 
   const handleCancelar = (id) => {
-    if (window.confirm('¿Estás seguro de cancelar esta reserva?')) {
-      cancelarReserva(id)
-    }
+    setCancelModal(id)
   }
 
   return (
@@ -138,6 +153,21 @@ export default function MisReservas() {
             <p className="text-xs text-gray-400 mt-2">Creada: {new Date(detailReserva.fechaCreacion).toLocaleString('es-CO')}</p>
           </div>
         )}
+      </Modal>
+
+      {/* Modal confirmar cancelación */}
+      <Modal isOpen={!!cancelModal} onClose={() => setCancelModal(null)} title="Cancelar reserva" size="sm">
+        <div className="text-center space-y-4">
+          <div className="mx-auto w-12 h-12 bg-red-100 rounded-full flex items-center justify-center">
+            <AlertTriangle size={24} className="text-red-600" />
+          </div>
+          <p className="text-gray-700 text-sm">¿Estás seguro de cancelar esta reserva?</p>
+          <p className="text-xs text-gray-400">Esta acción no se puede deshacer.</p>
+          <div className="flex gap-3">
+            <button onClick={() => setCancelModal(null)} className="flex-1 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg">Volver</button>
+            <button onClick={() => { cancelarReserva(cancelModal); setCancelModal(null) }} className="flex-1 py-2 text-sm font-medium text-white bg-red-600 hover:bg-red-700 rounded-lg flex items-center justify-center gap-1"><XCircle size={16} />Cancelar reserva</button>
+          </div>
+        </div>
       </Modal>
     </div>
   )

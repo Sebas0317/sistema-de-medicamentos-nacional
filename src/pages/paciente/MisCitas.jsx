@@ -21,9 +21,8 @@ const authBadgeVariant = {
 export default function MisCitas() {
   const navigate = useNavigate()
   const usuarioActual = useStore((s) => s.usuarioActual)
-  const getReservasPorPaciente = useStore((s) => s.getReservasPorPaciente)
-
-  const reservas = getReservasPorPaciente(usuarioActual?.id || '')
+  const reservasState = useStore((s) => s.reservas)
+  const reservas = reservasState.filter(r => r.pacienteId === usuarioActual?.id)
   const hoy = new Date().toISOString().split('T')[0]
 
   const proximas = reservas.filter(
@@ -83,7 +82,7 @@ export default function MisCitas() {
                   )}
                 </div>
                 <button
-                  onClick={() => alert('Función de navegación disponible en versión productiva')}
+                  onClick={() => navigate('/paciente/farmacias', { state: { lugarId: cita.farmaciaId, tab: 'centros' } })}
                   className="mt-3 w-full py-2 text-sm font-medium text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors"
                 >
                   Cómo llegar

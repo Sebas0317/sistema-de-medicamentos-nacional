@@ -21,11 +21,25 @@ const chartData = [
 export default function DashboardEPS() {
   const navigate = useNavigate()
   const usuarioActual = useStore((s) => s.usuarioActual)
-  const getAutorizacionesPorEPS = useStore((s) => s.getAutorizacionesPorEPS)
+  const autorizacionesState = useStore((s) => s.autorizaciones)
+  const usuarios = useStore((s) => s.usuarios)
+  const medicamentos = useStore((s) => s.medicamentos)
   const { formatRelativeTime } = useRelativeTime()
 
   const epsId = usuarioActual?.epsId || ''
-  const auths = getAutorizacionesPorEPS(epsId)
+  const auths = autorizacionesState
+    .filter(a => a.epsId === epsId)
+    .map(a => {
+      const paciente = usuarios.find(u => u.id === a.pacienteId)
+      const medicamento = medicamentos.find(m => m.id === a.medicamentoId)
+      return {
+        ...a,
+        pacienteNombre: paciente ? paciente.nombre : '',
+        pacienteDocumento: paciente ? paciente.documento : '',
+        medicamentoNombre: medicamento ? medicamento.nombre : '',
+        medicamento: medicamento || null
+      }
+    })
   const pendientes = auths.filter((a) => a.estado === 'pendiente')
   const hoy = new Date().toISOString().split('T')[0]
   const aprobadasHoy = auths.filter((a) => a.estado === 'aprobada' && a.fechaRespuesta?.startsWith(hoy))

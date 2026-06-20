@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { X, CheckCircle, XCircle, AlertTriangle, Info } from 'lucide-react'
 import useStore from '../../store/useStore'
 
@@ -23,14 +23,20 @@ function ToastItem({ notif, onClose }) {
         const next = prev - step
         if (next <= 0) {
           clearInterval(timer)
-          onClose(notif.id)
           return 0
         }
         return next
       })
     }, interval)
     return () => clearInterval(timer)
-  }, [notif.id, onClose])
+  }, [])
+
+  useEffect(() => {
+    if (progress <= 0) {
+      const t = setTimeout(() => onClose(notif.id), 0)
+      return () => clearTimeout(t)
+    }
+  }, [progress, notif.id, onClose])
 
   return (
     <div
@@ -55,23 +61,12 @@ function ToastItem({ notif, onClose }) {
 export default function ToastContainer() {
   const notificaciones = useStore((s) => s.notificaciones)
   const marcarNotificacionLeida = useStore((s) => s.marcarNotificacionLeida)
-  const [visibleIds, setVisibleIds] = useState(new Set())
 
   const noLeidas = notificaciones.filter((n) => !n.leida).slice(0, 3)
 
-  useEffect(() => {
-    const ids = new Set(noLeidas.map((n) => n.id))
-    setVisibleIds(ids)
-  }, [noLeidas.length])
-
-  const handleClose = (id) => {
+  const handleClose = useCallback((id) => {
     marcarNotificacionLeida(id)
-    setVisibleIds((prev) => {
-      const next = new Set(prev)
-      next.delete(id)
-      return next
-    })
-  }
+  }, [marcarNotificacionLeida])
 
   return (
     <div className="fixed bottom-4 right-4 z-50 flex flex-col gap-2">

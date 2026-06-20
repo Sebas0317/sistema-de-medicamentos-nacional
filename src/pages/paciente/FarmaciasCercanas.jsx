@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
+import { useLocation } from 'react-router-dom'
 import { MapPin, Phone, Clock, Navigation, Building2, Pill, Hospital } from 'lucide-react'
 import useStore from '../../store/useStore'
 import Navbar from '../../components/shared/Navbar'
@@ -20,11 +21,23 @@ const tabs = [
 ]
 
 export default function FarmaciasCercanas() {
+  const location = useLocation()
   const farmacias = useStore((s) => s.farmacias)
   const centrosSalud = useStore((s) => s.centrosSalud)
-  const [activeTab, setActiveTab] = useState('todas')
+  const lugarDestino = location.state?.lugarId || null
+  const tabInicial = location.state?.tab || (lugarDestino ? (farmacias.some(f => f.id === lugarDestino) ? 'farmacias' : 'todas') : 'todas')
+  const [activeTab, setActiveTab] = useState(tabInicial)
+  const lugarRefs = useRef({})
 
   const ubicacionUsuario = { lat: 4.6386, lng: -74.0868 }
+
+  useEffect(() => {
+    if (lugarDestino && lugarRefs.current[lugarDestino]) {
+      setTimeout(() => {
+        lugarRefs.current[lugarDestino]?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      }, 100)
+    }
+  }, [])
 
   const farmaciasConDistancia = farmacias.map((f) => ({
     ...f,
@@ -82,10 +95,11 @@ export default function FarmaciasCercanas() {
                   className="absolute flex flex-col items-center"
                   style={{ left: `${toX(l.lng)}%`, top: `${toY(l.lat)}%`, transform: 'translate(-50%, -100%)' }}
                 >
-                  <div className={`text-xs font-bold px-2 py-1 rounded shadow whitespace-nowrap ${l.tipo === 'Farmacia' ? 'bg-amber-500 text-white' : 'bg-red-500 text-white'}`}>
+                  {l.id === lugarDestino && <div className="absolute -inset-2 rounded-full border-2 border-blue-400 animate-ping opacity-50" />}
+                  <div className={`text-xs font-bold px-2 py-1 rounded shadow whitespace-nowrap ${l.id === lugarDestino ? 'bg-blue-600 text-white' : l.tipo === 'Farmacia' ? 'bg-amber-500 text-white' : 'bg-red-500 text-white'}`}>
                     {l.nombre}
                   </div>
-                  <MapPin size={24} className={l.tipo === 'Farmacia' ? 'text-amber-500' : 'text-red-500'} />
+                  <MapPin size={24} className={l.id === lugarDestino ? 'text-blue-500' : l.tipo === 'Farmacia' ? 'text-amber-500' : 'text-red-500'} />
                 </div>
               ))}
               <div className="absolute flex flex-col items-center"
@@ -105,7 +119,7 @@ export default function FarmaciasCercanas() {
             </h2>
             <div className="space-y-3 max-h-[500px] overflow-y-auto pr-1">
               {lugares.map((l) => (
-                <div key={l.id} className="bg-white rounded-xl border border-gray-100 shadow-sm p-4 hover:shadow-md transition-all">
+                <div key={l.id} ref={(el) => { lugarRefs.current[l.id] = el }} className={`bg-white rounded-xl border shadow-sm p-4 hover:shadow-md transition-all ${l.id === lugarDestino && activeTab !== 'todas' ? 'border-blue-400 ring-2 ring-blue-200' : 'border-gray-100'}`}>
                   <div className="flex items-start justify-between mb-2">
                     <div className="flex items-center gap-2">
                       <div className={`p-1.5 rounded-lg ${l.tipo === 'Farmacia' ? 'bg-amber-100' : 'bg-red-100'}`}>

@@ -53,10 +53,10 @@ export default function ReportesAdmin() {
   })
 
   const suministrosPorMes = [
-    { name: 'Semana 1', valor: suministros.filter((s) => parseInt(s.fecha.split('-')[2]) <= 7).length },
-    { name: 'Semana 2', valor: suministros.filter((s) => parseInt(s.fecha.split('-')[2]) > 7 && parseInt(s.fecha.split('-')[2]) <= 14).length },
-    { name: 'Semana 3', valor: suministros.filter((s) => parseInt(s.fecha.split('-')[2]) > 14 && parseInt(s.fecha.split('-')[2]) <= 21).length },
-    { name: 'Semana 4', valor: suministros.filter((s) => parseInt(s.fecha.split('-')[2]) > 21).length },
+    { name: 'Semana 1', valor: suministros.filter((s) => new Date(s.fechaRegistro).getDate() <= 7).length },
+    { name: 'Semana 2', valor: suministros.filter((s) => new Date(s.fechaRegistro).getDate() > 7 && new Date(s.fechaRegistro).getDate() <= 14).length },
+    { name: 'Semana 3', valor: suministros.filter((s) => new Date(s.fechaRegistro).getDate() > 14 && new Date(s.fechaRegistro).getDate() <= 21).length },
+    { name: 'Semana 4', valor: suministros.filter((s) => new Date(s.fechaRegistro).getDate() > 21).length },
   ]
 
   const actividadPorAccion = [

@@ -1,108 +1,33 @@
 const mockAutorizaciones = [
-  {
-    id: 'auth1',
-    reservaId: 'res3',
-    pacienteId: 'u1',
-    medicamentoId: 'med9',
-    epsId: 'eps1',
-    estado: 'pendiente',
-    motivoRechazo: '',
-    cobertura: '100%',
-    observaciones: 'Paciente con diagnóstico CIE-10 E11 - Diabetes tipo 2. Requiere insulina glargina para control glucémico.',
-    fechaSolicitud: '2026-06-13T08:16:00',
-    fechaRespuesta: null
-  },
-  {
-    id: 'auth2',
-    reservaId: 'res6',
-    pacienteId: 'u2',
-    medicamentoId: 'med10',
-    epsId: 'eps1',
-    estado: 'rechazada',
-    motivoRechazo: 'El medicamento no está incluido en el plan de beneficios para el diagnóstico reportado. Se requiere evaluación por neurología.',
-    cobertura: '0%',
-    observaciones: 'Paciente solicita Clonazepam para ansiedad generalizada sin prescripción especializada.',
-    fechaSolicitud: '2026-06-08T10:25:00',
-    fechaRespuesta: '2026-06-10T14:30:00'
-  },
-  {
-    id: 'auth3',
-    reservaId: 'res8',
-    pacienteId: 'u3',
-    medicamentoId: 'med12',
-    epsId: 'eps2',
-    estado: 'aprobada',
-    motivoRechazo: '',
-    cobertura: '100%',
-    observaciones: 'Paciente con artritis reumatoide severa CIE-10 M05. Tratamiento biológico aprobado por comité técnico.',
-    fechaSolicitud: '2026-06-07T13:05:00',
-    fechaRespuesta: '2026-06-09T10:00:00'
-  },
-  {
-    id: 'auth4',
-    reservaId: null,
-    pacienteId: 'u1',
-    medicamentoId: 'med11',
-    epsId: 'eps1',
-    estado: 'pendiente',
-    motivoRechazo: '',
-    cobertura: '80%',
-    observaciones: 'Paciente con diagnóstico CIE-10 L40.0 - Psoriasis vulgar. Requiere metotrexato como terapia sistémica.',
-    fechaSolicitud: '2026-06-14T11:00:00',
-    fechaRespuesta: null
-  },
-  {
-    id: 'auth5',
-    reservaId: null,
-    pacienteId: 'u2',
-    medicamentoId: 'med9',
-    epsId: 'eps1',
-    estado: 'aprobada',
-    motivoRechazo: '',
-    cobertura: '100%',
-    observaciones: 'Paciente con diabetes tipo 2 CIE-10 E11. Tratamiento aprobado por endocrinología.',
-    fechaSolicitud: '2026-06-10T09:30:00',
-    fechaRespuesta: '2026-06-12T16:00:00'
-  },
-  {
-    id: 'auth6',
-    reservaId: null,
-    pacienteId: 'u3',
-    medicamentoId: 'med10',
-    epsId: 'eps2',
-    estado: 'rechazada',
-    motivoRechazo: 'El paciente no ha completado las evaluaciones psicológicas requeridas. Se solicita nueva remisión con psiquiatría.',
-    cobertura: '0%',
-    observaciones: 'Solicitud de Clonazepam para trastorno de pánico sin evaluación psiquiátrica completa.',
-    fechaSolicitud: '2026-06-11T15:20:00',
-    fechaRespuesta: '2026-06-14T08:30:00'
-  },
-  {
-    id: 'auth7',
-    reservaId: null,
-    pacienteId: 'u1',
-    medicamentoId: 'med13',
-    epsId: 'eps1',
-    estado: 'pendiente',
-    motivoRechazo: '',
-    cobertura: '100%',
-    observaciones: 'Paciente con fibrilación auricular CIE-10 I48. Requiere anticoagulación oral con warfarina.',
-    fechaSolicitud: '2026-06-15T07:15:00',
-    fechaRespuesta: null
-  },
-  {
-    id: 'auth8',
-    reservaId: null,
-    pacienteId: 'u3',
-    medicamentoId: 'med11',
-    epsId: 'eps2',
-    estado: 'aprobada',
-    motivoRechazo: '',
-    cobertura: '80%',
-    observaciones: 'Paciente con artritis reumatoide CIE-10 M05. Aprobado por reumatología con seguimiento mensual.',
-    fechaSolicitud: '2026-06-08T14:00:00',
-    fechaRespuesta: '2026-06-11T11:30:00'
-  }
+  // === eps1 (Sanitas) ===
+  { id: 'auth1', epsId: 'eps1', pacienteId: 'u1', medicamentoId: 'med7', tipo: 'autorizacion', estado: 'pendiente', cobertura: '80%', fechaSolicitud: '2026-06-17T10:00:00', fechaRespuesta: '', diagnosticoCIE10: 'E11.9', diagnostico: 'Diabetes mellitus tipo 2 sin complicaciones', observaciones: 'Paciente requiere insulina glargina para control glucémico. Adjunta fórmula médica.', reservaId: 'res3', motivoRechazo: '' },
+  { id: 'auth2', epsId: 'eps1', pacienteId: 'u2', medicamentoId: 'med13', tipo: 'autorizacion', estado: 'rechazada', cobertura: '0%', fechaSolicitud: '2026-06-08T11:30:00', fechaRespuesta: '2026-06-10T14:00:00', diagnosticoCIE10: 'M06.9', diagnostico: 'Artritis reumatoide no especificada', observaciones: 'Medicamento biológico de alto costo requiere junta médica', reservaId: 'res6', motivoRechazo: 'Documentación incompleta: Falta historia clínica y autorización de junta médica especializada' },
+  { id: 'auth3', epsId: 'eps1', pacienteId: 'u1', medicamentoId: 'med3', tipo: 'autorizacion', estado: 'aprobada', cobertura: '100%', fechaSolicitud: '2026-06-15T08:30:00', fechaRespuesta: '2026-06-16T09:00:00', diagnosticoCIE10: 'E11.9', diagnostico: 'Diabetes mellitus tipo 2', observaciones: 'Metformina 850mg cubierta por POS. Autorización automática.', reservaId: 'res1', motivoRechazo: '' },
+  { id: 'auth4', epsId: 'eps1', pacienteId: 'u11', medicamentoId: 'med15', tipo: 'autorizacion', estado: 'pendiente', cobertura: '80%', fechaSolicitud: '2026-06-18T11:20:00', fechaRespuesta: '', diagnosticoCIE10: 'I48', diagnostico: 'Fibrilación auricular', observaciones: 'Paciente anticoagulado con warfarina. Requiere control mensual de INR.', reservaId: 'res11', motivoRechazo: '' },
+  { id: 'auth5', epsId: 'eps1', pacienteId: 'u3', medicamentoId: 'med10', tipo: 'autorizacion', estado: 'aprobada', cobertura: '80%', fechaSolicitud: '2026-06-11T09:30:00', fechaRespuesta: '2026-06-12T11:00:00', diagnosticoCIE10: 'I10', diagnostico: 'Hipertensión esencial primaria', observaciones: 'Amlodipino 5mg cubierto parcialmente. Copago 20% según tabla de aportes.', reservaId: 'res8', motivoRechazo: '' },
+
+  // === eps2 (Sura) ===
+  { id: 'auth6', epsId: 'eps2', pacienteId: 'u11', medicamentoId: 'med6', tipo: 'autorizacion', estado: 'rechazada', cobertura: '0%', fechaSolicitud: '2026-06-14T08:45:00', fechaRespuesta: '2026-06-15T15:30:00', diagnosticoCIE10: 'K21.9', diagnostico: 'Enfermedad por reflujo gastroesofágico', observaciones: 'Omeprazol 20mg de venta libre. No requiere autorización EPS.', reservaId: 'res10', motivoRechazo: 'Sin cobertura: Medicamento OTC no incluido en POS' },
+  { id: 'auth7', epsId: 'eps2', pacienteId: 'u12', medicamentoId: 'med8', tipo: 'autorizacion', estado: 'pendiente', cobertura: '80%', fechaSolicitud: '2026-06-17T13:30:00', fechaRespuesta: '', diagnosticoCIE10: 'J45.0', diagnostico: 'Asma alérgica', observaciones: 'Paciente pediátrico con crisis asmáticas recurrentes. Requiere salbutamol inhalador.', reservaId: 'res13', motivoRechazo: '' },
+  { id: 'auth8', epsId: 'eps2', pacienteId: 'u14', medicamentoId: 'med11', tipo: 'autorizacion', estado: 'aprobada', cobertura: '80%', fechaSolicitud: '2026-06-19T08:00:00', fechaRespuesta: '2026-06-19T16:00:00', diagnosticoCIE10: 'E03.9', diagnostico: 'Hipotiroidismo no especificado', observaciones: 'Levotiroxina 50mcg. Autorización automática por POS.', reservaId: 'res18', motivoRechazo: '' },
+
+  // === eps3 (Nueva EPS) ===
+  { id: 'auth9', epsId: 'eps3', pacienteId: 'u13', medicamentoId: 'med1', tipo: 'autorizacion', estado: 'pendiente', cobertura: '80%', fechaSolicitud: '2026-06-18T09:00:00', fechaRespuesta: '', diagnosticoCIE10: 'R50.9', diagnostico: 'Fiebre no especificada', observaciones: 'Analgesia y antipirético. Acetaminofén 500mg cubierto por POS.', reservaId: 'res15', motivoRechazo: '' },
+  { id: 'auth10', epsId: 'eps3', pacienteId: 'u13', medicamentoId: 'med7', tipo: 'autorizacion', estado: 'pendiente', cobertura: '100%', fechaSolicitud: '2026-06-19T10:30:00', fechaRespuesta: '', diagnosticoCIE10: 'E10.9', diagnostico: 'Diabetes mellitus tipo 1 insulinodependiente', observaciones: 'Paciente diagnosticada recientemente. Requiere insulina glargina de por vida.', reservaId: '', motivoRechazo: '' },
+
+  // === eps4 (Coomeva) ===
+  { id: 'auth11', epsId: 'eps4', pacienteId: 'u14', medicamentoId: 'med4', tipo: 'autorizacion', estado: 'aprobada', cobertura: '100%', fechaSolicitud: '2026-06-13T11:45:00', fechaRespuesta: '2026-06-14T08:30:00', diagnosticoCIE10: 'I10', diagnostico: 'Hipertensión esencial', observaciones: 'Losartán 50mg. Cubierto al 100% por POS.', reservaId: 'res17', motivoRechazo: '' },
+  { id: 'auth12', epsId: 'eps4', pacienteId: 'u16', medicamentoId: 'med9', tipo: 'autorizacion', estado: 'pendiente', cobertura: '80%', fechaSolicitud: '2026-06-16T10:30:00', fechaRespuesta: '', diagnosticoCIE10: 'E78.5', diagnostico: 'Hiperlipidemia no especificada', observaciones: 'Atorvastatina 20mg. Copago del 20% según nivel de ingresos.', reservaId: 'res21', motivoRechazo: '' },
+
+  // === eps5 (Compensar) ===
+  { id: 'auth13', epsId: 'eps5', pacienteId: 'u15', medicamentoId: 'med3', tipo: 'autorizacion', estado: 'aprobada', cobertura: '100%', fechaSolicitud: '2026-06-15T10:00:00', fechaRespuesta: '2026-06-16T09:00:00', diagnosticoCIE10: 'E11.9', diagnostico: 'Diabetes mellitus tipo 2', observaciones: 'Metformina 850mg. Cubierta al 100%.', reservaId: 'res19', motivoRechazo: '' },
+  { id: 'auth14', epsId: 'eps5', pacienteId: 'u15', medicamentoId: 'med2', tipo: 'autorizacion', estado: 'pendiente', cobertura: '80%', fechaSolicitud: '2026-06-17T14:00:00', fechaRespuesta: '', diagnosticoCIE10: 'M54.5', diagnostico: 'Lumbago no especificado', observaciones: 'Ibuprofeno 400mg. Cubierto parcialmente.', reservaId: '', motivoRechazo: '' },
+
+  // === extras pendientes ===
+  { id: 'auth15', epsId: 'eps1', pacienteId: 'u16', medicamentoId: 'med4', tipo: 'autorizacion', estado: 'pendiente', cobertura: '80%', fechaSolicitud: '2026-06-19T07:30:00', fechaRespuesta: '', diagnosticoCIE10: 'I10', diagnostico: 'Hipertensión esencial', observaciones: 'Losartán 50mg. Control mensual requerido.', reservaId: '', motivoRechazo: '' },
+  { id: 'auth16', epsId: 'eps2', pacienteId: 'u3', medicamentoId: 'med13', tipo: 'autorizacion', estado: 'pendiente', cobertura: '0%', fechaSolicitud: '2026-06-19T15:00:00', fechaRespuesta: '', diagnosticoCIE10: 'M06.9', diagnostico: 'Artritis reumatoide seropositiva', observaciones: 'Metotrexato 15mg semanal. Medicamento de control especial.', reservaId: '', motivoRechazo: '' },
+  { id: 'auth17', epsId: 'eps3', pacienteId: 'u17', medicamentoId: 'med7', tipo: 'autorizacion', estado: 'pendiente', cobertura: '100%', fechaSolicitud: '2026-06-18T15:45:00', fechaRespuesta: '', diagnosticoCIE10: 'E10.9', diagnostico: 'Diabetes mellitus tipo 1', observaciones: 'Insulina glargina 100UI/ml. Receta vigente por 3 meses.', reservaId: 'res23', motivoRechazo: '' },
+  { id: 'auth18', epsId: 'eps1', pacienteId: 'u2', medicamentoId: 'med5', tipo: 'autorizacion', estado: 'aprobada', cobertura: '80%', fechaSolicitud: '2026-06-12T14:20:00', fechaRespuesta: '2026-06-13T10:00:00', diagnosticoCIE10: 'J02.9', diagnostico: 'Faringitis aguda no especificada', observaciones: 'Amoxicilina 500mg. Antibiótico de primera línea.', reservaId: 'res5', motivoRechazo: '' }
 ]
 
 export default mockAutorizaciones

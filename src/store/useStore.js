@@ -1,4 +1,5 @@
 import { create } from 'zustand'
+import { persist } from 'zustand/middleware'
 import mockUsuarios from '../data/mockUsuarios'
 import mockMedicamentos from '../data/mockMedicamentos'
 import mockInventario from '../data/mockInventario'
@@ -10,7 +11,7 @@ import mockFarmacias from '../data/mockFarmacias'
 import mockEPS from '../data/mockEPS'
 import mockCentrosSalud from '../data/mockCentrosSalud'
 
-const useStore = create((set, get) => ({
+const useStore = create(persist((set, get) => ({
   // === ESTADO INICIAL ===
   usuarioActual: null,
   medicamentos: [...mockMedicamentos],
@@ -24,7 +25,8 @@ const useStore = create((set, get) => ({
   centrosSalud: [...mockCentrosSalud],
   usuarios: [...mockUsuarios],
   notificaciones: [],
-  auditoria: [],
+   auditoria: [],
+  movimientosInventario: [],
 
   // === ACCIÓN DE AUDITORÍA ===
   registrarEvento: (accion, detalle, usuarioId) => {
@@ -61,6 +63,30 @@ const useStore = create((set, get) => ({
 
   logout: () => {
     set({ usuarioActual: null })
+  },
+
+  devSetUser: (userId) => {
+    const state = get()
+    const usuario = state.usuarios.find(u => u.id === userId)
+    if (usuario) set({ usuarioActual: usuario })
+  },
+
+  actualizarPerfil: (datos) => {
+    const state = get()
+    const usuario = state.usuarioActual
+    if (!usuario) return
+
+    const usuarioActualizado = { ...usuario, ...datos }
+
+    set({
+      usuarioActual: usuarioActualizado,
+      usuarios: state.usuarios.map(u =>
+        u.id === usuario.id ? usuarioActualizado : u
+      )
+    })
+
+    get().agregarNotificacion('Perfil actualizado exitosamente', 'success')
+    get().registrarEvento('ACTUALIZAR_PERFIL', `Usuario ${usuario.nombre} actualizó su perfil`, usuario.id)
   },
 
   // === ACCIONES DE NOTIFICACIONES ===
@@ -206,14 +232,24 @@ const useStore = create((set, get) => ({
         r.id === reservaId ? { ...r, estado: 'cancelada' } : r
       ),
       autorizaciones: nuevasAutorizaciones,
-      entregas: nuevasEntregas
+      entregas: nuevasEntregas,
+      notificaciones: [{
+        id: Date.now(),
+        mensaje: `Reserva #${reservaId.slice(0, 6)} cancelada`,
+        tipo: 'warning',
+        leida: false,
+        fecha: new Date().toISOString()
+      }, ...state.notificaciones],
+      auditoria: [{
+        id: 'evt' + Date.now(),
+        accion: 'CANCELAR_RESERVA',
+        detalle: `Reserva ${reservaId} cancelada por el usuario`,
+        usuarioId: reserva.pacienteId,
+        usuarioNombre: state.usuarios.find(u => u.id === reserva.pacienteId)?.nombre || '',
+        usuarioRol: 'paciente',
+        fecha: new Date().toISOString()
+      }, ...state.auditoria]
     })
-
-    get().agregarNotificacion(
-      `Reserva #${reservaId.slice(0, 6)} cancelada`,
-      'warning'
-    )
-    get().registrarEvento('CANCELAR_RESERVA', `Reserva ${reservaId} cancelada por el usuario`, reserva.pacienteId)
   },
 
   // === ACCIONES DE AUTORIZACIONES ===
@@ -240,7 +276,6 @@ const useStore = create((set, get) => ({
       firmaDigital: ''
     }
 
-    // Si hay reserva relacionada, actualizar estado y farmacia
     if (auth.reservaId) {
       const reserva = state.reservas.find(r => r.id === auth.reservaId)
       if (reserva) {
@@ -261,14 +296,24 @@ const useStore = create((set, get) => ({
           : a
       ),
       reservas: nuevasReservas,
-      entregas: nuevasEntregas
+      entregas: nuevasEntregas,
+      notificaciones: [{
+        id: 'notif' + Date.now(),
+        mensaje: `Autorización ${autorizacionId.slice(0, 6)} aprobada exitosamente`,
+        tipo: 'success',
+        timestamp: new Date().toISOString(),
+        leida: false
+      }, ...state.notificaciones],
+      auditoria: [{
+        id: 'evt' + Date.now(),
+        accion: 'APROBAR_AUTORIZACION',
+        detalle: `Autorización ${autorizacionId} aprobada para ${auth.pacienteId}`,
+        usuarioId: state.usuarioActual?.id || '',
+        usuarioNombre: state.usuarioActual?.nombre || '',
+        usuarioRol: state.usuarioActual?.rol || 'eps',
+        fecha: new Date().toISOString()
+      }, ...state.auditoria]
     })
-
-    get().agregarNotificacion(
-      `Autorización ${autorizacionId.slice(0, 6)} aprobada exitosamente`,
-      'success'
-    )
-    get().registrarEvento('APROBAR_AUTORIZACION', `Autorización ${autorizacionId} aprobada para ${auth.pacienteId}`, state.usuarioActual?.id || '')
   },
 
   rechazarAutorizacion: (autorizacionId, motivo) => {
@@ -289,14 +334,24 @@ const useStore = create((set, get) => ({
           ? { ...a, estado: 'rechazada', motivoRechazo: motivo, fechaRespuesta: new Date().toISOString() }
           : a
       ),
-      reservas: nuevasReservas
+      reservas: nuevasReservas,
+      notificaciones: [{
+        id: 'notif' + Date.now(),
+        mensaje: `Autorización ${autorizacionId.slice(0, 6)} rechazada`,
+        tipo: 'error',
+        timestamp: new Date().toISOString(),
+        leida: false
+      }, ...state.notificaciones],
+      auditoria: [{
+        id: 'evt' + Date.now(),
+        accion: 'RECHAZAR_AUTORIZACION',
+        detalle: `Autorización ${autorizacionId} rechazada: ${motivo}`,
+        usuarioId: state.usuarioActual?.id || '',
+        usuarioNombre: state.usuarioActual?.nombre || '',
+        usuarioRol: state.usuarioActual?.rol || 'eps',
+        fecha: new Date().toISOString()
+      }, ...state.auditoria]
     })
-
-    get().agregarNotificacion(
-      `Autorización ${autorizacionId.slice(0, 6)} rechazada`,
-      'error'
-    )
-    get().registrarEvento('RECHAZAR_AUTORIZACION', `Autorización ${autorizacionId} rechazada: ${motivo}`, state.usuarioActual?.id || '')
   },
 
   // === ACCIÓN GENÉRICA DE AUTORIZACIONES (requerida por especificación) ===
@@ -312,6 +367,7 @@ const useStore = create((set, get) => ({
   actualizarStock: (farmaciaId, medicamentoId, cantidad, operacion) => {
     const state = get()
     let nuevoInventario = [...state.inventario]
+    let movimiento = null
 
     nuevoInventario = nuevoInventario.map(item => {
       if (item.farmaciaId === farmaciaId && item.medicamentoId === medicamentoId) {
@@ -320,25 +376,49 @@ const useStore = create((set, get) => ({
         else if (operacion === 'restar') nuevoStock = Math.max(0, item.stock - cantidad)
         else if (operacion === 'setear') nuevoStock = cantidad
 
+        const diferencia = nuevoStock - item.stock
+        movimiento = {
+          id: 'mov' + Date.now(),
+          farmaciaId,
+          medicamentoId,
+          tipo: diferencia > 0 ? 'entrada' : 'salida',
+          cantidad: Math.abs(diferencia),
+          stockAnterior: item.stock,
+          stockNuevo: nuevoStock,
+          fecha: new Date().toISOString()
+        }
+
         return { ...item, stock: nuevoStock, ultimaActualizacion: new Date().toISOString() }
       }
       return item
     })
 
-    set({ inventario: nuevoInventario })
-
-    // Verificar stock crítico
     const updated = nuevoInventario.find(
       i => i.farmaciaId === farmaciaId && i.medicamentoId === medicamentoId
     )
+
+    let notif = null
     if (updated && updated.stock <= updated.stockMinimo) {
       const medicamento = state.medicamentos.find(m => m.id === medicamentoId)
       const farmacia = state.farmacias.find(f => f.id === farmaciaId)
-      get().agregarNotificacion(
-        `Stock crítico: ${medicamento ? medicamento.nombre : ''} en ${farmacia ? farmacia.nombre : ''} (${updated.stock} unidades)`,
-        'warning'
-      )
+      notif = {
+        id: 'notif' + Date.now(),
+        mensaje: `Stock crítico: ${medicamento ? medicamento.nombre : ''} en ${farmacia ? farmacia.nombre : ''} (${updated.stock} unidades)`,
+        tipo: 'warning',
+        timestamp: new Date().toISOString(),
+        leida: false
+      }
     }
+
+    set({
+      inventario: nuevoInventario,
+      movimientosInventario: movimiento
+        ? [movimiento, ...state.movimientosInventario].slice(0, 200)
+        : state.movimientosInventario,
+      notificaciones: notif
+        ? [notif, ...state.notificaciones].slice(0, 20)
+        : state.notificaciones
+    })
   },
 
   // === ACCIONES DE ENTREGAS ===
@@ -359,18 +439,68 @@ const useStore = create((set, get) => ({
 
     const entregaActualizada = nuevasEntregas.find(e => e.id === entregaId)
 
-    set({ entregas: nuevasEntregas, reservas: nuevasReservas })
-
-    // Descontar stock
+    // Descontar stock inline
+    let nuevoInventario = [...state.inventario]
+    let movimientos = [...state.movimientosInventario]
     if (entrega.medicamentoId && entrega.farmaciaId) {
-      get().actualizarStock(entrega.farmaciaId, entrega.medicamentoId, 1, 'restar')
+      nuevoInventario = nuevoInventario.map(item => {
+        if (item.farmaciaId === entrega.farmaciaId && item.medicamentoId === entrega.medicamentoId) {
+          const nuevoStock = Math.max(0, item.stock - 1)
+          const movimiento = {
+            id: 'mov' + Date.now(),
+            farmaciaId: entrega.farmaciaId,
+            medicamentoId: entrega.medicamentoId,
+            tipo: 'salida',
+            cantidad: 1,
+            stockAnterior: item.stock,
+            stockNuevo: nuevoStock,
+            fecha: new Date().toISOString()
+          }
+          movimientos = [movimiento, ...movimientos].slice(0, 200)
+          return { ...item, stock: nuevoStock, ultimaActualizacion: new Date().toISOString() }
+        }
+        return item
+      })
     }
 
-    get().agregarNotificacion(
-      `Entrega ${entregaId.slice(0, 6)} confirmada exitosamente`,
-      'success'
+    const updated = nuevoInventario.find(
+      i => i.farmaciaId === entrega.farmaciaId && i.medicamentoId === entrega.medicamentoId
     )
-    get().registrarEvento('CONFIRMAR_ENTREGA', `Entrega ${entregaId} confirmada para ${entrega.pacienteId}`, state.usuarioActual?.id || '')
+    let notifStock = null
+    if (updated && updated.stock <= updated.stockMinimo) {
+      const medicamento = state.medicamentos.find(m => m.id === entrega.medicamentoId)
+      const farmacia = state.farmacias.find(f => f.id === entrega.farmaciaId)
+      notifStock = {
+        id: 'notif' + Date.now(),
+        mensaje: `Stock crítico: ${medicamento ? medicamento.nombre : ''} en ${farmacia ? farmacia.nombre : ''} (${updated.stock} unidades)`,
+        tipo: 'warning',
+        timestamp: new Date().toISOString(),
+        leida: false
+      }
+    }
+
+    set({
+      entregas: nuevasEntregas,
+      reservas: nuevasReservas,
+      inventario: nuevoInventario,
+      movimientosInventario: movimientos,
+      notificaciones: [{
+        id: 'notif' + Date.now(),
+        mensaje: `Entrega ${entregaId.slice(0, 6)} confirmada exitosamente`,
+        tipo: 'success',
+        timestamp: new Date().toISOString(),
+        leida: false
+      }, ...(notifStock ? [notifStock] : []), ...state.notificaciones].slice(0, 20),
+      auditoria: [{
+        id: 'evt' + Date.now(),
+        accion: 'CONFIRMAR_ENTREGA',
+        detalle: `Entrega ${entregaId} confirmada para ${entrega.pacienteId}`,
+        usuarioId: state.usuarioActual?.id || '',
+        usuarioNombre: state.usuarioActual?.nombre || '',
+        usuarioRol: state.usuarioActual?.rol || 'farmacia',
+        fecha: new Date().toISOString()
+      }, ...state.auditoria]
+    })
 
     return entregaActualizada
   },
@@ -380,12 +510,15 @@ const useStore = create((set, get) => ({
     set({
       entregas: state.entregas.map(e =>
         e.id === entregaId ? { ...e, estado: 'lista' } : e
-      )
+      ),
+      notificaciones: [{
+        id: 'notif' + Date.now(),
+        mensaje: `Entrega ${entregaId.slice(0, 6)} marcada como lista`,
+        tipo: 'info',
+        timestamp: new Date().toISOString(),
+        leida: false
+      }, ...state.notificaciones].slice(0, 20)
     })
-    get().agregarNotificacion(
-      `Entrega ${entregaId.slice(0, 6)} marcada como lista`,
-      'info'
-    )
   },
 
   // === ACCIONES DE SUMINISTROS ===
@@ -550,6 +683,12 @@ const useStore = create((set, get) => ({
         }
       })
   }
+}), {
+  name: 'snsdm-storage',
+  partialize: (state) => ({
+    usuarioActual: state.usuarioActual,
+    auditoria: state.auditoria,
+  })
 }))
 
 export default useStore

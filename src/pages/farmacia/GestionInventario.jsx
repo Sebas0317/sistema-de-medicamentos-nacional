@@ -1,5 +1,6 @@
 import { useState, useMemo } from 'react'
-import { Plus, Minus, Search, ArrowUpDown, ChevronDown } from 'lucide-react'
+import { Plus, Minus, Search, ArrowUpDown, ChevronDown, Package, ArrowDown, ArrowUp } from 'lucide-react'
+import { useLocation } from 'react-router-dom'
 import useStore from '../../store/useStore'
 import Navbar from '../../components/shared/Navbar'
 import Breadcrumb from '../../components/shared/Breadcrumb'
@@ -11,18 +12,20 @@ import useRelativeTime from '../../hooks/useRelativeTime'
 const filtros = ['Todos', 'Críticos', 'Sin stock', 'Bien abastecidos']
 
 export default function GestionInventario() {
+  const location = useLocation()
   const usuarioActual = useStore((s) => s.usuarioActual)
   const inventario = useStore((s) => s.inventario)
   const medicamentos = useStore((s) => s.medicamentos)
   const farmacias = useStore((s) => s.farmacias)
   const actualizarStock = useStore((s) => s.actualizarStock)
-  const { formatRelativeTime } = useRelativeTime()
+  const movimientosInventario = useStore((s) => s.movimientosInventario)
+  const { formatRelativeTime, formatDateTime } = useRelativeTime()
 
   const farmaciaId = usuarioActual?.entidadId || ''
   const farmacia = farmacias.find((f) => f.id === farmaciaId)
 
   const [busqueda, setBusqueda] = useState('')
-  const [filtroActivo, setFiltroActivo] = useState('Todos')
+  const [filtroActivo, setFiltroActivo] = useState(location.state?.filtro || 'Todos')
   const [orden, setOrden] = useState('nombre')
   const [entradaModal, setEntradaModal] = useState(false)
   const [historialModal, setHistorialModal] = useState(null)
@@ -138,7 +141,7 @@ export default function GestionInventario() {
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-1">
                           <button onClick={() => handleRestar(item)} className="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg"><Minus size={14} /></button>
-                          <input type="number" defaultValue={item.stock} onBlur={(e) => handleGuardarStock(item, e.target.value)} className="w-14 text-center text-sm border border-gray-200 rounded-lg px-1 py-1" min={0} />
+                          <input type="number" value={item.stock} onChange={(e) => handleGuardarStock(item, e.target.value)} className="w-14 text-center text-sm border border-gray-200 rounded-lg px-1 py-1" min={0} />
                           <button onClick={() => handleSumar(item)} className="p-1.5 text-gray-400 hover:text-green-600 hover:bg-green-50 rounded-lg"><Plus size={14} /></button>
                           <button onClick={() => setHistorialModal(item)} className="p-1.5 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg text-xs">Hist.</button>
                         </div>
@@ -193,15 +196,63 @@ export default function GestionInventario() {
       </Modal>
 
       {/* Modal historial */}
-      <Modal isOpen={!!historialModal} onClose={() => setHistorialModal(null)} title="Historial del medicamento" size="md">
+      <Modal isOpen={!!historialModal} onClose={() => setHistorialModal(null)} title="Historial del medicamento" size="lg">
         {historialModal && (
           <div className="space-y-3">
-            <p className="font-medium text-gray-900">{historialModal.medicamentoNombre}</p>
-            <p className="text-xs text-gray-500">Stock actual: {historialModal.stock} | Mínimo: {historialModal.stockMinimo}</p>
-            <div className="p-4 bg-gray-50 rounded-lg text-center text-sm text-gray-500">
-              Historial detallado disponible en versión productiva
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="font-medium text-gray-900">{historialModal.medicamentoNombre}</p>
+                <p className="text-xs text-gray-400">{historialModal.codigoATC}</p>
+              </div>
+              <div className="text-right">
+                <p className="text-sm text-gray-500">Stock actual: <span className="font-bold text-lg text-gray-900">{historialModal.stock}</span></p>
+                <p className="text-xs text-gray-500">Mínimo: {historialModal.stockMinimo}</p>
+              </div>
             </div>
-            <p className="text-xs text-gray-400">Última actualización: {formatRelativeTime(historialModal.ultimaActualizacion)}</p>
+
+            <div className="flex gap-2 text-xs text-gray-500">
+              <Badge text={historialModal.categoria} variant="neutral" />
+              <span>Última actualización: {formatRelativeTime(historialModal.ultimaActualizacion)}</span>
+            </div>
+
+            <hr className="border-gray-100" />
+
+            <p className="text-sm font-medium text-gray-700">Movimientos recientes</p>
+
+            {(() => {
+              const movs = movimientosInventario.filter(
+                m => m.medicamentoId === historialModal.medicamentoId && m.farmaciaId === farmaciaId
+              )
+              if (movs.length === 0) {
+                return (
+                  <div className="p-4 bg-gray-50 rounded-lg text-center text-sm text-gray-500">
+                    No hay movimientos registrados en esta sesión
+                  </div>
+                )
+              }
+              return (
+                <div className="max-h-64 overflow-y-auto space-y-1">
+                  {movs.map(m => (
+                    <div key={m.id} className="flex items-center justify-between p-2 bg-gray-50 rounded-lg text-sm">
+                      <div className="flex items-center gap-2">
+                        {m.tipo === 'entrada' ? (
+                          <ArrowDown size={14} className="text-green-600" />
+                        ) : (
+                          <ArrowUp size={14} className="text-red-600" />
+                        )}
+                        <span className={m.tipo === 'entrada' ? 'text-green-700' : 'text-red-700'}>
+                          {m.tipo === 'entrada' ? '+' : '-'}{m.cantidad}
+                        </span>
+                        <span className="text-gray-500">
+                          ({m.stockAnterior} → {m.stockNuevo})
+                        </span>
+                      </div>
+                      <span className="text-xs text-gray-400">{formatDateTime(m.fecha)}</span>
+                    </div>
+                  ))}
+                </div>
+              )
+            })()}
           </div>
         )}
       </Modal>

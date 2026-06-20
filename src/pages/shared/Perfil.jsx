@@ -1,17 +1,29 @@
 import { useState } from 'react'
-import { Bell, Mail, Smartphone, Clock } from 'lucide-react'
+import { Bell, Mail, Smartphone, Clock, Edit3, Save, X } from 'lucide-react'
 import useStore from '../../store/useStore'
 import Navbar from '../../components/shared/Navbar'
 import Breadcrumb from '../../components/shared/Breadcrumb'
 import Badge from '../../components/shared/Badge'
+import Modal from '../../components/shared/Modal'
 
 export default function Perfil() {
   const usuarioActual = useStore((s) => s.usuarioActual)
   const eps = useStore((s) => s.eps)
   const agregarNotificacion = useStore((s) => s.agregarNotificacion)
+  const actualizarPerfil = useStore((s) => s.actualizarPerfil)
   const [notifEmail, setNotifEmail] = useState(true)
   const [notifSms, setNotifSms] = useState(false)
   const [recordatorioHoras, setRecordatorioHoras] = useState('24')
+  const [editModal, setEditModal] = useState(false)
+  const [formData, setFormData] = useState({ email: '', telefono: '' })
+
+  const openEditModal = () => {
+    setFormData({
+      email: usuarioActual.email || '',
+      telefono: usuarioActual.telefono || ''
+    })
+    setEditModal(true)
+  }
 
   if (!usuarioActual) return null
 
@@ -168,13 +180,39 @@ export default function Perfil() {
           {/* Botón editar */}
           <div className="p-6 border-t border-gray-100">
             <button
-              onClick={() => alert('Función en desarrollo')}
-              className="px-6 py-2.5 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
+              onClick={openEditModal}
+              className="inline-flex items-center gap-2 px-6 py-2.5 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
             >
+              <Edit3 size={16} />
               Editar perfil
             </button>
           </div>
         </div>
+
+        <Modal isOpen={editModal} onClose={() => setEditModal(false)} title="Editar perfil" size="md">
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Nombre completo</label>
+              <input type="text" value={usuarioActual.nombre} disabled className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm bg-gray-50 text-gray-500" />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Documento</label>
+              <input type="text" value={usuarioActual.documento || ''} disabled className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm bg-gray-50 text-gray-500" />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+              <input type="email" value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-gray-900 outline-none" />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Teléfono</label>
+              <input type="text" value={formData.telefono} onChange={(e) => setFormData({ ...formData, telefono: e.target.value })} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-gray-900 outline-none" />
+            </div>
+            <div className="flex gap-3 pt-2">
+              <button onClick={() => setEditModal(false)} className="flex-1 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg flex items-center justify-center gap-1"><X size={16} />Cancelar</button>
+              <button onClick={() => { actualizarPerfil({ email: formData.email, telefono: formData.telefono }); setEditModal(false) }} className="flex-1 py-2 text-sm font-medium text-white bg-gray-900 hover:bg-gray-800 rounded-lg flex items-center justify-center gap-1"><Save size={16} />Guardar</button>
+            </div>
+          </div>
+        </Modal>
       </div>
     </div>
   )

@@ -12,7 +12,7 @@ const filtros = ['Todas', 'Requieren autorización especial']
 
 export default function SolicitudesPendientes() {
   const usuarioActual = useStore((s) => s.usuarioActual)
-  const getAutorizacionesPorEPS = useStore((s) => s.getAutorizacionesPorEPS)
+  const autorizacionesState = useStore((s) => s.autorizaciones); const usuarios = useStore((s) => s.usuarios); const medicamentos = useStore((s) => s.medicamentos)
   const aprobarAutorizacion = useStore((s) => s.aprobarAutorizacion)
   const rechazarAutorizacion = useStore((s) => s.rechazarAutorizacion)
   const { formatRelativeTime } = useRelativeTime()
@@ -26,7 +26,19 @@ export default function SolicitudesPendientes() {
   const [confirmModal, setConfirmModal] = useState(null)
 
   const epsId = usuarioActual?.epsId || ''
-  let auths = getAutorizacionesPorEPS(epsId)
+  let auths = autorizacionesState
+    .filter(a => a.epsId === epsId)
+    .map(a => {
+      const paciente = usuarios.find(u => u.id === a.pacienteId)
+      const medicamento = medicamentos.find(m => m.id === a.medicamentoId)
+      return {
+        ...a,
+        pacienteNombre: paciente ? paciente.nombre : '',
+        pacienteDocumento: paciente ? paciente.documento : '',
+        medicamentoNombre: medicamento ? medicamento.nombre : '',
+        medicamento: medicamento || null
+      }
+    })
 
   // Filtros
   if (filtro === 'Requieren autorización especial') {

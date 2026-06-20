@@ -1,9 +1,10 @@
 import { useState } from 'react'
-import { ChevronDown, ChevronUp } from 'lucide-react'
+import { ChevronDown, ChevronUp, FileText } from 'lucide-react'
 import useStore from '../../store/useStore'
 import Navbar from '../../components/shared/Navbar'
 import Breadcrumb from '../../components/shared/Breadcrumb'
 import Badge from '../../components/shared/Badge'
+import Modal from '../../components/shared/Modal'
 import EmptyState from '../../components/shared/EmptyState'
 import useRelativeTime from '../../hooks/useRelativeTime'
 
@@ -11,15 +12,28 @@ const tabs = ['Todas', 'Pendientes', 'Aprobadas', 'Rechazadas']
 
 export default function HistorialAutorizaciones() {
   const usuarioActual = useStore((s) => s.usuarioActual)
-  const getAutorizacionesPorEPS = useStore((s) => s.getAutorizacionesPorEPS)
+  const autorizacionesState = useStore((s) => s.autorizaciones); const usuarios = useStore((s) => s.usuarios); const medicamentos = useStore((s) => s.medicamentos)
   const { formatDateTime } = useRelativeTime()
 
   const [activeTab, setActiveTab] = useState('Todas')
   const [page, setPage] = useState(1)
+  const [exportModal, setExportModal] = useState(false)
   const perPage = 10
 
   const epsId = usuarioActual?.epsId || ''
-  let auths = getAutorizacionesPorEPS(epsId)
+  let auths = autorizacionesState
+    .filter(a => a.epsId === epsId)
+    .map(a => {
+      const paciente = usuarios.find(u => u.id === a.pacienteId)
+      const medicamento = medicamentos.find(m => m.id === a.medicamentoId)
+      return {
+        ...a,
+        pacienteNombre: paciente ? paciente.nombre : '',
+        pacienteDocumento: paciente ? paciente.documento : '',
+        medicamentoNombre: medicamento ? medicamento.nombre : '',
+        medicamento: medicamento || null
+      }
+    })
 
   if (activeTab !== 'Todas') {
     const estado = activeTab === 'Aprobadas' ? 'aprobada' : activeTab === 'Rechazadas' ? 'rechazada' : 'pendiente'
@@ -41,7 +55,7 @@ export default function HistorialAutorizaciones() {
         <Breadcrumb />
         <div className="flex items-center justify-between mb-4">
           <h1 className="text-xl font-bold text-gray-900">Historial de Autorizaciones</h1>
-          <button onClick={() => alert('Función disponible en versión productiva')} className="px-4 py-2 text-sm font-medium text-gray-600 bg-white border border-gray-200 rounded-lg hover:bg-gray-50">Exportar</button>
+          <button onClick={() => setExportModal(true)} className="px-4 py-2 text-sm font-medium text-gray-600 bg-white border border-gray-200 rounded-lg hover:bg-gray-50">Exportar</button>
         </div>
 
         <div className="flex gap-1 mb-4 bg-white p-1 rounded-lg border border-gray-100 w-fit">
@@ -96,6 +110,16 @@ export default function HistorialAutorizaciones() {
             </>
           )}
         </div>
+
+        <Modal isOpen={exportModal} onClose={() => setExportModal(false)} title="Exportar historial" size="sm">
+          <div className="text-center space-y-4">
+            <div className="mx-auto w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+              <FileText size={24} className="text-green-600" />
+            </div>
+            <p className="text-sm text-gray-600">La exportación del historial estará disponible en la versión productiva del sistema.</p>
+            <button onClick={() => setExportModal(false)} className="w-full py-2 text-sm font-medium text-white bg-gray-900 hover:bg-gray-800 rounded-lg">Entendido</button>
+          </div>
+        </Modal>
       </div>
     </div>
   )
