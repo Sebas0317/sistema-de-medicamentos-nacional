@@ -131,7 +131,7 @@ export default function FarmaciasCercanas() {
             const Icon = t.icon
             return (
               <button key={t.id} onClick={() => setActiveTab(t.id)}
-                className={`flex items-center gap-1.5 px-4 py-1.5 text-sm font-medium rounded-md transition-colors ${activeTab === t.id ? 'bg-blue-600 text-white' : 'text-gray-600 hover:text-gray-900'}`}>
+                className={`flex items-center gap-1.5 px-4 py-1.5 text-sm font-medium rounded-md transition-colors ${activeTab === t.id ? 'bg-accent text-white' : 'text-gray-600 hover:text-gray-900'}`}>
                 <Icon size={14} />{t.label}
               </button>
             )
@@ -165,18 +165,18 @@ export default function FarmaciasCercanas() {
             </h2>
             <div className="space-y-3 max-h-[500px] overflow-y-auto pr-1">
               {lugares.map((l) => (
-                <div key={l.id} ref={(el) => { lugarRefs.current[l.id] = el }} className={`bg-white rounded-xl border shadow-sm p-4 hover:shadow-md transition-all ${l.id === lugarDestino && activeTab !== 'todas' ? 'border-blue-400 ring-2 ring-blue-200' : 'border-gray-100'}`}>
+                <div key={l.id} ref={(el) => { lugarRefs.current[l.id] = el }} className={`bg-white rounded-xl border shadow-sm p-4 hover:shadow-md transition-all ${l.id === lugarDestino && activeTab !== 'todas' ? 'border-accent ring-2 ring-accent/30' : 'border-gray-100'}`}>
                   <div className="flex items-start justify-between mb-2">
                     <div className="flex items-center gap-2">
                       <div className={`p-1.5 rounded-lg ${l.tipo === 'Farmacia' ? 'bg-amber-100' : 'bg-red-100'}`}>
                         {l.tipo === 'Farmacia' ? <Pill size={16} className="text-amber-600" /> : <Building2 size={16} className="text-red-600" />}
                       </div>
                       <div>
-                        <button onClick={() => setDetalleModal(l)} className="font-semibold text-gray-900 hover:text-blue-600 text-left">{l.nombre}</button>
+                        <button onClick={() => setDetalleModal(l)} className="font-semibold text-gray-900 hover:text-accent text-left">{l.nombre}</button>
                         {l.tipo !== 'Farmacia' && <span className="text-xs text-gray-400">{l.tipo}</span>}
                       </div>
                     </div>
-                    <div className="flex items-center gap-1 text-xs font-medium bg-blue-50 text-blue-700 px-2 py-0.5 rounded-full whitespace-nowrap">
+                    <div className="flex items-center gap-1 text-xs font-medium bg-accent/10 text-accent px-2 py-0.5 rounded-full whitespace-nowrap">
                       <MapPin size={10} />{l.distancia.toFixed(1)} km
                     </div>
                     <button onClick={(e) => { e.stopPropagation(); toggleFavorito(l.id) }}
@@ -191,7 +191,7 @@ export default function FarmaciasCercanas() {
                   </div>
                   <div className="flex gap-2 mt-3">
                     <a href={`https://www.google.com/maps/dir/${ubicacionUsuario.lat},${ubicacionUsuario.lng}/${l.lat},${l.lng}`} target="_blank" rel="noopener noreferrer"
-                      className="flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors">
+                      className="flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-white bg-accent hover:opacity-90 rounded-lg transition-colors">
                       <Navigation size={12} />Cómo llegar
                     </a>
                     <a href={`tel:${l.telefono}`} className="flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors">
@@ -233,14 +233,14 @@ export default function FarmaciasCercanas() {
                 <span className="text-gray-500 text-xs">Servicios</span>
                 <div className="flex flex-wrap gap-1 mt-1">
                   {detalleModal.servicios.map((s, i) => (
-                    <span key={i} className="px-2 py-0.5 bg-blue-50 text-blue-700 text-xs rounded-full">{s}</span>
+                    <span key={i} className="px-2 py-0.5 bg-accent/10 text-accent text-xs rounded-full">{s}</span>
                   ))}
                 </div>
               </div>
             )}
             <div className="flex gap-2 pt-2">
               <a href={`https://www.google.com/maps/dir/4.6386,-74.0868/${detalleModal.lat},${detalleModal.lng}`} target="_blank" rel="noopener noreferrer"
-                className="flex-1 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg text-center">
+                className="flex-1 py-2 text-sm font-medium text-white bg-accent hover:opacity-90 rounded-lg text-center">
                 Cómo llegar
               </a>
               <button onClick={() => setDetalleModal(null)}

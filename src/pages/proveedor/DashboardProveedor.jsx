@@ -32,6 +32,7 @@ export default function DashboardProveedor() {
   const medicamentos = useStore((s) => s.medicamentos)
   const suministros = useStore((s) => s.suministros)
   const getMedicamentosCriticos = useStore((s) => s.getMedicamentosCriticos)
+  const ultimoAcceso = useStore((s) => s.ultimoAcceso)
 
   const [hora, setHora] = useState(new Date().toLocaleString('es-CO'))
 
@@ -85,7 +86,9 @@ export default function DashboardProveedor() {
         <Breadcrumb />
         <div className="flex items-center justify-between mb-2">
           <h1 className="text-xl font-bold text-gray-900">Dashboard — {usuarioActual?.entidadNombre || 'Proveedor'}</h1>
-          <span className="text-sm text-gray-400">{hora}</span>
+          <span className="text-sm text-gray-400">{hora}
+            {ultimoAcceso && <span className="ml-4">Último acceso: {new Date(ultimoAcceso).toLocaleString('es-CO')}</span>}
+          </span>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-4">

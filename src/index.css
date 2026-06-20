@@ -7,6 +7,7 @@
   --color-eps: #16a34a;
   --color-farmacia: #d97706;
   --color-proveedor: #dc2626;
+  --accent: #6366f1;
 }
 
 @layer base {
@@ -16,9 +17,7 @@
   body {
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
   }
-  .dark body {
-    @apply bg-gray-900 text-gray-100;
-  }
+
 }
 
 @layer components {

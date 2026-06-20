@@ -58,7 +58,7 @@ export default function LoginPaciente() {
               <select
                 value={tipoDoc}
                 onChange={(e) => setTipoDoc(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-accent focus:border-accent outline-none"
               >
                 <option value="CC">Cédula de Ciudadanía (CC)</option>
                 <option value="TI">Tarjeta de Identidad (TI)</option>
@@ -73,7 +73,7 @@ export default function LoginPaciente() {
                 onChange={(e) => { setDocumento(e.target.value); setErrors((p) => ({ ...p, documento: '' })) }}
                 placeholder="1020345678"
                 className={`w-full px-3 py-2 border rounded-lg text-sm outline-none transition-colors ${
-                  errors.documento ? 'border-red-300 focus:ring-red-500' : 'border-gray-200 focus:ring-blue-500'
+                  errors.documento ? 'border-red-300 focus:ring-red-500' : 'border-gray-200 focus:ring-accent'
                 } focus:ring-2 focus:border-transparent`}
               />
               {errors.documento && <p className="mt-1 text-xs text-red-500">{errors.documento}</p>}
@@ -87,7 +87,7 @@ export default function LoginPaciente() {
                   onChange={(e) => { setPassword(e.target.value); setErrors((p) => ({ ...p, password: '' })) }}
                   placeholder="••••••••"
                   className={`w-full px-3 py-2 border rounded-lg text-sm outline-none transition-colors pr-10 ${
-                    errors.password ? 'border-red-300 focus:ring-red-500' : 'border-gray-200 focus:ring-blue-500'
+                    errors.password ? 'border-red-300 focus:ring-red-500' : 'border-gray-200 focus:ring-accent'
                   } focus:ring-2 focus:border-transparent`}
                 />
                 <button type="button" onClick={() => setShowPwd(!showPwd)} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
@@ -97,7 +97,7 @@ export default function LoginPaciente() {
               {errors.password && <p className="mt-1 text-xs text-red-500">{errors.password}</p>}
             </div>
             <div className="flex items-center gap-2">
-              <input type="checkbox" id="recordar" className="rounded border-gray-300 text-blue-600 focus:ring-blue-500" />
+              <input type="checkbox" id="recordar" className="rounded border-gray-300 text-accent focus:ring-accent" />
               <label htmlFor="recordar" className="text-sm text-gray-600">Recordarme</label>
             </div>
             {error && (
@@ -106,7 +106,7 @@ export default function LoginPaciente() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-2.5 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
+              className="w-full py-2.5 bg-accent text-white text-sm font-medium rounded-lg hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
             >
               {loading ? <span className="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full" /> : <LogIn size={16} />}
               {loading ? 'Verificando...' : 'Ingresar'}
@@ -120,7 +120,7 @@ export default function LoginPaciente() {
           </div>
 
           <div className="mt-4 text-center">
-            <button className="text-sm text-blue-600 hover:text-blue-700">¿Olvidaste tu contraseña?</button>
+            <button className="text-sm text-accent hover:text-accent/80">¿Olvidaste tu contraseña?</button>
           </div>
         </div>
       </div>

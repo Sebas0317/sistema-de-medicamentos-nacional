@@ -126,7 +126,7 @@ export default function Perfil() {
               <div className="sm:col-span-2 flex items-center">
                 <button
                   onClick={() => { setPasswordForm({ actual: '', nueva: '', confirmar: '' }); setPasswordError(''); setPasswordModal(true) }}
-                  className="text-sm text-blue-600 hover:text-blue-700 font-medium cursor-pointer inline-flex items-center gap-1.5"
+                  className="text-sm text-accent hover:text-accent/80 font-medium cursor-pointer inline-flex items-center gap-1.5"
                 >
                   <Lock size={14} />
                   Cambiar contraseña
@@ -176,7 +176,7 @@ export default function Perfil() {
                   <Mail size={16} className="text-gray-500" />
                   <div><p className="text-sm font-medium text-gray-900">Notificaciones por email</p><p className="text-xs text-gray-500">Alertas de reservas y autorizaciones</p></div>
                 </div>
-                <div onClick={() => setNotifEmail(!notifEmail)} className={`w-10 h-5 rounded-full transition-colors relative cursor-pointer ${notifEmail ? 'bg-blue-600' : 'bg-gray-300'}`}>
+                <div onClick={() => setNotifEmail(!notifEmail)} className={`w-10 h-5 rounded-full transition-colors relative cursor-pointer ${notifEmail ? 'bg-accent' : 'bg-gray-300'}`}>
                   <div className={`w-4 h-4 bg-white rounded-full absolute top-0.5 transition-transform ${notifEmail ? 'translate-x-5' : 'translate-x-0.5'}`} />
                 </div>
               </label>
@@ -185,7 +185,7 @@ export default function Perfil() {
                   <Smartphone size={16} className="text-gray-500" />
                   <div><p className="text-sm font-medium text-gray-900">Notificaciones SMS</p><p className="text-xs text-gray-500">Recordatorios de citas y entregas</p></div>
                 </div>
-                <div onClick={() => setNotifSms(!notifSms)} className={`w-10 h-5 rounded-full transition-colors relative cursor-pointer ${notifSms ? 'bg-blue-600' : 'bg-gray-300'}`}>
+                <div onClick={() => setNotifSms(!notifSms)} className={`w-10 h-5 rounded-full transition-colors relative cursor-pointer ${notifSms ? 'bg-accent' : 'bg-gray-300'}`}>
                   <div className={`w-4 h-4 bg-white rounded-full absolute top-0.5 transition-transform ${notifSms ? 'translate-x-5' : 'translate-x-0.5'}`} />
                 </div>
               </label>

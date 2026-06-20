@@ -137,15 +137,15 @@ export default function MisCitas() {
                 >
                   <div className={`
                     w-9 h-9 mx-auto flex items-center justify-center text-sm rounded-full
-                    ${today ? 'bg-blue-600 text-white font-semibold' : ''}
-                    ${isSelected && !today ? 'bg-blue-100 text-blue-700 font-semibold' : ''}
+                    ${today ? 'bg-accent text-white font-semibold' : ''}
+                    ${isSelected && !today ? 'bg-accent/10 text-accent font-semibold' : ''}
                     ${hasAppt && !today && !isSelected ? 'font-medium' : ''}
                     ${d.current && !today && !isSelected ? 'hover:bg-gray-100' : ''}
                   `}>
                     {d.day}
                   </div>
                   {hasAppt && (
-                    <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1.5 h-1.5 bg-blue-500 rounded-full" />
+                    <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1.5 h-1.5 bg-accent rounded-full" />
                   )}
                 </div>
               )
@@ -159,7 +159,7 @@ export default function MisCitas() {
           {selectedDate && (
             <button
               onClick={() => setSelectedDate(null)}
-              className="text-sm text-blue-600 hover:text-blue-800 font-medium"
+              className="text-sm text-accent hover:text-accent/80 font-medium"
             >
               Mostrar todas
             </button>
@@ -194,7 +194,7 @@ export default function MisCitas() {
                   </div>
                   <div className="space-y-2 text-sm">
                     <div className="flex items-center gap-2">
-                      <Calendar size={14} className="text-blue-500" />
+                      <Calendar size={14} className="text-accent" />
                       <span className="text-gray-700 font-medium">{cita.horaReclamacion}</span>
                     </div>
                     <p className="font-semibold text-gray-900">{cita.medicamentoNombre}</p>
@@ -214,7 +214,7 @@ export default function MisCitas() {
                   </div>
                   <button
                     onClick={() => navigate('/paciente/farmacias', { state: { lugarId: cita.farmaciaId, tab: 'centros' } })}
-                    className="mt-3 w-full py-2 text-sm font-medium text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors"
+                    className="mt-3 w-full py-2 text-sm font-medium text-accent bg-accent/10 hover:bg-accent/20 rounded-lg transition-colors"
                   >
                     Cómo llegar
                   </button>

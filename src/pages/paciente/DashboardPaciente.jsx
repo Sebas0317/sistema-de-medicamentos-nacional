@@ -28,6 +28,7 @@ export default function DashboardPaciente() {
   const inventario = useStore((s) => s.inventario)
   const autorizaciones = useStore((s) => s.autorizaciones)
   const notificaciones = useStore((s) => s.notificaciones)
+  const ultimoAcceso = useStore((s) => s.ultimoAcceso)
   const { formatRelativeTime } = useRelativeTime()
 
   const reservas = getReservasPorPaciente(usuarioActual?.id || '')
@@ -52,7 +53,9 @@ export default function DashboardPaciente() {
         <h1 className="text-2xl font-bold text-gray-900">
           {saludo}, {usuarioActual?.nombre?.split(' ')[0]}
         </h1>
-        <p className="text-gray-500 mt-1">¿Qué necesitas hoy?</p>
+        <p className="text-gray-500 mt-1">¿Qué necesitas hoy?
+          {ultimoAcceso && <span className="text-xs text-gray-400 ml-4">Último acceso: {new Date(ultimoAcceso).toLocaleString('es-CO')}</span>}
+        </p>
 
         {/* Stat Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
@@ -85,7 +88,7 @@ export default function DashboardPaciente() {
         <div className="mt-8">
           <div className="flex items-center justify-between mb-3">
             <h2 className="text-lg font-semibold text-gray-900">Últimas reservas</h2>
-            <button onClick={() => navigate('/paciente/reservas')} className="text-sm text-blue-600 hover:text-blue-700">Ver todas</button>
+            <button onClick={() => navigate('/paciente/reservas')} className="text-sm text-accent hover:text-accent/80">Ver todas</button>
           </div>
           <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
             {ultimasReservas.length === 0 ? (

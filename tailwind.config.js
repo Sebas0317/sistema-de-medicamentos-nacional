@@ -41,6 +41,9 @@ export default {
           800: '#92400e',
           900: '#78350f'
         },
+        accent: {
+          DEFAULT: 'var(--accent)',
+        },
         proveedor: {
           50: '#fef2f2',
           100: '#fee2e2',

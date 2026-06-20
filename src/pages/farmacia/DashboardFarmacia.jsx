@@ -19,6 +19,7 @@ export default function DashboardFarmacia() {
   const medicamentos = useStore((s) => s.medicamentos)
   const usuarios = useStore((s) => s.usuarios)
   const devSetUser = useStore((s) => s.devSetUser)
+  const ultimoAcceso = useStore((s) => s.ultimoAcceso)
   const { formatRelativeTime } = useRelativeTime()
 
   const [devOpen, setDevOpen] = useState(false)
@@ -67,13 +68,15 @@ export default function DashboardFarmacia() {
       <div className="max-w-7xl mx-auto px-4 py-6">
         <Breadcrumb />
         <h1 className="text-xl font-bold text-gray-900">{farmacia?.nombre || 'Farmacia'}</h1>
-        <p className="text-sm text-gray-500 mt-1">{farmacia?.direccion}</p>
+        <p className="text-sm text-gray-500 mt-1">{farmacia?.direccion}
+          {ultimoAcceso && <span className="text-xs text-gray-400 ml-4">Último acceso: {new Date(ultimoAcceso).toLocaleString('es-CO')}</span>}
+        </p>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
           <StatCard label="Medicamentos en stock" value={enStock} icon={Package} colorClass="bg-green-100 text-green-600" />
           <StatCard label="Bajo mínimo" value={bajoMinimo} icon={AlertTriangle} colorClass="bg-red-100 text-red-600" />
           <StatCard label="Entregas pendientes" value={pendientes.length} icon={Clock} colorClass="bg-yellow-100 text-yellow-600" />
-          <StatCard label="Entregas hoy" value={hoyCompletadas.length} icon={CheckSquare} colorClass="bg-blue-100 text-blue-600" />
+          <StatCard label="Entregas hoy" value={hoyCompletadas.length} icon={CheckSquare} colorClass="bg-accent/10 text-accent" />
         </div>
 
         {/* Accesos rápidos */}
@@ -89,7 +92,7 @@ export default function DashboardFarmacia() {
               <span className="font-medium text-gray-700">Confirmar entregas</span>
             </button>
             <button onClick={() => navigate('/farmacia/inventario', { state: { filtro: 'Críticos' } })} className="flex items-center gap-3 p-4 bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-md hover:border-amber-200 transition-all">
-              <div className="p-2 bg-blue-100 rounded-lg"><AlertTriangle size={20} className="text-blue-600" /></div>
+              <div className="p-2 bg-accent/10 rounded-lg"><AlertTriangle size={20} className="text-accent" /></div>
               <span className="font-medium text-gray-700">Ver alertas</span>
             </button>
           </div>

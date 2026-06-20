@@ -1,4 +1,4 @@
-export default function LoadingSpinner({ color = 'text-blue-600', size = 8 }) {
+export default function LoadingSpinner({ color = 'text-accent', size = 8 }) {
   return (
     <div className="flex items-center justify-center p-8">
       <div

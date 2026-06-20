@@ -158,7 +158,7 @@ export default function GestionInventario() {
                           <button onClick={() => handleRestar(item)} className="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg"><Minus size={14} /></button>
                           <input type="number" value={item.stock} onChange={(e) => handleGuardarStock(item, e.target.value)} className="w-14 text-center text-sm border border-gray-200 rounded-lg px-1 py-1" min={0} />
                           <button onClick={() => handleSumar(item)} className="p-1.5 text-gray-400 hover:text-green-600 hover:bg-green-50 rounded-lg"><Plus size={14} /></button>
-                          <button onClick={() => setHistorialModal(item)} className="p-1.5 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg text-xs">Hist.</button>
+                          <button onClick={() => setHistorialModal(item)} className="p-1.5 text-gray-400 hover:text-accent hover:bg-accent/10 rounded-lg text-xs">Hist.</button>
                         </div>
                       </td>
                     </tr>

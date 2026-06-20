@@ -1,7 +1,8 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { jsPDF } from 'jspdf'
 import 'jspdf-autotable'
-import { FileText, Download, BarChart3, PieChart, FileSpreadsheet, ArrowRight, Printer } from 'lucide-react'
+import html2canvas from 'html2canvas'
+import { FileText, Download, BarChart3, PieChart, FileSpreadsheet, ArrowRight, Printer, ImageDown } from 'lucide-react'
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, Legend, PieChart as RPieChart, Pie, Cell } from 'recharts'
 import useStore from '../../store/useStore'
 import Navbar from '../../components/shared/Navbar'
@@ -27,6 +28,26 @@ export default function ReportesAdmin() {
   const auditoria = useStore((s) => s.auditoria)
   const [tipoReporte, setTipoReporte] = useState('reservas')
   const [exportando, setExportando] = useState(null)
+  const [fechaDesde, setFechaDesde] = useState('')
+  const [fechaHasta, setFechaHasta] = useState('')
+  const [capturando, setCapturando] = useState(false)
+  const reporteRef = useRef(null)
+
+  const filteredReservas = fechaDesde && fechaHasta
+    ? reservas.filter(r => r.fechaReclamacion >= fechaDesde && r.fechaReclamacion <= fechaHasta)
+    : reservas
+
+  const filteredAutorizaciones = fechaDesde && fechaHasta
+    ? autorizaciones.filter(a => a.fecha >= fechaDesde && a.fecha <= fechaHasta)
+    : autorizaciones
+
+  const filteredSuministros = fechaDesde && fechaHasta
+    ? suministros.filter(s => s.fechaRegistro >= fechaDesde && s.fechaRegistro <= fechaHasta)
+    : suministros
+
+  const filteredAuditoria = fechaDesde && fechaHasta
+    ? auditoria.filter(a => a.fecha >= fechaDesde && a.fecha <= fechaHasta)
+    : auditoria
 
   const exportar = (formato) => {
     if (formato !== 'pdf') {
@@ -89,18 +110,31 @@ export default function ReportesAdmin() {
     setTimeout(() => setExportando(null), 1500)
   }
 
+  const capturarImagen = async () => {
+    setCapturando(true)
+    try {
+      const canvas = await html2canvas(reporteRef.current)
+      const link = document.createElement('a')
+      link.download = `reporte-${tipoReporte}-${new Date().toISOString().split('T')[0]}.png`
+      link.href = canvas.toDataURL()
+      link.click()
+    } finally {
+      setCapturando(false)
+    }
+  }
+
   const tipoActual = TIPOS_REPORTE.find((t) => t.id === tipoReporte)
 
   const reservasPorEstado = [
-    { name: 'Pendientes', value: reservas.filter((r) => r.estado === 'pendiente').length, color: '#d97706' },
-    { name: 'Confirmadas', value: reservas.filter((r) => r.estado === 'confirmada').length, color: '#16a34a' },
-    { name: 'Canceladas', value: reservas.filter((r) => r.estado === 'cancelada').length, color: '#dc2626' },
+    { name: 'Pendientes', value: filteredReservas.filter((r) => r.estado === 'pendiente').length, color: '#d97706' },
+    { name: 'Confirmadas', value: filteredReservas.filter((r) => r.estado === 'confirmada').length, color: '#16a34a' },
+    { name: 'Canceladas', value: filteredReservas.filter((r) => r.estado === 'cancelada').length, color: '#dc2626' },
   ]
 
   const autorizacionesPorEstado = [
-    { name: 'Pendientes', value: autorizaciones.filter((a) => a.estado === 'pendiente').length, color: '#d97706' },
-    { name: 'Aprobadas', value: autorizaciones.filter((a) => a.estado === 'aprobada').length, color: '#16a34a' },
-    { name: 'Rechazadas', value: autorizaciones.filter((a) => a.estado === 'rechazada').length, color: '#dc2626' },
+    { name: 'Pendientes', value: filteredAutorizaciones.filter((a) => a.estado === 'pendiente').length, color: '#d97706' },
+    { name: 'Aprobadas', value: filteredAutorizaciones.filter((a) => a.estado === 'aprobada').length, color: '#16a34a' },
+    { name: 'Rechazadas', value: filteredAutorizaciones.filter((a) => a.estado === 'rechazada').length, color: '#dc2626' },
   ]
 
   const inventarioCritico = medicamentos.map((m) => {
@@ -109,18 +143,18 @@ export default function ReportesAdmin() {
   })
 
   const suministrosPorMes = [
-    { name: 'Semana 1', valor: suministros.filter((s) => new Date(s.fechaRegistro).getDate() <= 7).length },
-    { name: 'Semana 2', valor: suministros.filter((s) => new Date(s.fechaRegistro).getDate() > 7 && new Date(s.fechaRegistro).getDate() <= 14).length },
-    { name: 'Semana 3', valor: suministros.filter((s) => new Date(s.fechaRegistro).getDate() > 14 && new Date(s.fechaRegistro).getDate() <= 21).length },
-    { name: 'Semana 4', valor: suministros.filter((s) => new Date(s.fechaRegistro).getDate() > 21).length },
+    { name: 'Semana 1', valor: filteredSuministros.filter((s) => new Date(s.fechaRegistro).getDate() <= 7).length },
+    { name: 'Semana 2', valor: filteredSuministros.filter((s) => new Date(s.fechaRegistro).getDate() > 7 && new Date(s.fechaRegistro).getDate() <= 14).length },
+    { name: 'Semana 3', valor: filteredSuministros.filter((s) => new Date(s.fechaRegistro).getDate() > 14 && new Date(s.fechaRegistro).getDate() <= 21).length },
+    { name: 'Semana 4', valor: filteredSuministros.filter((s) => new Date(s.fechaRegistro).getDate() > 21).length },
   ]
 
   const actividadPorAccion = [
-    { name: 'Inicio sesión', value: auditoria.filter((a) => a.accion === 'INICIO_SESION').length, color: '#2563eb' },
-    { name: 'Reservas', value: auditoria.filter((a) => a.accion === 'CREAR_RESERVA' || a.accion === 'CANCELAR_RESERVA').length, color: '#16a34a' },
-    { name: 'Autorizaciones', value: auditoria.filter((a) => a.accion.startsWith('APROBAR') || a.accion.startsWith('RECHAZAR')).length, color: '#d97706' },
-    { name: 'Entregas', value: auditoria.filter((a) => a.accion === 'CONFIRMAR_ENTREGA').length, color: '#8b5cf6' },
-    { name: 'Suministros', value: auditoria.filter((a) => a.accion === 'REGISTRAR_SUMINISTRO').length, color: '#dc2626' },
+    { name: 'Inicio sesión', value: filteredAuditoria.filter((a) => a.accion === 'INICIO_SESION').length, color: '#2563eb' },
+    { name: 'Reservas', value: filteredAuditoria.filter((a) => a.accion === 'CREAR_RESERVA' || a.accion === 'CANCELAR_RESERVA').length, color: '#16a34a' },
+    { name: 'Autorizaciones', value: filteredAuditoria.filter((a) => a.accion.startsWith('APROBAR') || a.accion.startsWith('RECHAZAR')).length, color: '#d97706' },
+    { name: 'Entregas', value: filteredAuditoria.filter((a) => a.accion === 'CONFIRMAR_ENTREGA').length, color: '#8b5cf6' },
+    { name: 'Suministros', value: filteredAuditoria.filter((a) => a.accion === 'REGISTRAR_SUMINISTRO').length, color: '#dc2626' },
   ]
 
   return (
@@ -142,7 +176,16 @@ export default function ReportesAdmin() {
           })}
         </div>
 
-        <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-6">
+        <div className="flex items-center gap-4 mb-4 p-3 bg-gray-50 rounded-lg">
+            <span className="text-sm font-medium text-gray-700">Filtrar por fecha:</span>
+            <input type="date" value={fechaDesde} onChange={(e) => setFechaDesde(e.target.value)} className="px-2 py-1.5 text-sm border border-gray-200 rounded-lg" />
+            <input type="date" value={fechaHasta} onChange={(e) => setFechaHasta(e.target.value)} className="px-2 py-1.5 text-sm border border-gray-200 rounded-lg" />
+            {(fechaDesde || fechaHasta) && (
+              <button onClick={() => { setFechaDesde(''); setFechaHasta('') }} className="text-xs text-red-600 hover:underline">Limpiar</button>
+            )}
+          </div>
+
+        <div ref={reporteRef} className="bg-white rounded-xl border border-gray-100 shadow-sm p-6">
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-2">
               {tipoActual && <tipoActual.icon size={20} className="text-gray-700" />}
@@ -152,6 +195,10 @@ export default function ReportesAdmin() {
               <button onClick={() => exportar('pdf')} disabled={exportando !== null} className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-white bg-red-600 hover:bg-red-700 rounded-lg disabled:opacity-50 transition-colors">
                 {exportando === 'pdf' ? <span className="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full" /> : <Download size={14} />}
                 Exportar PDF
+              </button>
+              <button onClick={capturarImagen} disabled={capturando !== false} className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-white bg-purple-600 hover:bg-purple-700 rounded-lg disabled:opacity-50 transition-colors">
+                {capturando ? <span className="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full" /> : <ImageDown size={14} />}
+                Descargar imagen
               </button>
               <button onClick={() => exportar('excel')} disabled={exportando !== null} className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-white bg-green-600 hover:bg-green-700 rounded-lg disabled:opacity-50 transition-colors">
                 {exportando === 'excel' ? <span className="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full" /> : <FileSpreadsheet size={14} />}
@@ -172,7 +219,7 @@ export default function ReportesAdmin() {
 
           {tipoReporte === 'reservas' && (
             <div>
-              <p className="text-sm text-gray-500 mb-4">Distribución de reservas por estado. Total: {reservas.length} reservas.</p>
+              <p className="text-sm text-gray-500 mb-4">Distribución de reservas por estado. Total: {filteredReservas.length} reservas.</p>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <ResponsiveContainer width="100%" height={300}>
                   <RPieChart>
@@ -196,7 +243,7 @@ export default function ReportesAdmin() {
                   ))}
                   <div className="flex justify-between items-center pt-2 border-t border-gray-100">
                     <span className="text-sm font-semibold text-gray-700">Total</span>
-                    <span className="text-sm font-bold">{reservas.length}</span>
+                    <span className="text-sm font-bold">{filteredReservas.length}</span>
                   </div>
                 </div>
               </div>
@@ -205,13 +252,13 @@ export default function ReportesAdmin() {
 
           {tipoReporte === 'autorizaciones' && (
             <div>
-              <p className="text-sm text-gray-500 mb-4">Distribución de autorizaciones por estado. Total: {autorizaciones.length} autorizaciones.</p>
+              <p className="text-sm text-gray-500 mb-4">Distribución de autorizaciones por estado. Total: {filteredAutorizaciones.length} autorizaciones.</p>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <ResponsiveContainer width="100%" height={300}>
                   <BarChart data={[
-                    { name: 'Pendientes', Aprobadas: 0, Rechazadas: 0, Pendientes: autorizaciones.filter((a) => a.estado === 'pendiente').length },
-                    { name: 'Aprobadas', Pendientes: 0, Rechazadas: 0, Aprobadas: autorizaciones.filter((a) => a.estado === 'aprobada').length },
-                    { name: 'Rechazadas', Pendientes: 0, Aprobadas: 0, Rechazadas: autorizaciones.filter((a) => a.estado === 'rechazada').length },
+                    { name: 'Pendientes', Aprobadas: 0, Rechazadas: 0, Pendientes: filteredAutorizaciones.filter((a) => a.estado === 'pendiente').length },
+                    { name: 'Aprobadas', Pendientes: 0, Rechazadas: 0, Aprobadas: filteredAutorizaciones.filter((a) => a.estado === 'aprobada').length },
+                    { name: 'Rechazadas', Pendientes: 0, Aprobadas: 0, Rechazadas: filteredAutorizaciones.filter((a) => a.estado === 'rechazada').length },
                   ]}>
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis dataKey="name" />
@@ -225,9 +272,9 @@ export default function ReportesAdmin() {
                 </ResponsiveContainer>
                 <div className="flex flex-col justify-center space-y-3">
                   <h3 className="text-sm font-semibold text-gray-700">Resumen</h3>
-                  <div className="flex justify-between"><span className="text-sm text-gray-600">Pendientes</span><span className="text-sm font-bold text-amber-600">{autorizaciones.filter((a) => a.estado === 'pendiente').length}</span></div>
-                  <div className="flex justify-between"><span className="text-sm text-gray-600">Aprobadas</span><span className="text-sm font-bold text-green-600">{autorizaciones.filter((a) => a.estado === 'aprobada').length}</span></div>
-                  <div className="flex justify-between"><span className="text-sm text-gray-600">Rechazadas</span><span className="text-sm font-bold text-red-600">{autorizaciones.filter((a) => a.estado === 'rechazada').length}</span></div>
+                  <div className="flex justify-between"><span className="text-sm text-gray-600">Pendientes</span><span className="text-sm font-bold text-amber-600">{filteredAutorizaciones.filter((a) => a.estado === 'pendiente').length}</span></div>
+                  <div className="flex justify-between"><span className="text-sm text-gray-600">Aprobadas</span><span className="text-sm font-bold text-green-600">{filteredAutorizaciones.filter((a) => a.estado === 'aprobada').length}</span></div>
+                  <div className="flex justify-between"><span className="text-sm text-gray-600">Rechazadas</span><span className="text-sm font-bold text-red-600">{filteredAutorizaciones.filter((a) => a.estado === 'rechazada').length}</span></div>
                 </div>
               </div>
             </div>
@@ -252,7 +299,7 @@ export default function ReportesAdmin() {
 
           {tipoReporte === 'suministros' && (
             <div>
-              <p className="text-sm text-gray-500 mb-4">Suministros registrados por semana. Total: {suministros.length} suministros.</p>
+              <p className="text-sm text-gray-500 mb-4">Suministros registrados por semana. Total: {filteredSuministros.length} suministros.</p>
               <ResponsiveContainer width="100%" height={300}>
                 <LineChart data={suministrosPorMes}>
                   <CartesianGrid strokeDasharray="3 3" />
@@ -268,7 +315,7 @@ export default function ReportesAdmin() {
 
           {tipoReporte === 'actividad' && (
             <div>
-              <p className="text-sm text-gray-500 mb-4">Actividad del sistema por tipo de evento. Total: {auditoria.length} eventos.</p>
+              <p className="text-sm text-gray-500 mb-4">Actividad del sistema por tipo de evento. Total: {filteredAuditoria.length} eventos.</p>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <ResponsiveContainer width="100%" height={300}>
                   <RPieChart>

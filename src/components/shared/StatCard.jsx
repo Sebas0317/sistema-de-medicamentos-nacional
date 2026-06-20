@@ -1,10 +1,12 @@
+import Tooltip from './Tooltip'
+
 export default function StatCard({ label, value, icon: Icon, colorClass, trend }) {
   const trendColor = trend && trend.startsWith('+') ? 'text-green-600' : 'text-red-600'
 
   return (
     <div className="bg-white shadow-sm rounded-xl border border-gray-100 p-5 hover:shadow-md transition-shadow">
       <div className="flex items-start justify-between">
-        <span className="text-sm font-medium text-gray-500">{label}</span>
+        <span className="text-sm font-medium text-gray-500 inline-flex items-center gap-1">{label} <Tooltip text={`Valor actual de ${label.toLowerCase()}`} size={12} /></span>
         {Icon && (
           <div className={`p-2 rounded-lg ${colorClass || 'bg-gray-100 text-gray-600'}`}>
             <Icon size={20} />

@@ -124,15 +124,15 @@ export default function BuscarMedicamento() {
                   value={busqueda}
                   onChange={(e) => setBusqueda(e.target.value)}
                   placeholder="Buscar por nombre o código ATC..."
-                  className="w-full pl-9 pr-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none"
+                  className="w-full pl-9 pr-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-accent outline-none"
                 />
               </div>
-              <select value={categoria} onChange={(e) => setCategoria(e.target.value)} className="px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+              <select value={categoria} onChange={(e) => setCategoria(e.target.value)} className="px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-accent outline-none">
                 {categorias.map((c) => <option key={c} value={c}>{c.charAt(0).toUpperCase() + c.slice(1)}</option>)}
               </select>
             </div>
             <label className="flex items-center gap-2 text-sm text-gray-600 mb-4">
-              <input type="checkbox" checked={soloDisponible} onChange={(e) => setSoloDisponible(e.target.checked)} className="rounded border-gray-300 text-blue-600 focus:ring-blue-500" />
+              <input type="checkbox" checked={soloDisponible} onChange={(e) => setSoloDisponible(e.target.checked)} className="rounded border-gray-300 text-accent focus:ring-accent" />
               Solo con stock disponible
             </label>
 
@@ -142,7 +142,7 @@ export default function BuscarMedicamento() {
                   key={med.id}
                   onClick={() => setSelectedMed(med)}
                   className={`p-4 bg-white rounded-xl border cursor-pointer transition-all hover:shadow-md ${
-                    selectedMed?.id === med.id ? 'border-blue-500 shadow-md' : 'border-gray-100 shadow-sm'
+                    selectedMed?.id === med.id ? 'border-accent shadow-md' : 'border-gray-100 shadow-sm'
                   }`}
                 >
                   <div className="flex items-start justify-between">
@@ -155,7 +155,7 @@ export default function BuscarMedicamento() {
                       {med.requiereAutorizacion && <Badge text="Requiere auth. EPS" variant="warning" />}
                       <button
                         onClick={(e) => { e.stopPropagation(); setShareModal(med.nombre) }}
-                        className="p-1.5 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg"
+                        className="p-1.5 text-gray-400 hover:text-accent hover:bg-accent/10 rounded-lg"
                         title="Compartir"
                       >
                         <Share2 size={14} />
@@ -219,7 +219,7 @@ export default function BuscarMedicamento() {
                         <button
                           onClick={() => handleReservar(item.farmaciaId)}
                           disabled={item.stock === 0}
-                          className="mt-3 w-full py-2 text-sm font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed bg-blue-600 text-white hover:bg-blue-700"
+                          className="mt-3 w-full py-2 text-sm font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed bg-accent text-white hover:opacity-90"
                         >
                           {item.stock === 0 ? 'Sin stock disponible' : 'Reservar'}
                         </button>
@@ -241,7 +241,7 @@ export default function BuscarMedicamento() {
         <div className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Seleccionar farmacia</label>
-            <select value={selectedFarmId} onChange={(e) => setSelectedFarmId(e.target.value)} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+            <select value={selectedFarmId} onChange={(e) => setSelectedFarmId(e.target.value)} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-accent outline-none">
               {disponibilidad.map((item) => (
                 <option key={item.farmaciaId} value={item.farmaciaId}>
                   {item.farmaciaNombre} — Stock: {item.stock}
@@ -251,32 +251,32 @@ export default function BuscarMedicamento() {
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Fecha de reclamación</label>
-            <input type="date" value={fechaReclamacion} onChange={(e) => setFechaReclamacion(e.target.value)} min={new Date(Date.now() + 86400000).toISOString().split('T')[0]} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none" />
+            <input type="date" value={fechaReclamacion} onChange={(e) => setFechaReclamacion(e.target.value)} min={new Date(Date.now() + 86400000).toISOString().split('T')[0]} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-accent outline-none" />
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Hora de reclamación</label>
-            <select value={horaReclamacion} onChange={(e) => setHoraReclamacion(e.target.value)} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+            <select value={horaReclamacion} onChange={(e) => setHoraReclamacion(e.target.value)} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-accent outline-none">
               {horarios.map((h) => <option key={h} value={h}>{h}</option>)}
             </select>
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Notas adicionales (opcional)</label>
-            <textarea value={notas} onChange={(e) => setNotas(e.target.value)} rows={2} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none resize-none" />
+            <textarea value={notas} onChange={(e) => setNotas(e.target.value)} rows={2} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-accent outline-none resize-none" />
           </div>
           <div className="flex items-center gap-2">
-            <input type="checkbox" id="domicilio" checked={esADomicilio} onChange={(e) => setEsADomicilio(e.target.checked)} className="rounded border-gray-300 text-blue-600 focus:ring-blue-500" />
+            <input type="checkbox" id="domicilio" checked={esADomicilio} onChange={(e) => setEsADomicilio(e.target.checked)} className="rounded border-gray-300 text-accent focus:ring-accent" />
             <label htmlFor="domicilio" className="text-sm text-gray-700">Entrega a domicilio</label>
           </div>
           {esADomicilio && (
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Dirección de entrega</label>
-              <input type="text" value={direccion} onChange={(e) => setDireccion(e.target.value)} placeholder="Cra XX #YY-ZZ, Barrio, Ciudad" className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none" />
+              <input type="text" value={direccion} onChange={(e) => setDireccion(e.target.value)} placeholder="Cra XX #YY-ZZ, Barrio, Ciudad" className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-accent outline-none" />
             </div>
           )}
           {selectedMed?.requiereAutorizacion && (
-            <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg flex items-start gap-2">
-              <Package size={16} className="text-blue-600 mt-0.5 shrink-0" />
-              <p className="text-xs text-blue-700">
+            <div className="p-3 bg-accent/10 border border-accent/30 rounded-lg flex items-start gap-2">
+              <Package size={16} className="text-accent mt-0.5 shrink-0" />
+              <p className="text-xs text-accent">
                 Este medicamento requiere autorización previa de <strong>{epsPaciente?.nombre || 'tu EPS'}</strong>. La solicitud se enviará automáticamente. Tiempo estimado: 24-48 horas.
               </p>
             </div>
@@ -284,7 +284,7 @@ export default function BuscarMedicamento() {
           {reservaError && <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-700">{reservaError}</div>}
           <div className="flex gap-3 pt-2">
             <button onClick={() => setShowModal(false)} className="flex-1 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors">Cancelar</button>
-            <button onClick={handleConfirmarReserva} disabled={loading} className="flex-1 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors disabled:opacity-50 flex items-center justify-center gap-2">
+            <button onClick={handleConfirmarReserva} disabled={loading} className="flex-1 py-2 text-sm font-medium text-white bg-accent hover:opacity-90 rounded-lg transition-colors disabled:opacity-50 flex items-center justify-center gap-2">
               {loading ? <span className="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full" /> : null}
               {loading ? 'Procesando...' : 'Confirmar reserva'}
             </button>
@@ -299,11 +299,11 @@ export default function BuscarMedicamento() {
             <p className="text-gray-600">Comparte la información de <strong>{shareModal}</strong></p>
             <div className="p-3 bg-gray-50 rounded-lg">
               <p className="text-gray-500 text-xs mb-1">Enlace simulado:</p>
-              <p className="font-mono text-xs text-blue-600 break-all">snsdm.gov.co/med/{shareModal.toLowerCase().replace(/\s+/g, '-')}</p>
+              <p className="font-mono text-xs text-accent break-all">snsdm.gov.co/med/{shareModal.toLowerCase().replace(/\s+/g, '-')}</p>
             </div>
             <button
               onClick={() => { navigator.clipboard.writeText(`snsdm.gov.co/med/${shareModal.toLowerCase().replace(/\s+/g, '-')}`); setShareModal(null) }}
-              className="w-full py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg"
+              className="w-full py-2 text-sm font-medium text-white bg-accent hover:opacity-90 rounded-lg"
             >
               Copiar enlace
             </button>

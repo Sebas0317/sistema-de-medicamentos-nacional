@@ -30,6 +30,8 @@ const useStore = create(persist((set, get) => ({
   darkMode: false,
   mensajesChat: [],
   favoritos: [],
+  ultimoAcceso: null,
+  accentColor: 'default',
 
   // === ACCIÓN DE AUDITORÍA ===
   registrarEvento: (accion, detalle, usuarioId) => {
@@ -57,7 +59,7 @@ const useStore = create(persist((set, get) => ({
         u.activo === true
     )
     if (usuario) {
-      set({ usuarioActual: usuario })
+      set({ usuarioActual: usuario, ultimoAcceso: new Date().toISOString() })
       get().registrarEvento('INICIO_SESION', `Usuario ${usuario.nombre} (${usuario.rol}) inició sesión`, usuario.id)
       return { ok: true, usuario }
     }
@@ -66,6 +68,14 @@ const useStore = create(persist((set, get) => ({
 
   logout: () => {
     set({ usuarioActual: null })
+  },
+
+  setUltimoAcceso: () => {
+    set({ ultimoAcceso: new Date().toISOString() })
+  },
+
+  setAccentColor: (color) => {
+    set({ accentColor: color })
   },
 
   devSetUser: (userId) => {
@@ -769,6 +779,8 @@ const useStore = create(persist((set, get) => ({
     notificaciones: state.notificaciones,
     mensajesChat: state.mensajesChat,
     favoritos: state.favoritos,
+    ultimoAcceso: state.ultimoAcceso,
+    accentColor: state.accentColor,
   })
 }))
 

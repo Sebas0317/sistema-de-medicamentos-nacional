@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
-import { Menu, X, LogOut, Moon, Sun, Bell, CheckCircle, AlertTriangle, Info } from 'lucide-react'
+import { Menu, X, LogOut, Moon, Sun, Bell, CheckCircle, AlertTriangle, Info, Palette } from 'lucide-react'
 import useStore from '../../store/useStore'
 
 const roleConfig = {
@@ -52,6 +52,28 @@ export default function Navbar({ rol }) {
   const darkMode = useStore((s) => s.darkMode)
   const toggleDarkMode = useStore((s) => s.toggleDarkMode)
   const notificaciones = useStore((s) => s.notificaciones)
+  const accentColor = useStore((s) => s.accentColor)
+  const setAccentColor = useStore((s) => s.setAccentColor)
+
+  const [colorOpen, setColorOpen] = useState(false)
+  const colorRef = useRef(null)
+
+  useEffect(() => {
+    const handleClick = (e) => {
+      if (colorRef.current && !colorRef.current.contains(e.target)) setColorOpen(false)
+    }
+    if (colorOpen) document.addEventListener('mousedown', handleClick)
+    return () => document.removeEventListener('mousedown', handleClick)
+  }, [colorOpen])
+
+  const colores = [
+    { id: 'default', label: 'Por defecto', color: '#6366f1' },
+    { id: 'blue', label: 'Azul', color: '#2563eb' },
+    { id: 'green', label: 'Verde', color: '#16a34a' },
+    { id: 'amber', label: 'Ambar', color: '#d97706' },
+    { id: 'red', label: 'Rojo', color: '#dc2626' },
+    { id: 'purple', label: 'Púrpura', color: '#8b5cf6' },
+  ]
   const marcarNotificacionLeida = useStore((s) => s.marcarNotificacionLeida)
   const marcarTodasNotificacionesLeidas = useStore((s) => s.marcarTodasNotificacionesLeidas)
 
@@ -147,6 +169,28 @@ export default function Navbar({ rol }) {
 
           {/* Desktop right section */}
           <div className="hidden md:flex items-center gap-2">
+            {/* Accent Color */}
+            <div className="relative" ref={colorRef}>
+              <button onClick={() => setColorOpen(!colorOpen)} className="p-2 text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg">
+                <Palette size={18} />
+              </button>
+              {colorOpen && (
+                <div className="absolute right-0 mt-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-lg z-50 p-3 w-48">
+                  <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-2">Color acento</p>
+                  <div className="space-y-1">
+                    {colores.map(c => (
+                      <button key={c.id} onClick={() => { setAccentColor(c.id); setColorOpen(false) }}
+                        className={`w-full flex items-center gap-3 px-3 py-2 text-sm rounded-lg transition-colors ${accentColor === c.id ? 'bg-gray-100 dark:bg-gray-700' : 'hover:bg-gray-50 dark:hover:bg-gray-700/50'}`}>
+                        <span className="w-4 h-4 rounded-full border border-gray-300" style={{ backgroundColor: c.color }} />
+                        <span className="text-gray-700 dark:text-gray-200">{c.label}</span>
+                        {accentColor === c.id && <span className="ml-auto text-xs text-accent">✓</span>}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+
             {/* Dark Mode Toggle */}
             <button
               onClick={toggleDarkMode}
@@ -210,7 +254,7 @@ export default function Navbar({ rol }) {
                     <div className="p-2 border-t border-gray-200 dark:border-gray-700">
                       <button
                         onClick={() => marcarTodasNotificacionesLeidas()}
-                        className="w-full px-3 py-1.5 text-xs text-center text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-colors"
+                        className="w-full px-3 py-1.5 text-xs text-center text-accent hover:bg-accent/10 dark:hover:bg-accent/20 rounded-lg transition-colors"
                       >
                         Marcar todas como leídas
                       </button>

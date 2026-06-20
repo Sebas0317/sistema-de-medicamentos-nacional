@@ -15,6 +15,7 @@ export default function DashboardAdmin() {
   const farmacias = useStore((s) => s.farmacias)
   const getStatsGenerales = useStore((s) => s.getStatsGenerales)
   const auditoria = useStore((s) => s.auditoria)
+  const ultimoAcceso = useStore((s) => s.ultimoAcceso)
 
   const stats = getStatsGenerales()
   const pacientes = usuarios.filter((u) => u.rol === 'paciente').length
@@ -35,7 +36,8 @@ export default function DashboardAdmin() {
       <Navbar rol="admin" />
       <div className="max-w-7xl mx-auto px-4 py-6">
         <Breadcrumb />
-        <h1 className="text-xl font-bold text-gray-900 mb-6">Panel de Administración</h1>
+        <h1 className="text-xl font-bold text-gray-900">Panel de Administración</h1>
+        {ultimoAcceso && <p className="text-xs text-gray-400 mt-1 mb-6">Último acceso: {new Date(ultimoAcceso).toLocaleString('es-CO')}</p>}
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <StatCard label="Usuarios registrados" value={usuarios.length} icon={Users} colorClass="bg-purple-100 text-purple-600" />

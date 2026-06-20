@@ -75,7 +75,7 @@ export default function MisReservas() {
         {/* Tabs */}
         <div className="flex gap-1 mb-4 bg-white p-1 rounded-lg border border-gray-100 w-fit">
           {tabs.map((t) => (
-            <button key={t} onClick={() => setActiveTab(t)} className={`px-4 py-1.5 text-sm font-medium rounded-md transition-colors ${activeTab === t ? 'bg-blue-600 text-white' : 'text-gray-600 hover:text-gray-900'}`}>{t}</button>
+            <button key={t} onClick={() => setActiveTab(t)} className={`px-4 py-1.5 text-sm font-medium rounded-md transition-colors ${activeTab === t ? 'bg-accent text-white' : 'text-gray-600 hover:text-gray-900'}`}>{t}</button>
           ))}
         </div>
 
@@ -113,7 +113,7 @@ export default function MisReservas() {
                       <td className="px-4 py-3">{authBadge ? <Badge text={authBadge.text} variant={authBadge.variant} /> : '-'}</td>
                       <td className="px-4 py-3">
                         <div className="flex gap-1">
-                          <button onClick={() => setDetailReserva(r)} className="p-1.5 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg" title="Ver detalle"><Eye size={16} /></button>
+                          <button onClick={() => setDetailReserva(r)} className="p-1.5 text-gray-400 hover:text-accent hover:bg-accent/10 rounded-lg" title="Ver detalle"><Eye size={16} /></button>
                           {(r.estado === 'pendiente' || r.estado === 'confirmada') && (
                             <button onClick={() => handleCancelar(r.id)} className="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg" title="Cancelar"><XCircle size={16} /></button>
                           )}

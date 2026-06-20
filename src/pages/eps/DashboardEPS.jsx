@@ -24,6 +24,7 @@ export default function DashboardEPS() {
   const autorizacionesState = useStore((s) => s.autorizaciones)
   const usuarios = useStore((s) => s.usuarios)
   const medicamentos = useStore((s) => s.medicamentos)
+  const ultimoAcceso = useStore((s) => s.ultimoAcceso)
   const { formatRelativeTime } = useRelativeTime()
 
   const epsId = usuarioActual?.epsId || ''
@@ -51,7 +52,9 @@ export default function DashboardEPS() {
       <div className="max-w-7xl mx-auto px-4 py-6">
         <Breadcrumb />
         <h1 className="text-xl font-bold text-gray-900">Bienvenida, {usuarioActual?.entidadNombre || 'EPS'}</h1>
-        <p className="text-sm text-gray-500 mt-1">{new Date().toLocaleDateString('es-CO', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</p>
+        <p className="text-sm text-gray-500 mt-1">{new Date().toLocaleDateString('es-CO', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+          {ultimoAcceso && <span className="text-xs text-gray-400 ml-4">Último acceso: {new Date(ultimoAcceso).toLocaleString('es-CO')}</span>}
+        </p>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
           <StatCard label="Solicitudes pendientes" value={pendientes.length} icon={Clock} colorClass="bg-yellow-100 text-yellow-600" />
