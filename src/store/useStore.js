@@ -709,7 +709,31 @@ const useStore = create(persist((set, get) => ({
       ...mensaje,
       fecha: new Date().toISOString()
     }
-    set({ mensajesChat: [...state.mensajesChat, msg] })
+    let destinatarios = []
+    if (msg.destinatarioRol === 'farmacia') {
+      destinatarios = state.usuarios.filter(u => u.rol === 'farmacia' && u.entidadId === msg.destinatarioId)
+    } else if (msg.destinatarioRol === 'proveedor') {
+      destinatarios = state.usuarios.filter(u => u.rol === 'proveedor')
+    }
+    const nuevasNotifs = destinatarios.map(u => ({
+      id: 'notif' + Date.now() + u.id,
+      mensaje: 'Nuevo mensaje de ' + msg.remitenteNombre,
+      tipo: 'info',
+      timestamp: new Date().toISOString(),
+      leida: false,
+      usuarioId: u.id,
+      rol: u.rol
+    }))
+    set({ mensajesChat: [...state.mensajesChat, msg], notificaciones: [...nuevasNotifs, ...state.notificaciones].slice(0, 20) })
+  },
+
+  getMensajesPorFarmacia: (farmaciaId) => {
+    const state = get()
+    return state.mensajesChat.filter((m) => {
+      const farmaciaEnvia = m.remitenteRol === 'farmacia' && m.remitenteId === farmaciaId && m.destinatarioRol === 'proveedor'
+      const farmaciaRecibe = m.destinatarioRol === 'farmacia' && m.destinatarioId === farmaciaId && m.remitenteRol === 'proveedor'
+      return farmaciaEnvia || farmaciaRecibe
+    }).sort((a, b) => new Date(a.fecha) - new Date(b.fecha))
   },
 
   marcarNotificacionLeida: (notifId) => {
@@ -731,6 +755,8 @@ const useStore = create(persist((set, get) => ({
     usuarioActual: state.usuarioActual,
     auditoria: state.auditoria,
     darkMode: state.darkMode,
+    notificaciones: state.notificaciones,
+    mensajesChat: state.mensajesChat,
   })
 }))
 

@@ -174,9 +174,16 @@ export default function DashboardFarmacia() {
       </Modal>
 
       {/* Dev: cambio rápido de usuario */}
-      <div className="fixed bottom-4 right-4 z-50">
+      <div className="fixed top-20 right-4 z-40">
+        <button
+          onClick={() => setDevOpen(!devOpen)}
+          className="flex items-center gap-1.5 px-2.5 py-1.5 bg-gray-900/80 text-white text-xs font-medium rounded-lg hover:bg-gray-900 transition-colors backdrop-blur-sm"
+        >
+          <GitBranch size={12} />
+          Dev
+        </button>
         {devOpen && (
-          <div className="mb-2 bg-white rounded-xl border border-gray-200 shadow-xl p-3 w-64 max-h-72 overflow-y-auto">
+          <div className="mt-1 bg-white rounded-xl border border-gray-200 shadow-xl p-3 w-64 max-h-72 overflow-y-auto">
             <p className="text-xs font-medium text-gray-500 mb-2 uppercase tracking-wider">Cambio rápido de usuario</p>
             {usuarios.map(u => (
               <button
@@ -200,13 +207,6 @@ export default function DashboardFarmacia() {
             ))}
           </div>
         )}
-        <button
-          onClick={() => setDevOpen(!devOpen)}
-          className="ml-auto flex items-center gap-2 px-3 py-2 bg-gray-900 text-white text-sm font-medium rounded-xl shadow-lg hover:bg-gray-800 transition-colors"
-        >
-          <GitBranch size={16} />
-          Dev
-        </button>
       </div>
       <ChatPanel />
     </div>

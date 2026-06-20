@@ -20,6 +20,7 @@ import LoginProveedor from '../pages/proveedor/LoginProveedor'
 import DashboardProveedor from '../pages/proveedor/DashboardProveedor'
 import AlertasStock from '../pages/proveedor/AlertasStock'
 import RegistrarSuministro from '../pages/proveedor/RegistrarSuministro'
+import MensajesProveedor from '../pages/proveedor/MensajesProveedor'
 import Perfil from '../pages/shared/Perfil'
 import LoginAdmin from '../pages/admin/LoginAdmin'
 import DashboardAdmin from '../pages/admin/DashboardAdmin'
@@ -81,6 +82,7 @@ export default function AppRouter() {
         <Route path="dashboard" element={<DashboardProveedor />} />
         <Route path="alertas" element={<AlertasStock />} />
         <Route path="suministro" element={<RegistrarSuministro />} />
+        <Route path="mensajes" element={<MensajesProveedor />} />
         <Route path="perfil" element={<Perfil />} />
         <Route index element={<Navigate to="dashboard" replace />} />
       </Route>

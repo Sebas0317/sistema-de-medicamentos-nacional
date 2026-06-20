@@ -25,10 +25,6 @@ export default function ChatPanel() {
       return m.remitenteId === entidadId || m.destinatarioId === entidadId
     }
 
-    if (rol === 'proveedor') {
-      return m.remitenteId === entidadId || m.destinatarioId === entidadId
-    }
-
     return true
   })
 
@@ -45,7 +41,7 @@ export default function ChatPanel() {
       destinatarioId = 'prov1'
     } else if (rol === 'proveedor') {
       destinatarioRol = 'farmacia'
-      destinatarioId = 'farm1'
+      destinatarioId = 'f1'
     } else {
       return
     }

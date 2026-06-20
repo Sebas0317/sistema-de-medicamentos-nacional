@@ -32,7 +32,8 @@ const roleLinks = {
    proveedor: [
      { label: 'Inicio', path: '/proveedor/dashboard' },
      { label: 'Alertas', path: '/proveedor/alertas' },
-     { label: 'Suministros', path: '/proveedor/suministro' }
+     { label: 'Suministros', path: '/proveedor/suministro' },
+     { label: 'Mensajes', path: '/proveedor/mensajes' }
    ],
    admin: [
      { label: 'Dashboard', path: '/admin/dashboard' },

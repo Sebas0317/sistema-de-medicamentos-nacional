@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from 'react'
+import { useEffect, useState, useCallback, useMemo } from 'react'
 import { X, CheckCircle, XCircle, AlertTriangle, Info } from 'lucide-react'
 import useStore from '../../store/useStore'
 
@@ -61,8 +61,18 @@ function ToastItem({ notif, onClose }) {
 export default function ToastContainer() {
   const notificaciones = useStore((s) => s.notificaciones)
   const marcarNotificacionLeida = useStore((s) => s.marcarNotificacionLeida)
+  const usuarioActual = useStore((s) => s.usuarioActual)
 
-  const noLeidas = notificaciones.filter((n) => !n.leida).slice(0, 3)
+  const notificacionesFiltradas = useMemo(() => {
+    return notificaciones.filter((n) => {
+      if (n.usuarioId === usuarioActual?.id) return true
+      if (n.rol === usuarioActual?.rol) return true
+      if (n.rol === undefined) return true
+      return false
+    })
+  }, [notificaciones, usuarioActual])
+
+  const noLeidas = notificacionesFiltradas.filter((n) => !n.leida).slice(0, 3)
 
   const handleClose = useCallback((id) => {
     marcarNotificacionLeida(id)
