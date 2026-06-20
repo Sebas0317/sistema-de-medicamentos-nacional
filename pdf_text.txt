@@ -1,0 +1,1600 @@
+--- PAGE 1 ---
+1 
+ 
+Proyecto Final de Ingenierφa de Software 
+Sistema Nacional De Seguimiento Y Disponibilidad De Medicamentos (Snsdm) 
+ 
+ 
+Juan Sebastian Sandoval ù C≤digo: 085450422024 
+Andres Cipamocha ù C≤digo: 085450852024 
+Cebastian Molina ù C≤digo: 085450802024 
+Diego Lavacude ù C≤digo: 085454762024 
+ 
+ 
+Edna Lucero Triana Salgado 
+ 
+ 
+Ingenierφa de Software - IV Semestre 
+Ingenierφa de Sistemas 
+Universidad del Tolima û CAT Kennedy 
+17 de junio de 2026 
+ 
+ 
+Bogotß û 2026 
+
+--- PAGE 2 ---
+2 
+ 
+Contenido 
+INTRODUCCI╙N .......................................................................................................................... 4 
+Descripci≤n general del sistema propuesto ................................................................................. 4 
+Contexto y justificaci≤n: ┐por quΘ este sistema? ┐quΘ problema real resuelve? ......................... 5 
+Alcance del proyecto: quΘ incluye y quΘ no incluye ................................................................... 6 
+Metodologφa utilizada (Scrum ù justificar la elecci≤n) ............................................................. 6 
+Desarrollo Incremental del Sistema ........................................................................................ 7 
+Gesti≤n Basada en Historias de Usuario ................................................................................. 7 
+Organizaci≤n Mediante Product Backlog y Sprints ................................................................ 7 
+Calidad y Escalabilidad del Software ..................................................................................... 7 
+CAP═TULO 1 ù AN┴LISIS DEL SISTEMA ............................................................................... 8 
+(Tutorφa 1) .................................................................................................................................... 8 
+1.1 Descripci≤n del problema ................................................................................................. 8 
+1.2 Requisitos del sistema ..................................................................................................... 10 
+1.3 Diagrama de Casos de Uso ............................................................................................. 12 
+1.4 Plantillas de Casos de Uso .............................................................................................. 14 
+1.5 Metodologφa de desarrollo: Scrum ......................................................
+
+--- PAGE 3 ---
+3 
+ 
+5.1 Acta de Constituci≤n del Proyecto .................................................................................. 56 
+5.2 Gesti≤n del Alcance ........................................................................................................ 61 
+5.3 Gesti≤n del Cronograma ................................................................................................. 67 
+5.4 Gesti≤n de Riesgos .......................................................................................................... 72 
+5.5 Gesti≤n de la Calidad ...................................................................................................... 74 
+5.6 Gesti≤n de Interesados .................................................................................................... 77 
+CONCLUSIONES ........................................................................................................................ 79 
+┐QuΘ aprendieron del proceso completo de ingenierφa de software? ........................................ 79 
+┐QuΘ fue lo mßs difφcil? ┐QuΘ harφan diferente? ....................................................................... 80 
+┐C≤mo conectan lo aprendido con su ejercicio profesional actual? .......................................... 80 
+Reflexi≤n sobre la importancia de la documentaci≤n formal en proyectos reales .................... 81 
+REFERENCIAS BIBLIOGRAFICAS.......................................................................................... 82 
+ANEXOS ...................................................................................................................................... 83 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+--- PAGE 4 ---
+4 
+ 
+INTRODUCCI╙N 
+ 
+Descripci≤n general del sistema propuesto 
+El presente proyecto consiste en el dise±o y desarrollo de un Sistema de Seguimiento y 
+Disponibilidad de Medicamentos, una plataforma tecnol≤gica orientada a integrar la informaci≤n 
+de EPS, farmacias, proveedores y pacientes dentro de un ·nico ecosistema digital. 
+La soluci≤n permitirß consultar en tiempo real la disponibilidad de medicamentos 
+formulados por profesionales de la salud, facilitando que los pacientes identifiquen las farmacias 
+donde pueden reclamar sus tratamientos sin necesidad de realizar m·ltiples desplazamientos. 
+Adicionalmente, el sistema permitirß gestionar reservas, autorizaciones, control de inventarios, 
+seguimiento de entregas y generaci≤n de reportes administrativos. 
+La plataforma busca centralizar la informaci≤n relacionada con la dispensaci≤n de 
+medicamentos, fortaleciendo la comunicaci≤n entre los diferentes actores del sistema de salud y 
+mejorando la eficiencia de los procesos asociados al suministro farmacΘutico. 
+  
+
+--- PAGE 5 ---
+5 
+ 
+Contexto y justificaci≤n: ┐por quΘ este sistema? ┐quΘ problema real resuelve? 
+ 
+Uno de los problemas mßs frecuentes dentro del sistema de salud colombiano es la 
+dificultad para acceder oportunamente a los medicamentos formulados. En muchos casos, los 
+pacientes desconocen en quΘ farmacia se encuentra disponible un medicamento, lo que genera 
+desplazamientos innecesarios, largas filas, pΘrdida de tiempo y retrasos en el inicio o continuidad 
+de los tratamientos mΘdicos. 
+Actualmente, la informaci≤n relacionada con la disponibilidad de medicamentos suele 
+encontrarse dispersa entre diferentes entidades, como EPS, operadores logφsticos, farmacias y 
+proveedores, dificultando la consulta rßpida y precisa por parte de los usuarios. Esta falta de 
+integraci≤n tecnol≤gica afecta tanto a los pacientes como a las instituciones encargadas de la 
+dispensaci≤n. 
+Frente a esta problemßtica, surge la necesidad de implementar una plataforma 
+centralizada que permita compartir informaci≤n actualizada sobre inventarios, autorizaciones y 
+disponibilidad de medicamentos. De esta manera, los usuarios podrßn consultar de forma 
+inmediata d≤nde reclamar sus medicamentos, mientras que las farmacias y EPS podrßn optimizar 
+la gesti≤n de inventarios y mejorar la calidad del servicio prestado. 
+El proyecto busca contribuir a la transformaci≤n digital del sector salud mediante una 
+soluci≤n tecnol≤gica que reduzca tiempos de espera, mejore la experiencia de los usuarios y 
+fortalezca la coordinaci≤n entre las entidades involucradas en el proceso de dispensaci≤n de 
+medicamentos. 
+  
+
+--- PAGE 6 ---
+6 
+ 
+Alcance del proyecto: quΘ incluye y quΘ no incluye 
+ 
+El alcance del proyecto comprende el dise±o y desarrollo de un prototipo funcional de 
+una plataforma para la gesti≤n y consulta de disponibilidad de medicamentos. El sistema 
+permitirß registrar medicamentos formulados, consultar disponibilidad en farmacias conectadas, 
+gestionar reservas, administrar inventarios, procesar autorizaciones emitidas por las EPS y 
+generar reportes de seguimiento. 
+Asimismo, el proyecto contempla la definici≤n de los procesos de interacci≤n entre 
+pacientes, EPS, farmacias, proveedores y administradores del sistema, apoyßndose en 
+herramientas de modelado, historias de usuario, diagramas de casos de uso, mockups y 
+metodologφas ßgiles para su desarrollo. 
+No se contempla dentro del alcance la integraci≤n real con los sistemas informßticos de 
+EPS, hospitales, farmacias o entidades gubernamentales, ni la puesta en producci≤n a nivel 
+nacional. El proyecto se enfocarß en la construcci≤n de un prototipo funcional que demuestre la 
+viabilidad tΘcnica y operativa de la soluci≤n propuesta. 
+Metodologφa utilizada (Scrum ù justificar la elecci≤n) 
+ 
+ 
+Para el desarrollo del Sistema de Seguimiento y Disponibilidad de Medicamentos se 
+seleccion≤ la metodologφa ßgil Scrum, debido a que permite gestionar proyectos de software de 
+manera iterativa e incremental, facilitando la entrega progresiva de funcionalidades y la 
+adaptaci≤n a cambios durante el proceso de desarrollo. 
+La elecci≤n de Scrum se justifica bajo los siguientes criterios tΘcnicos: 
+
+--- PAGE 7 ---
+7 
+ 
+Desarrollo Incremental del Sistema 
+ 
+Scrum permite construir la soluci≤n por m≤dulos funcionales, priorizando inicialmente 
+las funcionalidades esenciales para el negocio, como la consulta de disponibilidad de 
+medicamentos, la gesti≤n de autorizaciones y el control de inventarios. Posteriormente, se 
+incorporan funcionalidades complementarias como reservas, notificaciones, monitoreo y 
+generaci≤n de reportes. Este enfoque facilita la validaci≤n temprana de los componentes mßs 
+importantes del sistema. 
+Gesti≤n Basada en Historias de Usuario 
+ 
+El proyecto fue estructurado mediante historias de usuario que representan las 
+necesidades de los diferentes actores involucrados en el proceso de dispensaci≤n de 
+medicamentos, incluyendo pacientes, EPS, farmacias, proveedores y administradores del 
+sistema. Esto permite priorizar el desarrollo de funcionalidades de acuerdo con el valor que 
+aportan a los usuarios y garantizar que el producto final responda a necesidades reales. 
+Organizaci≤n Mediante Product Backlog y Sprints 
+ 
+Scrum permite organizar los requerimientos del proyecto en un Product Backlog 
+priorizado y distribuir su desarrollo en diferentes sprints. Cada sprint contempla un conjunto 
+especφfico de funcionalidades que pueden ser dise±adas, desarrolladas y evaluadas de forma 
+independiente, permitiendo un mejor control del avance del proyecto y una gesti≤n mßs eficiente 
+de los recursos del equipo. 
+Calidad y Escalabilidad del Software 
+ 
+
+--- PAGE 8 ---
+8 
+ 
+La metodologφa Scrum favorece la revisi≤n continua del producto durante cada sprint, 
+permitiendo identificar oportunidades de mejora tempranamente. Esto contribuye al desarrollo de 
+una arquitectura modular donde cada componente del sistema cumple una funci≤n especφfica, 
+facilitando el mantenimiento, la escalabilidad y la futura integraci≤n con sistemas de EPS, 
+farmacias y entidades del sector salud. 
+En conclusi≤n, Scrum fue seleccionada como metodologφa de desarrollo debido a su 
+flexibilidad, capacidad de adaptaci≤n y enfoque orientado a la entrega continua de valor, 
+caracterφsticas que resultan especialmente adecuadas para la construcci≤n de una plataforma 
+tecnol≤gica que involucra m·ltiples actores y procesos dentro del sistema de salud. 
+ 
+ 
+ 
+CAP═TULO 1 ù AN┴LISIS DEL SISTEMA 
+(Tutorφa 1) 
+1.1 Descripci≤n del problema 
+Problema identificado en detalle 
+ 
+En Colombia, uno de los principales desafφos dentro del sistema de salud es la gesti≤n 
+eficiente de la disponibilidad y entrega de medicamentos formulados a los pacientes. 
+Actualmente, la informaci≤n relacionada con el inventario de medicamentos suele encontrarse 
+distribuida entre diferentes farmacias, operadores logφsticos y Entidades Promotoras de Salud 
+(EPS), dificultando la consulta rßpida y precisa por parte de los usuarios. 
+Como consecuencia, los pacientes frecuentemente deben desplazarse a m·ltiples 
+farmacias para verificar la disponibilidad de un medicamento, enfrentando largas filas, tiempos 
+de espera prolongados y retrasos en la continuidad de sus tratamientos mΘdicos. Adicionalmente, 
+
+--- PAGE 9 ---
+9 
+ 
+los procesos de autorizaci≤n, reserva y entrega suelen realizarse mediante procedimientos 
+manuales o sistemas independientes que no comparten informaci≤n de manera eficiente. 
+La ausencia de una plataforma centralizada que integre a pacientes, EPS, farmacias y 
+proveedores genera ineficiencias operativas, dificultades en el control de inventarios y una 
+experiencia poco satisfactoria para los usuarios del sistema de salud. 
+ Poblaci≤n o usuarios afectados 
+ 
+Los principales actores afectados por esta problemßtica son: 
+ò Pacientes que requieren medicamentos formulados por profesionales de la salud. 
+ò EPS encargadas de validar autorizaciones y coberturas mΘdicas. 
+ò Farmacias responsables de la dispensaci≤n de medicamentos. 
+ò Proveedores encargados del suministro y reposici≤n de inventarios. 
+ò Administradores del sistema encargados del monitoreo y control operativo. 
+Cada uno de estos actores enfrenta dificultades derivadas de la falta de integraci≤n de 
+informaci≤n y de la ausencia de mecanismos que permitan consultar, reservar, autorizar y 
+entregar medicamentos de manera eficiente. 
+Impacto de no tener el sistema 
+ 
+Si no se implementa una soluci≤n tecnol≤gica para gestionar estos procesos, continuarßn 
+presentßndose problemas como: 
+ò Desplazamientos innecesarios por parte de los pacientes. 
+ò Incremento en los tiempos de espera para reclamar medicamentos. 
+
+--- PAGE 10 ---
+10 
+ 
+ò Riesgo de interrupci≤n de tratamientos mΘdicos. 
+ò Falta de visibilidad sobre la disponibilidad de medicamentos. 
+ò Dificultades en la gesti≤n y control de inventarios. 
+ò Retrasos en autorizaciones y procesos de entrega. 
+ò Incremento de costos operativos para las entidades involucradas. 
+ò Limitada capacidad de monitoreo y generaci≤n de indicadores de gesti≤n. 
+Por lo anterior, se propone el desarrollo de un Sistema de Seguimiento y Disponibilidad 
+de Medicamentos que permita centralizar la informaci≤n y optimizar los procesos asociados a la 
+gesti≤n y entrega de medicamentos. 
+ 
+1.2 Requisitos del sistema 
+Requisitos funcionales (mφnimo 10, numerados RF-01 a RF-n) 
+ 
+ID Requisito Funcional 
+RF-01 El sistema debe permitir a los usuarios autenticarse mediante mecanismos seguros 
+de validaci≤n. 
+RF-02 El sistema debe permitir consultar la disponibilidad de medicamentos en tiempo 
+real. 
+RF-03 El sistema debe mostrar la ubicaci≤n de las farmacias que disponen del 
+medicamento solicitado. 
+RF-04 El sistema debe permitir realizar reservas de medicamentos cuando exista 
+disponibilidad en inventario. 
+RF-05 El sistema debe permitir programar citas para la reclamaci≤n de medicamentos. 
+RF-06 El sistema debe enviar alertas y recordatorios relacionados con reservas, 
+disponibilidad y citas programadas. 
+RF-07 El sistema debe permitir a las EPS validar autorizaciones para la entrega de 
+medicamentos. 
+RF-08 El sistema debe permitir a los proveedores registrar suministros y actualizar 
+existencias de medicamentos. 
+
+--- PAGE 11 ---
+11 
+ 
+RF-09 El sistema debe permitir a las farmacias gestionar inventarios y registrar 
+movimientos de entrada y salida. 
+RF-10 El sistema debe permitir confirmar la entrega de medicamentos y generar 
+comprobantes digitales. 
+RF-11 El sistema debe registrar eventos de auditorφa para garantizar la trazabilidad de las 
+operaciones. 
+RF-12 El sistema debe permitir a los administradores monitorear las operaciones 
+mediante paneles de control. 
+RF-13 El sistema debe generar reportes estadφsticos exportables en formatos PDF y Excel. 
+RF-14 El sistema debe permitir administrar configuraciones y preferencias de notificaci≤n 
+de los usuarios. 
+ 
+Requisitos no funcionales (mφnimo 5, numerados RNF-01 a RNF-n) 
+ 
+ID Requisito Funcional ID 
+RF-01 El sistema debe permitir a los usuarios autenticarse mediante 
+mecanismos seguros de validaci≤n. RF-01 
+RF-02 El sistema debe permitir consultar la disponibilidad de 
+medicamentos en tiempo real. RF-02 
+RF-03 El sistema debe mostrar la ubicaci≤n de las farmacias que 
+disponen del medicamento solicitado. RF-03 
+RF-04 El sistema debe permitir realizar reservas de medicamentos 
+cuando exista disponibilidad en inventario. RF-04 
+RF-05 El sistema debe permitir programar citas para la reclamaci≤n de 
+medicamentos. RF-05 
+RF-06 El sistema debe enviar alertas y recordatorios relacionados con 
+reservas, disponibilidad y citas programadas. RF-06 
+RF-07 El sistema debe permitir a las EPS validar autorizaciones para la 
+entrega de medicamentos. RF-07 
+ 
+Restricciones del sistema 
+ 
+ID Restricci≤n 
+RS-01 
+El sistema debe operar bajo la normativa colombiana vigente relacionada con la 
+protecci≤n y tratamiento de datos personales (Ley 1581 de 2012). 
+RS-02 
+El acceso al sistema debe realizarse ·nicamente por usuarios previamente 
+registrados y autenticados mediante mecanismos de seguridad definidos por la 
+plataforma. 
+
+--- PAGE 12 ---
+12 
+ 
+RS-03 
+La informaci≤n de disponibilidad de medicamentos dependerß de los datos 
+suministrados por las farmacias y entidades participantes. 
+RS-04 
+El sistema requiere conexi≤n a internet para consultar inventarios, gestionar 
+reservas y sincronizar informaci≤n en tiempo real. 
+RS-05 
+La autorizaci≤n de medicamentos sujetos a cobertura dependerß de la respuesta 
+emitida por la EPS correspondiente. 
+RS-06 
+Solo usuarios con permisos especφficos podrßn modificar inventarios, 
+autorizaciones y registros administrativos. 
+RS-07 
+El sistema serß desarrollado como un prototipo acadΘmico, por lo que no se 
+integrarß directamente con bases de datos reales de EPS, farmacias o entidades 
+gubernamentales. 
+RS-08 
+La plataforma estarß orientada inicialmente al territorio colombiano y a las 
+entidades de salud que adopten el sistema. 
+RS-09 
+Los reportes generados estarßn disponibles ·nicamente para usuarios con rol de 
+administrador del sistema. 
+RS-10 
+La disponibilidad de las notificaciones dependerß de servicios externos de correo 
+electr≤nico, SMS o notificaciones m≤viles. 
+ 
+ 
+1.3 Diagrama de Casos de Uso 
+Diagrama UML completo con todos los actores 
+ 
+El Diagrama de Casos de Uso del Sistema de Seguimiento y Disponibilidad de 
+Medicamentos representa las interacciones entre los actores externos y las funcionalidades 
+principales del sistema. Su prop≤sito es identificar los servicios que la plataforma ofrece a cada 
+actor y mostrar las relaciones existentes entre las diferentes funcionalidades. 
+
+--- PAGE 13 ---
+13 
+ 
+La soluci≤n integra cinco actores principales: pacientes, EPS, farmacias, proveedores y 
+administradores del sistema. Cada uno participa en diferentes etapas del proceso de consulta, 
+autorizaci≤n, suministro y entrega de medicamentos. 
+Las relaciones <> y <> permiten representar dependencias funcionales entre los casos de 
+uso. Por ejemplo, la programaci≤n de una cita forma parte obligatoria del proceso de reserva de 
+medicamentos, mientras que las alertas y recordatorios funcionan como extensiones que mejoran 
+la experiencia del usuario. 
+ 
+ 
+Tabla de actores 
+Actor Tipo Descripci≤n 
+Usuario / Paciente Primario Persona que consulta, reserva y reclama 
+medicamentos formulados. 
+EPS Secundario Entidad encargada de validar 
+autorizaciones y cobertura para la entrega 
+de medicamentos. 
+Farmacia Primario Responsable de administrar inventarios y 
+realizar la entrega de medicamentos. 
+Proveedor Secundario Encargado de suministrar medicamentos 
+para mantener actualizado el inventario. 
+Administrador del Sistema Primario Responsable del monitoreo, control y 
+generaci≤n de reportes del sistema. 
+ 
+
+
+--- PAGE 14 ---
+14 
+ 
+ 
+Casos de uso identificados 
+C≤digo Caso de Uso Actor Principal 
+CU-01 Consultar disponibilidad de 
+medicamentos 
+Usuario 
+CU-02 Reservar medicamento Usuario 
+CU-03 Programar cita de reclamaci≤n Usuario 
+CU-04 Recibir alertas y recordatorios Usuario 
+CU-05 Autorizar entrega de medicamentos EPS 
+CU-06 Registrar suministro de medicamentos Proveedor 
+CU-07 Gestionar inventario de medicamentos Farmacia 
+CU-08 Confirmar entrega de medicamentos Farmacia 
+CU-09 Supervisar operaciones del sistema Administrador 
+CU-10 Generar reportes estadφsticos Administrador 
+ 
+1.4 Plantillas de Casos de Uso 
+ 
+CU-01: Consultar disponibilidad de medicamentos 
+Campo Descripci≤n 
+C≤digo CU-01 
+Nombre Consultar disponibilidad de medicamentos 
+Actor Principal Usuario 
+Precondiciones El usuario se encuentra autenticado en el sistema. Existen 
+medicamentos registrados en la base de datos. 
+Flujo Principal 
+1. El usuario accede al m≤dulo de consulta.2. Ingresa el 
+nombre o c≤digo del medicamento.3. El sistema realiza la 
+b·squeda.4. El sistema muestra las farmacias donde estß 
+disponible el medicamento.5. El usuario consulta la 
+informaci≤n. 
+Flujos Alternos 
+3A. El usuario realiza una b·squeda parcial del 
+medicamento.3B. El sistema muestra sugerencias 
+relacionadas. 
+Postcondiciones Se visualiza la disponibilidad actualizada del medicamento. 
+Excepciones El medicamento no existe en la base de datos o no hay 
+disponibilidad en las farmacias registradas. 
+ 
+CU-02: Reservar medicamento 
+
+--- PAGE 15 ---
+15 
+ 
+Campo Descripci≤n 
+C≤digo CU-02 
+Nombre Reservar medicamento 
+Actor Principal Usuario 
+Precondiciones El usuario estß autenticado. El medicamento cuenta con 
+stock disponible. 
+Flujo Principal 
+1. El usuario selecciona el medicamento.2. Solicita realizar 
+la reserva.3. El sistema valida el stock disponible.4. Se 
+registra la reserva.5. El sistema genera una confirmaci≤n 
+para el usuario. 
+Flujos Alternos 3A. El medicamento requiere autorizaci≤n previa por parte 
+de la EPS. 
+Postcondiciones La reserva queda registrada en el sistema. 
+Excepciones No existe stock suficiente o la autorizaci≤n es rechazada. 
+ 
+CU-03: Programar cita de reclamaci≤n 
+Campo Descripci≤n 
+C≤digo CU-03 
+Nombre Programar cita de reclamaci≤n 
+Actor Principal Usuario 
+Precondiciones Existe una reserva activa y aprobada. 
+Flujo Principal 
+1. El usuario accede al m≤dulo de citas.2. El sistema muestra 
+los horarios disponibles.3. El usuario selecciona fecha y 
+hora.4. El sistema registra la cita.5. Se envφa una 
+confirmaci≤n al usuario. 
+Flujos Alternos 3A. El horario seleccionado ya no estß disponible. 
+Postcondiciones La cita queda programada correctamente. 
+Excepciones No existen horarios disponibles para la farmacia 
+seleccionada. 
+ 
+CU-04: Recibir alertas y recordatorios 
+Campo Descripci≤n 
+C≤digo CU-04 
+Nombre Recibir alertas y recordatorios 
+Actor Principal Usuario 
+Precondiciones El usuario posee una reserva, cita o f≤rmula registrada. 
+Flujo Principal 
+1. El sistema detecta un evento pr≤ximo.2. Genera una 
+notificaci≤n.3. Envφa la alerta mediante el canal 
+configurado.4. El usuario recibe el mensaje. 
+
+--- PAGE 16 ---
+16 
+ 
+Flujos Alternos 3A. El usuario tiene configurados m·ltiples canales de 
+notificaci≤n. 
+Postcondiciones La alerta queda registrada como enviada. 
+Excepciones Fallo en el servicio de envφo de notificaciones. 
+ 
+CU-05: Autorizar entrega de medicamentos 
+Campo Descripci≤n 
+C≤digo CU-05 
+Nombre Autorizar entrega de medicamentos 
+Actor Principal EPS 
+Precondiciones Existe una solicitud pendiente de autorizaci≤n. 
+Flujo Principal 
+1. El sistema envφa la solicitud a la EPS.2. La EPS valida la 
+afiliaci≤n del paciente.3. Verifica la cobertura del 
+medicamento.4. Aprueba la solicitud.5. El sistema registra la 
+autorizaci≤n. 
+Flujos Alternos 4A. La EPS rechaza la solicitud por falta de cobertura o 
+afiliaci≤n. 
+Postcondiciones La autorizaci≤n queda registrada en el sistema. 
+Excepciones Error de comunicaci≤n con los servicios de la EPS. 
+ 
+CU-06: Registrar suministro de medicamentos 
+Campo Descripci≤n 
+C≤digo CU-06 
+Nombre Registrar suministro de medicamentos 
+Actor Principal Proveedor 
+Precondiciones Existe una solicitud de abastecimiento o reposici≤n. 
+Flujo Principal 
+1. El proveedor registra el lote suministrado.2. El sistema 
+valida la informaci≤n ingresada.3. Se actualiza el 
+inventario.4. Se registra el movimiento correspondiente. 
+Flujos Alternos 2A. El lote presenta inconsistencias o datos incompletos. 
+Postcondiciones El inventario aumenta seg·n el suministro registrado. 
+Excepciones Error en los datos del lote o fallo en el registro. 
+ 
+CU-07: Gestionar inventario de medicamentos 
+Campo Descripci≤n 
+C≤digo CU-07 
+
+--- PAGE 17 ---
+17 
+ 
+Nombre Gestionar inventario de medicamentos 
+Actor Principal Farmacia 
+Precondiciones El usuario tiene permisos de gesti≤n de inventario. 
+Flujo Principal 
+1. La farmacia accede al m≤dulo de inventario.2. Consulta 
+existencias disponibles.3. Registra entradas o salidas de 
+medicamentos.4. El sistema actualiza el stock.5. Se 
+almacena la trazabilidad del movimiento. 
+Flujos Alternos 3A. Actualizaci≤n automßtica por reservas o entregas 
+realizadas. 
+Postcondiciones El inventario queda actualizado. 
+Excepciones Error en el registro de cantidades o datos inconsistentes. 
+ 
+CU-08: Confirmar entrega de medicamentos 
+Campo Descripci≤n 
+C≤digo CU-08 
+Nombre Confirmar entrega de medicamentos 
+Actor Principal Farmacia 
+Precondiciones Existe una reserva aprobada y vigente. 
+Flujo Principal 
+1. El paciente solicita la entrega del medicamento.2. La 
+farmacia verifica la informaci≤n.3. Se confirma la entrega.4. 
+El sistema actualiza el inventario.5. Se genera un 
+comprobante digital. 
+Flujos Alternos 1A. La entrega se realiza mediante domicilio. 
+Postcondiciones La entrega queda registrada en el sistema. 
+Excepciones La reserva ha expirado o el medicamento no estß disponible. 
+ 
+CU-09: Supervisar operaciones del sistema 
+Campo Descripci≤n 
+C≤digo CU-09 
+Nombre Supervisar operaciones del sistema 
+Actor Principal Administrador 
+Precondiciones El administrador ha iniciado sesi≤n. 
+Flujo Principal 
+1. Accede al panel administrativo.2. Consulta mΘtricas e 
+indicadores.3. Revisa eventos y registros del sistema.4. 
+Analiza el estado de las operaciones. 
+Flujos Alternos 2A. Aplicar filtros para visualizar informaci≤n especφfica. 
+Postcondiciones La informaci≤n operativa es visualizada correctamente. 
+Excepciones Error en la carga de informaci≤n o acceso restringido. 
+ 
+
+--- PAGE 18 ---
+18 
+ 
+CU-09: Supervisar operaciones del sistema 
+Campo Descripci≤n 
+C≤digo CU-10 
+Nombre Generar reportes estadφsticos 
+Actor Principal Administrador 
+Precondiciones Existen datos almacenados en el sistema. 
+Flujo Principal 
+1. El administrador selecciona el tipo de reporte.2. Define el 
+rango de fechas.3. El sistema procesa la informaci≤n.4. 
+Genera el reporte solicitado.5. Permite exportar el resultado. 
+Flujos Alternos 4A. Exportar en PDF.4B. Exportar en Excel. 
+Postcondiciones El reporte queda generado y disponible para descarga. 
+Excepciones No existen datos para el perφodo seleccionado o falla la 
+exportaci≤n. 
+ 
+1.5 Metodologφa de desarrollo: Scrum 
+Scrum es una metodologφa ßgil utilizada para gestionar proyectos de software mediante ciclos 
+iterativos e incrementales denominados Sprints. Su implementaci≤n permite desarrollar 
+funcionalidades de manera progresiva, priorizando aquellas que generan mayor valor para los 
+usuarios y facilitando la adaptaci≤n ante cambios en los requerimientos. 
+Para el desarrollo del Sistema de Seguimiento y Disponibilidad de Medicamentos se 
+utilizarß Scrum debido a que involucra m·ltiples actores (pacientes, EPS, farmacias, proveedores 
+y administradores) y diferentes m≤dulos funcionales que pueden desarrollarse de forma gradual. 
+La metodologφa permite organizar el trabajo mediante historias de usuario, Product Backlog y 
+Sprint Backlog, garantizando un mejor control del avance y una entrega continua de valor. 
+ 
+ 
+ 
+
+--- PAGE 19 ---
+19 
+ 
+1.5.1 Product Backlog 
+ 
+ID Historia de Usuario Criterios de Aceptaci≤n Prioridad Puntos 
+HU-01 Autenticaci≤n segura 
+El sistema permite autenticaci≤n 
+mediante documento, QR y c≤digo 
+OTP vßlido. 
+Alta 5 
+HU-02 
+Consultar 
+disponibilidad de 
+medicamentos 
+El sistema muestra farmacias 
+disponibles, ubicaci≤n y cantidad 
+de medicamentos en tiempo real. 
+Alta 5 
+HU-03 Reservar 
+medicamentos 
+Solo permite reservar 
+medicamentos con stock 
+disponible y genera confirmaci≤n 
+automßtica. 
+Alta 5 
+HU-04 Validar 
+autorizaciones EPS 
+Verifica afiliaci≤n y cobertura 
+antes de aprobar una reserva o 
+entrega. 
+Alta 5 
+HU-05 Actualizar inventario 
+automßticamente 
+El stock se actualiza despuΘs de 
+cada reserva, entrega o reposici≤n. Alta 3 
+HU-06 Programar citas de 
+reclamaci≤n 
+Permite seleccionar fecha y hora 
+disponibles y envφa confirmaci≤n 
+al usuario. 
+Media 3 
+HU-07 Consultar farmacias 
+cercanas 
+Muestra en un mapa las farmacias 
+con disponibilidad del 
+medicamento solicitado. 
+Media 3 
+HU-08 Recibir alertas y 
+notificaciones 
+Envφa recordatorios sobre reservas, 
+citas y disponibilidad de 
+medicamentos. 
+Media 3 
+HU-09 Gestionar suministro 
+de medicamentos 
+Permite registrar nuevos lotes y 
+actualizar inventario 
+automßticamente. 
+Media 5 
+HU-10 Confirmar entrega de 
+medicamentos 
+Genera comprobante digital y 
+actualiza el inventario despuΘs de 
+la entrega. 
+Alta 5 
+HU-11 
+Realizar seguimiento 
+de entregas a 
+domicilio 
+Permite consultar el estado del 
+despacho en tiempo real. Baja 5 
+HU-12 Consultar registros 
+de auditorφa 
+Registra y muestra eventos 
+relevantes del sistema para fines de 
+control y seguimiento. 
+Alta 3 
+HU-13 Generar reportes de 
+gesti≤n 
+Permite generar reportes 
+estadφsticos y exportarlos en PDF o 
+Excel. 
+Baja 5 
+HU-14 
+Configurar 
+preferencias de 
+usuario 
+Permite modificar idioma, canales 
+de notificaci≤n y preferencias 
+personales. 
+Baja 2 
+
+--- PAGE 20 ---
+20 
+ 
+HU-15 
+Consultar historial 
+de medicamentos y 
+entregas 
+Permite visualizar f≤rmulas 
+activas, reservas y entregas 
+realizadas anteriormente. 
+Media 3 
+ 
+1.5.2 Historias de Usuario 
+ 
+HU-01 Autenticaci≤n Segura 
+Campo Descripci≤n 
+ID HU-01 
+Nombre Autenticaci≤n Segura 
+Como Paciente 
+Quiero Autenticarme mediante documento de identidad, c≤digo QR y OTP 
+Para 
+Garantizar que ·nicamente yo pueda acceder a mi informaci≤n y gestionar mis 
+medicamentos 
+Given Que el usuario se encuentra en la pantalla de inicio de sesi≤n 
+When Ingresa correctamente sus credenciales y el c≤digo OTP recibido 
+Then El sistema valida su identidad y permite el acceso a la plataforma 
+ 
+HU-02 Consultar Disponibilidad de Medicamentos 
+Campo Descripci≤n 
+ID HU-02 
+Nombre Consultar Disponibilidad de Medicamentos 
+Como Paciente 
+Quiero Consultar la disponibilidad de medicamentos en tiempo real 
+Para Identificar rßpidamente en quΘ farmacia puedo reclamarlos 
+Given Que el usuario ha iniciado sesi≤n correctamente 
+When Realiza una b·squeda por nombre o c≤digo del medicamento 
+Then El sistema muestra las farmacias disponibles, ubicaci≤n y cantidad en existencia 
+ 
+
+--- PAGE 21 ---
+21 
+ 
+HU-03 Reservar Medicamentos 
+Campo Descripci≤n 
+ID HU-03 
+Nombre Reservar Medicamentos 
+Como Paciente 
+Quiero Reservar un medicamento disponible 
+Para Asegurar que el medicamento estΘ disponible cuando llegue a reclamarlo 
+Given Que existe disponibilidad del medicamento en una farmacia 
+When El usuario selecciona la opci≤n de reserva y confirma la solicitud 
+Then El sistema genera una reserva vßlida y envφa una confirmaci≤n al usuario 
+ 
+HU-04 Validar Autorizaciones EPS 
+Campo Descripci≤n 
+ID HU-04 
+Nombre Validar Autorizaciones EPS 
+Como Entidad Promotora de Salud (EPS) 
+Quiero Validar la afiliaci≤n y cobertura del paciente 
+Para Autorizar ·nicamente las solicitudes que cumplan los requisitos establecidos 
+Given Que existe una solicitud de reserva asociada a un paciente 
+When El sistema consulta la informaci≤n de afiliaci≤n 
+Then La solicitud es aprobada o rechazada seg·n la cobertura vigente 
+ 
+HU-05 Actualizaci≤n Automßtica de Inventario 
+Campo Descripci≤n 
+ID HU-05 
+Nombre Actualizaci≤n Automßtica de Inventario 
+Como Farmacia 
+Quiero Que el inventario se actualice automßticamente 
+
+--- PAGE 22 ---
+22 
+ 
+Para Mantener informaci≤n precisa sobre la disponibilidad de medicamentos 
+Given Que se registra una reserva o una entrega de medicamentos 
+When La operaci≤n es confirmada 
+Then El sistema actualiza inmediatamente las existencias disponibles 
+ 
+HU-06 Programar Citas de Reclamaci≤n 
+Campo Descripci≤n 
+ID HU-06 
+Nombre Programar Citas de Reclamaci≤n 
+Como Paciente 
+Quiero Programar una cita para reclamar mis medicamentos 
+Para Evitar filas y optimizar los tiempos de atenci≤n 
+Given Que la reserva del medicamento fue aprobada 
+When El usuario selecciona una fecha y hora disponibles 
+Then El sistema agenda la cita y envφa la confirmaci≤n correspondiente 
+ 
+HU-07 Consultar Farmacias Cercanas 
+Campo Descripci≤n 
+ID HU-07 
+Nombre Consultar Farmacias Cercanas 
+Como Paciente 
+Quiero Visualizar las farmacias cercanas con disponibilidad del medicamento 
+Para Elegir el punto de entrega mßs conveniente 
+Given Que existen farmacias con disponibilidad del medicamento solicitado 
+When El usuario consulta la ubicaci≤n de las farmacias 
+Then El sistema muestra un mapa con los establecimientos disponibles y su ubicaci≤n 
+ 
+ 
+
+--- PAGE 23 ---
+23 
+ 
+HU-08 Recibir Alertas y Notificaciones 
+Campo Descripci≤n 
+ID HU-08 
+Nombre Recibir Alertas y Notificaciones 
+Como Paciente 
+Quiero Recibir alertas y recordatorios automßticos 
+Para Mantenerme informado sobre el estado de mis reservas y citas 
+Given Que existe una reserva o cita asociada al usuario 
+When Ocurre un cambio de estado o se aproxima la fecha programada 
+Then El sistema envφa una notificaci≤n por el canal configurado 
+ 
+HU-09 Gesti≤n de Proveedores 
+Campo Descripci≤n 
+ID HU-09 
+Nombre Gesti≤n de Proveedores 
+Como Proveedor 
+Quiero Registrar suministros de medicamentos 
+Para Mantener abastecidas las farmacias conectadas al sistema 
+Given Que el inventario de una farmacia alcanza niveles mφnimos 
+When Se registra una reposici≤n de medicamentos 
+Then El sistema actualiza las existencias y registra el movimiento realizado 
+ 
+HU-10 Confirmar Entrega de Medicamentos 
+Campo Descripci≤n 
+ID HU-10 
+Nombre Confirmar Entrega de Medicamentos 
+Como Farmacia 
+Quiero Registrar la entrega de medicamentos mediante firma digital 
+
+--- PAGE 24 ---
+24 
+ 
+Para Contar con evidencia de que el paciente recibi≤ correctamente el medicamento 
+Given Que el paciente se presenta para reclamar el medicamento reservado 
+When Se registra la firma digital del usuario 
+Then 
+El sistema genera un comprobante de entrega, actualiza el inventario y almacena 
+el registro en auditorφa 
+ 
+1.5.3 Sprint Planning 
+La planificaci≤n del Sprint permite seleccionar las historias de usuario prioritarias que 
+serßn desarrolladas durante un perφodo determinado. Para el proyecto Sistema de Seguimiento y 
+Disponibilidad de Medicamentos, el equipo decidi≤ iniciar con las funcionalidades 
+fundamentales relacionadas con la seguridad, consulta de medicamentos y trazabilidad del 
+sistema, ya que constituyen la base para los procesos posteriores de reserva, autorizaci≤n y 
+entrega. 
+Definici≤n del Sprint 1 
+ 
+Nombre del Sprint: Sprint 1 û Seguridad y Consulta de Disponibilidad 
+Duraci≤n: 2 semanas 
+Integrantes del equipo: 
+ò Juan Sebastian Sandoval  
+ò Andre Cipamocha  
+ò Cebastian Molina  
+ò Diego Lavacude  
+
+--- PAGE 25 ---
+25 
+ 
+Velocidad estimada del equipo 
+La velocidad inicial del equipo se estim≤ en 16 puntos de historia por Sprint, 
+considerando: 
+ò Equipo conformado por 4 integrantes.  
+ò Primer ciclo de desarrollo del proyecto.  
+ò Disponibilidad acadΘmica del equipo.  
+ò Complejidad tΘcnica de las funcionalidades iniciales. 
+Objetivo del Sprint 
+Implementar las funcionalidades bßsicas que permitan a un usuario autenticarse en el 
+sistema y consultar la disponibilidad de medicamentos en las farmacias registradas, garantizando 
+ademßs el registro de eventos para auditorφa y la visualizaci≤n inicial del inventario. 
+Al finalizar este Sprint, un usuario deberß poder: 
+ò Iniciar sesi≤n de forma segura.  
+ò Buscar medicamentos.  
+ò Consultar disponibilidad en tiempo real.  
+ò Visualizar informaci≤n bßsica del inventario.  
+ò Registrar eventos relevantes para auditorφa. 
+ 
+Sprint Backlog: historias seleccionadas para el Sprint 1 
+
+--- PAGE 26 ---
+26 
+ 
+ID Historia de Usuario Prioridad Puntos 
+HU-01 Autenticaci≤n segura Alta 5 
+HU-02 Consultar disponibilidad de 
+medicamentos Alta 5 
+HU-05 Actualizaci≤n automßtica de 
+inventario (consulta bßsica) Alta 3 
+HU-12 Auditorφa de eventos Alta 3 
+ 
+Entregables del Sprint 
+Al finalizar el Sprint se espera contar con: 
+ò M≤dulo de autenticaci≤n funcional.  
+ò Consulta de disponibilidad de medicamentos.  
+ò Consulta bßsica de inventario.  
+ò Registro de eventos de auditorφa.  
+ò Base de datos inicial configurada.  
+ò Integraci≤n bßsica entre autenticaci≤n, inventario y auditorφa. 
+ 
+Definici≤n de Terminado 
+ 
+Una historia de usuario serß considerada terminada cuando cumpla con todos los 
+siguientes criterios: 
+1. La funcionalidad fue desarrollada completamente de acuerdo con los 
+criterios de aceptaci≤n definidos.  
+2. El c≤digo fuente fue revisado por el equipo de desarrollo.  
+
+--- PAGE 27 ---
+27 
+ 
+3. Se realizaron pruebas unitarias satisfactorias sin errores crφticos.  
+4. La funcionalidad se encuentra integrada correctamente con los m≤dulos 
+relacionados.  
+5. Los datos son almacenados y recuperados correctamente desde la base de 
+datos.  
+6. No existen defectos crφticos o bloqueantes pendientes de correcci≤n.  
+7. La documentaci≤n tΘcnica correspondiente fue actualizada.  
+8. La funcionalidad fue validada por el equipo y cumple el objetivo de la 
+historia de usuario.  
+9. Se registran correctamente los eventos relevantes en el m≤dulo de 
+auditorφa cuando aplique.  
+10. El incremento desarrollado puede ser presentado y demostrado al finalizar 
+el Sprint.  
+Justificaci≤n de las Historias Seleccionadas 
+ 
+Las historias seleccionadas para el Sprint 1 corresponden a las funcionalidades 
+fundamentales del sistema. La autenticaci≤n segura permite controlar el acceso de los usuarios, 
+la consulta de disponibilidad constituye el servicio principal ofrecido al paciente, la actualizaci≤n 
+de inventario garantiza la consistencia de la informaci≤n presentada y la auditorφa proporciona 
+trazabilidad desde las primeras etapas del desarrollo. 
+
+--- PAGE 28 ---
+28 
+ 
+Estas funcionalidades servirßn como base para los siguientes Sprints, donde se 
+implementarßn procesos mßs complejos como reservas, autorizaciones por parte de las EPS, 
+notificaciones automßticas y gesti≤n de entregas de medicamentos. 
+ 
+CAP═TULO 2 ù DISE╤O DE ALTO NIVEL 
+(Tutorφa 2) 
+2.1 Arquitectura general del sistema 
+Descripci≤n de la arquitectura elegida (capas, MVC, microservicios, etc.) 
+Para el desarrollo del Sistema de Seguimiento y Disponibilidad de Medicamentos se 
+adopt≤ una arquitectura modular orientada a dominios de negocio, organizada mediante paquetes 
+especializados que representan las principales funcionalidades del sistema. 
+La arquitectura estß compuesta por los siguientes m≤dulos: 
+ò Auth: gesti≤n de autenticaci≤n e identidad del usuario. 
+ò Authorization: validaci≤n de autorizaciones emitidas por las EPS. 
+ò Inventory: administraci≤n del inventario de medicamentos. 
+ò Reservation: gesti≤n de reservas y programaci≤n de reclamaciones. 
+ò Delivery: coordinaci≤n de entregas y confirmaci≤n de recepci≤n. 
+ò Notification: envφo de alertas, recordatorios y confirmaciones. 
+ò Geolocation: ubicaci≤n de farmacias y centros mΘdicos. 
+ò Reporting: generaci≤n de mΘtricas y reportes administrativos. 
+ò Audit: registro de eventos y trazabilidad del sistema. 
+
+--- PAGE 29 ---
+29 
+ 
+ò Configuration: administraci≤n de preferencias del usuario. 
+Esta organizaci≤n permite separar claramente las responsabilidades de cada componente 
+y reducir el acoplamiento entre m≤dulos. 
+ 
+Justificaci≤n de la decisi≤n arquitect≤nica 
+ 
+La arquitectura modular fue seleccionada debido a que el sistema involucra m·ltiples 
+actores y procesos independientes, tales como pacientes, EPS, farmacias, proveedores y 
+administradores. 
+Cada m≤dulo encapsula una responsabilidad especφfica del negocio, permitiendo: 
+ò Facilitar el mantenimiento del sistema. 
+ò Reducir el impacto de cambios futuros. 
+ò Incrementar la reutilizaci≤n de componentes. 
+ò Mejorar la escalabilidad de la soluci≤n. 
+ò Favorecer las pruebas unitarias y de integraci≤n. 
+Por ejemplo, el m≤dulo de Reservas puede evolucionar independientemente del m≤dulo 
+de Notificaciones, mientras que el m≤dulo de Inventario puede ser ampliado sin afectar la l≤gica 
+de autenticaci≤n o autorizaci≤n. 
+Esta separaci≤n permite construir una plataforma preparada para futuras integraciones 
+con sistemas reales de EPS, farmacias y operadores logφsticos del sector salud. 
+ 
+
+--- PAGE 30 ---
+30 
+ 
+2.2 Principios SOLID aplicados 
+ 
+Este principio establece que una clase o m≤dulo debe tener una ·nica responsabilidad y 
+una ·nica raz≤n para cambiar. 
+En el sistema propuesto, cada m≤dulo fue dise±ado para cumplir una funci≤n especφfica: 
+Auth gestiona la autenticaci≤n. 
+Inventory administra el stock de medicamentos. 
+Notification envφa alertas y recordatorios. 
+Reporting genera reportes y mΘtricas. 
+ 
+Por ejemplo, la clase Notificacion ·nicamente administra el envφo y gesti≤n de 
+notificaciones, sin encargarse de procesos de inventario o reservas. 
+Pseudoc≤digo: 
+class Notificacion { 
+enviar(); 
+programar(); 
+cancelar(); 
+} 
+Open/Closed Principle (OCP) 
+ 
+
+--- PAGE 31 ---
+31 
+ 
+Este principio indica que los componentes deben estar abiertos para extensi≤n pero 
+cerrados para modificaci≤n. 
+En el sistema se prevΘ la incorporaci≤n de nuevos canales de notificaci≤n sin alterar el 
+funcionamiento existente. 
+ 
+Pseudoc≤digo: 
+interface CanalNotificacion { 
+enviar(mensaje); 
+} 
+class NotificacionEmail implements CanalNotificacion {} 
+class NotificacionSMS implements CanalNotificacion {} 
+class NotificacionPush implements CanalNotificacion {} 
+ 
+De esta manera pueden agregarse nuevos canales sin modificar las clases ya 
+implementadas. 
+Liskov Substitution Principle (LSP) 
+Este principio establece que una clase derivada debe poder sustituir a su clase base sin 
+alterar el comportamiento esperado. 
+Aplicado al sistema, cualquier implementaci≤n de CanalNotificacion puede utilizarse 
+indistintamente por el m≤dulo Notification. 
+
+--- PAGE 32 ---
+32 
+ 
+Pseudoc≤digo: 
+CanalNotificacion canal; 
+canal = new NotificacionEmail(); 
+canal.enviar(); 
+canal = new NotificacionSMS(); 
+canal.enviar(); 
+El sistema mantiene el mismo comportamiento independientemente de la implementaci≤n 
+utilizada. 
+Interface Segregation Principle (ISP) 
+ 
+Este principio recomienda evitar interfaces demasiado grandes que obliguen a 
+implementar mΘtodos innecesarios. 
+En lugar de una ·nica interfaz general para todos los m≤dulos, el sistema define 
+responsabilidades separadas. 
+Ejemplo: 
+IInventario 
+INotificacion 
+IAutorizacion 
+Esto permite que cada m≤dulo implemente ·nicamente las operaciones que realmente 
+necesita. 
+
+--- PAGE 33 ---
+33 
+ 
+Dependency Inversion Principle (DIP) 
+ 
+Este principio establece que los m≤dulos de alto nivel no deben depender de m≤dulos de 
+bajo nivel, sino de abstracciones. 
+Por ejemplo, el m≤dulo Reservation no depende directamente de un canal especφfico de 
+notificaci≤n, sino de una interfaz abstracta. 
+Pseudoc≤digo: 
+class Reserva { 
+CanalNotificacion canal; 
+confirmar() { 
+    canal.enviar("Reserva confirmada"); 
+} 
+} 
+Gracias a esta estrategia, el sistema puede cambiar el mecanismo de envφo sin modificar 
+la l≤gica de reservas. 
+ 
+2.3 Diagrama de Paquetes 
+ 
+El Sistema de Seguimiento y Disponibilidad de Medicamentos fue dise±ado utilizando 
+una arquitectura modular basada en paquetes especializados. Esta organizaci≤n busca garantizar 
+una alta cohesi≤n dentro de cada m≤dulo y un bajo acoplamiento entre ellos, facilitando el 
+mantenimiento, la escalabilidad y la evoluci≤n futura del sistema. 
+La arquitectura se encuentra estructurada alrededor de m≤dulos independientes que 
+representan responsabilidades especφficas del negocio. Esta separaci≤n evita la concentraci≤n 
+excesiva de funcionalidades en un ·nico componente, reduciendo el riesgo de incurrir en el 
+
+--- PAGE 34 ---
+34 
+ 
+antipatr≤n conocido como Package God y favoreciendo la aplicaci≤n del Principio de 
+Responsabilidad ┌nica (SRP). 
+Cada paquete encapsula una funci≤n claramente definida dentro del ecosistema de 
+gesti≤n de medicamentos, permitiendo que las modificaciones realizadas en un m≤dulo tengan 
+un impacto mφnimo sobre los demßs componentes del sistema. 
+ 
+ 
+ 
+Descripci≤n de cada paquete: responsabilidad, clases que contiene, dependencias 
+Auth (Autenticaci≤n) 
+Responsabilidad: 
+Gestionar la identidad y autenticaci≤n de los usuarios del sistema. 
+Funciones principales: 
+ò Verificaci≤n mediante documento de identidad. 
+ò Autenticaci≤n mediante c≤digos OTP. 
+ò Generaci≤n y validaci≤n de c≤digos QR. 
+ò Gesti≤n de sesiones activas. 
+
+
+--- PAGE 35 ---
+35 
+ 
+Clases asociadas: 
+ò Usuario 
+ò Autenticacion 
+Caracterφsticas: 
+Este m≤dulo fue dise±ado para ser altamente reutilizable y mantener independencia respecto a la 
+l≤gica de negocio principal del sistema. 
+Audit (Auditorφa) 
+Responsabilidad: 
+Registrar y almacenar los eventos relevantes generados por el sistema. 
+Funciones principales: 
+ò Registro de reservas realizadas. 
+ò Seguimiento de entregas. 
+ò Control de modificaciones de inventario. 
+ò Trazabilidad de operaciones crφticas. 
+Caracterφsticas: 
+Act·a como un repositorio centralizado de eventos que permite garantizar la transparencia y el 
+cumplimiento de los requisitos de auditorφa exigidos en entornos relacionados con la salud. 
+Reservation (Reservas) 
+Responsabilidad: 
+Administrar el proceso de reserva y programaci≤n de reclamaci≤n de medicamentos. 
+
+--- PAGE 36 ---
+36 
+ 
+Funciones principales: 
+ò Creaci≤n de reservas. 
+ò Validaci≤n de disponibilidad. 
+ò Confirmaci≤n y cancelaci≤n de reservas. 
+ò Programaci≤n de citas de reclamaci≤n. 
+Clases asociadas: 
+ò Reserva 
+Caracterφsticas: 
+Este m≤dulo constituye uno de los componentes centrales del negocio debido a que coordina la 
+interacci≤n directa entre pacientes y farmacias. 
+Delivery (Entregas) 
+Responsabilidad: 
+Gestionar el ciclo completo de entrega de medicamentos. 
+Funciones principales: 
+ò Generaci≤n de ≤rdenes de entrega. 
+ò Confirmaci≤n de recepci≤n. 
+ò Registro de firmas digitales. 
+ò Generaci≤n de comprobantes. 
+Clases asociadas: 
+
+--- PAGE 37 ---
+37 
+ 
+ò Entrega 
+Caracterφsticas: 
+Orquesta las operaciones finales del proceso de dispensaci≤n y garantiza que ·nicamente se 
+entreguen medicamentos autorizados y disponibles. 
+Inventory (Inventario) 
+Responsabilidad: 
+Administrar el stock de medicamentos disponible en las farmacias conectadas al sistema. 
+Funciones principales: 
+ò Consulta de existencias. 
+ò Actualizaci≤n de inventarios. 
+ò Control de niveles mφnimos. 
+ò Reposici≤n de medicamentos. 
+Clases asociadas: 
+ò Inventario 
+ò Medicamento 
+Authorization (Autorizaciones) 
+Responsabilidad: 
+Gestionar la validaci≤n de afiliaci≤n y cobertura con las EPS. 
+Funciones principales: 
+
+--- PAGE 38 ---
+38 
+ 
+ò Solicitud de autorizaciones. 
+ò Validaci≤n de cobertura. 
+ò Aprobaci≤n o rechazo de solicitudes. 
+ò Consulta de historial de autorizaciones. 
+Clases asociadas: 
+ò Autorizacion 
+ò EPS 
+Geolocation (Geolocalizaci≤n) 
+Responsabilidad: 
+Ubicar farmacias y puntos de entrega cercanos al usuario. 
+Funciones principales: 
+ò Consulta de ubicaciones. 
+ò Filtrado de farmacias con disponibilidad. 
+ò Apoyo a procesos de distribuci≤n. 
+Caracterφsticas: 
+Permite mejorar la experiencia del paciente al identificar los establecimientos donde realmente se 
+encuentra disponible el medicamento requerido. 
+Notification (Notificaciones) 
+
+--- PAGE 39 ---
+39 
+ 
+Responsabilidad: 
+Gestionar la comunicaci≤n automßtica con los usuarios. 
+Funciones principales: 
+ò Envφo de correos electr≤nicos. 
+ò Notificaciones push. 
+ò Mensajes SMS. 
+ò Recordatorios de citas y reservas. 
+Clases asociadas: 
+ò Notificacion 
+Reporting (Reportes) 
+Responsabilidad: 
+Generar informaci≤n analφtica para el seguimiento y control operativo del sistema. 
+Funciones principales: 
+ò Indicadores de gesti≤n. 
+ò Estadφsticas de uso. 
+ò Reportes de inventario. 
+ò Reportes de entregas. 
+Caracterφsticas: 
+Funciona como un m≤dulo de consulta que no modifica informaci≤n operativa. 
+
+--- PAGE 40 ---
+40 
+ 
+Configuration (Configuraci≤n) 
+Responsabilidad: 
+Administrar parßmetros y preferencias generales del sistema. 
+Funciones principales: 
+ò Configuraci≤n de alertas. 
+ò Preferencias de notificaci≤n. 
+ò Parßmetros operativos. 
+ 
+Justificaci≤n de las dependencias entre paquetes 
+Las dependencias representadas en el diagrama corresponden a relaciones funcionales necesarias 
+para el cumplimiento de los procesos del negocio. 
+El paquete Reservation depende de Auth debido a que toda reserva debe estar asociada a 
+un usuario previamente autenticado. Asimismo, depende de Inventory porque no es posible 
+confirmar una reserva si el medicamento no se encuentra disponible en el inventario. 
+El paquete Delivery depende de Authorization para validar que la EPS haya aprobado la 
+entrega del medicamento. TambiΘn depende de Inventory porque la confirmaci≤n de una entrega 
+implica la actualizaci≤n automßtica del stock disponible. 
+El paquete Authorization interact·a con los servicios de autenticaci≤n para validar la 
+identidad del paciente antes de consultar informaci≤n relacionada con su afiliaci≤n o cobertura 
+mΘdica. 
+
+--- PAGE 41 ---
+41 
+ 
+El paquete Geolocation depende de Inventory porque la ubicaci≤n de una farmacia 
+·nicamente resulta ·til si se conoce la disponibilidad real del medicamento en dicho 
+establecimiento. 
+El paquete Notification recibe configuraciones desde Configuration para determinar el 
+canal de comunicaci≤n preferido por cada usuario, ya sea correo electr≤nico, SMS o 
+notificaciones push. 
+El paquete Reporting depende principalmente de Audit, ya que utiliza la informaci≤n 
+hist≤rica registrada para generar mΘtricas, indicadores y reportes administrativos sin afectar la 
+operaci≤n normal del sistema. 
+Finalmente, el paquete Audit recibe informaci≤n de m·ltiples m≤dulos debido a su 
+funci≤n transversal dentro de la arquitectura, permitiendo mantener la trazabilidad completa de 
+las acciones ejecutadas en el sistema. 
+Esta estructura modular permite que componentes como Geolocation, Notification o 
+Reporting puedan ser modificados, ampliados o reemplazados sin afectar la l≤gica central de 
+reservas, autorizaciones y entregas, garantizando una arquitectura flexible, mantenible y 
+escalable. 
+CAP═TULO 3 ù DISE╤O DETALLADO 
+(Tutorφa 3) 
+3.1 Diagrama de Clases de Dise±o 
+ 
+El diagrama de clases del Sistema de Seguimiento y Disponibilidad de Medicamentos representa 
+la estructura estßtica del sistema, definiendo las entidades principales, sus atributos, mΘtodos y 
+relaciones. El dise±o fue realizado siguiendo los principios de orientaci≤n a objetos y los 
+
+--- PAGE 42 ---
+42 
+ 
+principios SOLID, especialmente el Principio de Responsabilidad ┌nica (SRP), garantizando que 
+cada clase tenga una funci≤n especφfica dentro del sistema. 
+El modelo estß compuesto por ocho clases principales: Usuario, Autenticacion, 
+Medicamento, Inventario, Reserva, Autorizacion, EPS, Entrega y Notificacion. Estas clases 
+permiten gestionar el ciclo completo del medicamento, desde la autenticaci≤n del paciente hasta 
+la entrega final y la generaci≤n de notificaciones. 
+ 
+ 
+Atributos con tipos de datos 
+Clase Usuario 
+ 
+Atributo Tipo de dato 
+id String 
+nombre String 
+apellido String 
+documento String 
+email String 
+telefono String 
+fechaNacimiento Date 
+activo Boolean 
+ 
+ 
+
+
+--- PAGE 43 ---
+43 
+ 
+Metodos 
+MΘtodo Parßmetros Tipo de retorno 
+registrar Ninguno void 
+actualizarDatos nombre:String, email:String void 
+desactivar Ninguno void 
+obtenerReservas Ninguno List 
+obtenerHistorialEntregas Ninguno List 
+ 
+Clase Autenticacion 
+Clases 
+Atributo Tipo de dato 
+sesionActiva Boolean 
+tokenQR String 
+codigoOTP String 
+intentosFallidos int 
+fechaExpiracionToken Date 
+ 
+Metodos 
+MΘtodo Parßmetros Tipo de retorno 
+generarQR Ninguno String 
+validarDocumento doc:String Boolean 
+generarOTP Ninguno String 
+validarOTP otp:String Boolean 
+iniciarSesion Ninguno Boolean 
+cerrarSesion Ninguno void 
+estaAutenticado Ninguno Boolean 
+Traceback (most recent call last):
+  File "<string>", line 8, in <module>
+    print(text[:2000])
+    ~~~~~^^^^^^^^^^^^^
+  File "C:\Users\kevin\AppData\Local\Programs\Python\Python313\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u2194' in position 32: character maps to <undefined>
+ 
+
+--- PAGE 44 ---
+44 
+ 
+Clase Medicamento 
+Atributo Tipo de dato 
+id String 
+nombre String 
+descripcion String 
+codigoATC String 
+requiereAutorizacion Boolean 
+categoria String 
+ 
+Metodos 
+MΘtodo Parßmetros Tipo de retorno 
+buscarPorNombre nombre:String List 
+buscarPorCodigo codigo:String Medicamento 
+requiereAprobacionEPS Ninguno Boolean 
+obtenerDisponibilidad Ninguno List 
+ 
+ 
+Clase Inventario 
+Atributo Tipo de dato 
+id String 
+stock int 
+stockMinimo int 
+ultimaActualizacion Date 
+ 
+ 
+  
+
+--- PAGE 45 ---
+45 
+ 
+Metodos 
+MΘtodo Parßmetros Tipo de retorno 
+verificarDisponibilidad cantidad:int Boolean 
+descontarStock cantidad:int void 
+reponerStock cantidad:int, lote:String void 
+esBajoStock Ninguno Boolean 
+actualizarStock nuevoStock:int, 
+auditor:String void 
+obtenerStock Ninguno int 
+ 
+Clase Reserva 
+Atributo Tipo de dato 
+id String 
+fecha Date 
+horaReclamacion Time 
+estado EstadoReserva 
+fechaCreacion Date 
+fechaVencimiento Date 
+ 
+Metodos 
+MΘtodo Parßmetros Tipo de retorno 
+crear usuario:Usuario, 
+medicamento:Medicamento Reserva 
+confirmar Ninguno void 
+cancelar motivo:String void 
+reprogramar nuevaFecha:Date void 
+verificarVencimiento Ninguno Boolean 
+obtenerEstado Ninguno EstadoReserva 
+
+--- PAGE 46 ---
+46 
+ 
+Clase Autorizacion 
+Atributo Tipo de dato Atributo 
+id String id 
+estado EstadoAutorizacion estado 
+cobertura String cobertura 
+motivoRechazo String motivoRechazo 
+fechaSolicitud Date fechaSolicitud 
+fechaRespuesta Date fechaRespuesta 
+ 
+Metodos 
+MΘtodo Parßmetros Tipo de retorno 
+solicitar usuario:Usuario, 
+medicamento:Medicamento void 
+aprobar Ninguno void 
+rechazar motivo:String void 
+validarCobertura usuario:Usuario Boolean 
+estaAprobada Ninguno Boolean 
+obtenerHistorial usuario:Usuario List 
+ 
+Clase EPS 
+Atributo Tipo de dato 
+id String 
+nombre String 
+nit String 
+urlAPI String 
+ 
+  
+
+--- PAGE 47 ---
+47 
+ 
+Metodos 
+MΘtodo Parßmetros 
+validarAfiliacion documento:String 
+consultarCobertura medicamento:Medicamento 
+autorizarEntrega 47utorizaci≤n:Autorizacion 
+notificarEntregaRealizada entrega:Entrega 
+ 
+Clase Entrega 
+Atributo Tipo de dato 
+id String 
+direccion String 
+estado EstadoEntrega 
+firmaDigital String 
+fechaAsignacion Date 
+fechaEntrega Date 
+esADomicilio Boolean 
+ 
+Metodos 
+MΘtodo Parßmetros Tipo de retorno 
+asignar reserva:Reserva void 
+confirmarEntrega firma:String void 
+registrarFallo motivo:String void 
+generarComprobante Ninguno String 
+actualizarEstado estado:EstadoEntrega void 
+obtenerEstado Ninguno EstadoEntrega 
+ 
+  
+
+--- PAGE 48 ---
+48 
+ 
+Clase Notificacion 
+Atributo Tipo de dato 
+id String 
+tipo TipoAlerta 
+mensaje String 
+fechaEnvio Date 
+leida Boolean 
+canal TipoNotificacion 
+ 
+Metodos 
+MΘtodo Parßmetros Tipo de retorno 
+enviar Ninguno void 
+marcarComoLeida Ninguno void 
+programar fecha:Date void 
+cancelar Ninguno void 
+obtenerNoLeidas usuario:Usuario List 
+ 
+Relaciones entre Clases 
+ 
+Asociaci≤n 
+ò Un Usuario puede realizar m·ltiples Reservas. 
+ò Un Usuario puede recibir m·ltiples Notificaciones. 
+ò Un Usuario puede tener m·ltiples Entregas asociadas. 
+ò Una Reserva estß asociada a un Medicamento. 
+Composici≤n 
+
+--- PAGE 49 ---
+49 
+ 
+ò Inventario contiene la informaci≤n de existencia de los Medicamentos. 
+ò Si un registro de Inventario desaparece, la informaci≤n de stock asociada 
+deja de existir dentro del sistema. 
+Agregaci≤n 
+ò La EPS administra m·ltiples Autorizaciones. 
+ò Las Autorizaciones pueden existir independientemente de la EPS que las 
+procese. 
+Dependencia 
+ò Reserva depende de Autorizacion para validar la cobertura del 
+medicamento. 
+ò Entrega depende de Reserva para iniciar el proceso de despacho. 
+ò Notificacion depende de Reserva y Entrega para generar alertas 
+automßticas. 
+Realizaci≤n 
+ò La clase Autenticacion implementa los mecanismos de validaci≤n 
+requeridos para el acceso seguro al sistema mediante documento, QR y OTP. 
+Evidencia de la aplicaci≤n del principio SRP (cada clase con responsabilidad ·nica) 
+El Principio de Responsabilidad ┌nica establece que una clase debe tener una ·nica raz≤n para 
+cambiar. Este principio se evidencia en el dise±o del sistema de la siguiente manera: 
+ 
+
+--- PAGE 50 ---
+50 
+ 
+Clase Responsabilidad ┌nica 
+Usuario Gestionar informaci≤n del paciente 
+Autenticacion Gestionar acceso y validaci≤n de identidad 
+Medicamento Gestionar informaci≤n farmacol≤gica 
+Inventario Gestionar existencias y stock 
+Reserva Gestionar reservas de medicamentos 
+Autorizacion Gestionar validaciones y aprobaciones 
+EPS Gestionar afiliaci≤n y cobertura 
+Entrega Gestionar la entrega de medicamentos 
+Notificacion Gestionar alertas y comunicaciones 
+ 
+3.2 Diagramas de Secuencia 
+ 
+ 
+
+
+--- PAGE 51 ---
+51 
+ 
+Objetivo 
+Representar la interacci≤n entre el usuario y los diferentes m≤dulos del sistema durante el 
+proceso de consulta de disponibilidad, reserva de un medicamento, validaci≤n de autorizaci≤n 
+por parte de la EPS y asignaci≤n de la entrega. 
+ 
+Actores y Objetos Participantes 
+Actor / Objeto Descripci≤n 
+Usuario Paciente que consulta y reserva medicamentos. 
+Sistema Orquestador principal que coordina las solicitudes y respuestas entre 
+los m≤dulos. 
+Autorizaci≤n M≤dulo encargado de gestionar las autorizaciones requeridas para 
+ciertos medicamentos. 
+EPS Entidad externa responsable de validar la cobertura y aprobaci≤n del 
+medicamento. 
+Entrega M≤dulo encargado de gestionar la asignaci≤n y preparaci≤n de la 
+entrega del medicamento. 
+ 
+Flujo Principal 
+Paso Interacci≤n 
+1 El Usuario solicita buscar un medicamento. 
+2 El Sistema consulta la disponibilidad del medicamento. 
+3 El Sistema responde indicando que existe stock disponible. 
+4 El Usuario solicita crear una reserva del medicamento. 
+5 El Sistema verifica si el medicamento requiere autorizaci≤n previa. 
+6 Si es necesario, el Sistema solicita autorizaci≤n al m≤dulo de 
+Autorizaci≤n. 
+7 El m≤dulo de Autorizaci≤n consulta la cobertura con la EPS. 
+8 La EPS valida la afiliaci≤n y cobertura del paciente. 
+
+--- PAGE 52 ---
+52 
+ 
+9 La EPS responde con la autorizaci≤n aprobada. 
+10 El m≤dulo de Autorizaci≤n informa al Sistema que la autorizaci≤n fue 
+concedida. 
+11 El Sistema confirma la reserva al Usuario. 
+12 El Sistema solicita al m≤dulo de Entrega asignar la entrega del 
+medicamento. 
+13 El m≤dulo de Entrega registra la asignaci≤n correspondiente. 
+14 El m≤dulo de Entrega confirma la asignaci≤n al Sistema. 
+15 El Sistema informa al Usuario que el medicamento estß listo para entrega. 
+ 
+Mensajes Sφncronos 
+Emisor Receptor Mensaje 
+Usuario Sistema Buscar medicamento 
+Usuario Sistema Crear reserva 
+Sistema Autorizaci≤n Solicitar autorizaci≤n 
+Autorizaci≤n EPS Verificar cobertura 
+Sistema Entrega Asignar entrega 
+ 
+Mensajes de Retorno 
+Emisor Receptor Respuesta 
+Sistema Usuario Stock disponible 
+EPS Autorizaci≤n Cobertura aprobada 
+Autorizaci≤n Sistema Autorizaci≤n aprobada 
+Sistema Usuario Reserva confirmada 
+Entrega Sistema Entrega asignada 
+Sistema Usuario Listo para entrega 
+ 
+  
+
+--- PAGE 53 ---
+53 
+ 
+Fragmento Combinado Utilizado (opt) 
+Condici≤n 
+[Medicamento requiere autorizaci≤n] 
+Cuando el medicamento seleccionado requiere aprobaci≤n de la EPS, se ejecuta el 
+siguiente flujo adicional: 
+1. El Sistema solicita autorizaci≤n.  
+2. El m≤dulo de Autorizaci≤n consulta la EPS.  
+3. La EPS valida la cobertura.  
+4. La EPS devuelve la respuesta.  
+5. El Sistema contin·a con la reserva ·nicamente si la autorizaci≤n fue 
+aprobada.  
+Representaci≤n l≤gica 
+opt [Medicamento requiere autorizaci≤n] 
+ 
+Sistema -> Autorizaci≤n: Solicitar autorizaci≤n 
+Autorizaci≤n -> EPS: Verificar cobertura 
+EPS --> Autorizaci≤n: Cobertura aprobada 
+Autorizaci≤n --> Sistema: Autorizaci≤n aprobada 
+  
+
+--- PAGE 54 ---
